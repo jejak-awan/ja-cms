@@ -1,0 +1,8 @@
+{
+    "name": "Sample Plugin",
+    "slug": "sample-plugin",
+    "version": "1.0.0",
+    "description": "A sample plugin to demonstrate plugin system",
+    "author": "CMS Team",
+    "author_url": ""
+}
