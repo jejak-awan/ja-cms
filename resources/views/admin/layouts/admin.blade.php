@@ -330,7 +330,7 @@
     <div id="app"></div>
     
     <!-- Base Vue/JS -->
-    @vite('resources/js/app.js')
+    @vite(['resources/js/app.js', 'resources/js/activity-feed.js'])
     
     <!-- Theme-specific JS (if exists) -->
     @if(file_exists(public_path('themes/admin/' . active_admin_theme() . '/js/script.js')))

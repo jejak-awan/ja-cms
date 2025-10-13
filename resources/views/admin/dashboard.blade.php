@@ -465,12 +465,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
 
-    // Load activity feed module
-    import('../js/activity-feed.js').then(module => {
-        console.log('Activity feed module loaded');
-    }).catch(error => {
-        console.error('Failed to load activity feed module:', error);
-    });
+    // Initialize activity feed (loaded via Vite)
+    if (typeof window.initActivityFeed === 'function') {
+        window.initActivityFeed();
+    } else {
+        console.warn('Activity feed not yet loaded, waiting...');
+        setTimeout(() => {
+            if (typeof window.initActivityFeed === 'function') {
+                window.initActivityFeed();
+            }
+        }, 500);
+    }
 });
 </script>
 @endpush
