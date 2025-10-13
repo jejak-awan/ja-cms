@@ -1,35 +1,8 @@
 /**
  * Chart.js Configuration for JA-CMS Dashboard
- * Modern charts with beautiful gradients and animations
+ * Use the auto bundle to auto-register controllers/elements/scales
  */
-
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    Filler
-} from 'chart.js';
-
-// Register Chart.js components
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    Filler
-);
+import Chart from 'chart.js/auto';
 
 /**
  * Chart.js default configuration with modern styling
@@ -111,7 +84,7 @@ function createGradient(ctx, color1, color2) {
 export function createArticlesChart(ctx, data) {
     const gradient = createGradient(ctx, 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.1)');
     
-    return new ChartJS(ctx, {
+    return new Chart(ctx, {
         type: 'line',
         data: {
             labels: data.labels,
@@ -156,7 +129,7 @@ export function createArticlesChart(ctx, data) {
 export function createUsersChart(ctx, data) {
     const gradient = createGradient(ctx, 'rgba(16, 185, 129, 0.8)', 'rgba(16, 185, 129, 0.1)');
     
-    return new ChartJS(ctx, {
+    return new Chart(ctx, {
         type: 'bar',
         data: {
             labels: data.labels,
@@ -194,7 +167,7 @@ export function createUsersChart(ctx, data) {
  * Content Types Pie Chart
  */
 export function createContentChart(ctx, data) {
-    return new ChartJS(ctx, {
+    return new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Articles', 'Pages', 'Categories', 'Media'],

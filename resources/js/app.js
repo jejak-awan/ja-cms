@@ -3,8 +3,8 @@ import { createApp } from 'vue';
 
 // Dashboard Charts (lazy loaded)
 window.initDashboardCharts = async function(chartData) {
-    const { initDashboardCharts } = await import('./dashboard-charts');
-    return initDashboardCharts(chartData);
+    const module = await import('./dashboard-charts');
+    return module.initDashboardCharts(chartData);
 };
 
 // Make TinyMCE functions available globally (lazy loaded)
