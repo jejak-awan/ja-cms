@@ -180,7 +180,7 @@ async function loadActivityFeed(page = 1, type = null) {
  * Render activity feed items
  */
 function renderActivityFeed(activities) {
-    const container = document.querySelector('#activityFeedContainer .space-y-4');
+    const container = document.querySelector('#activityFeedContainer .activity-list');
     if (!container) return;
     
     if (activities.length === 0) {
@@ -290,7 +290,7 @@ function stopPolling() {
  * Utility functions
  */
 function showLoadingState() {
-    const container = document.querySelector('#activityFeedContainer .space-y-4');
+    const container = document.querySelector('#activityFeedContainer .activity-list');
     if (container) {
         container.style.opacity = '0.6';
         container.style.pointerEvents = 'none';
@@ -298,7 +298,7 @@ function showLoadingState() {
 }
 
 function hideLoadingState() {
-    const container = document.querySelector('#activityFeedContainer .space-y-4');
+    const container = document.querySelector('#activityFeedContainer .activity-list');
     if (container) {
         container.style.opacity = '1';
         container.style.pointerEvents = 'auto';
@@ -337,11 +337,6 @@ function formatTimeAgo(date) {
 function truncateText(text, length) {
     return text.length > length ? text.substring(0, length) + '...' : text;
 }
-
-// Auto-initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initActivityFeed();
-});
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {

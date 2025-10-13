@@ -293,29 +293,10 @@
     </div>
 </div>
 
-<!-- Recent Activity & Legacy Stats -->
+<!-- Recent Activity & Stats (2-column layout) -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-    <!-- Pages Stats -->
-    <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Pages Overview</h3>
-        <div class="space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-gray-600">Total Pages</span>
-                <span class="font-bold text-gray-800">{{ $stats['pages']['total'] }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-gray-600">Published</span>
-                <span class="font-bold text-green-600">{{ $stats['pages']['published'] }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-gray-600">Draft</span>
-                <span class="font-bold text-gray-600">{{ $stats['pages']['draft'] }}</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity Feed -->
-    <div id="activityFeedContainer" class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
+    <!-- Recent Activity Feed (span 2 columns) -->
+    <div id="activityFeedContainer" class="lg:col-span-2 bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="activity-header flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
             <div class="flex items-center space-x-2">
@@ -324,7 +305,7 @@
             </div>
         </div>
         
-        <div class="space-y-4">
+    <div class="activity-list grid grid-cols-1 lg:grid-cols-2 gap-3">
             @forelse($activities ?? [] as $activity)
                 <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200">
                     <div class="flex-shrink-0">
@@ -380,7 +361,26 @@
         <!-- Pagination controls will be inserted here by JS -->
     </div>
 
-    <!-- System Info -->
+    <!-- Pages Stats (right column, top) -->
+    <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Pages Overview</h3>
+    <div class="space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-600">Total Pages</span>
+                <span class="font-bold text-gray-800">{{ $stats['pages']['total'] }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-gray-600">Published</span>
+                <span class="font-bold text-green-600">{{ $stats['pages']['published'] }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-gray-600">Draft</span>
+                <span class="font-bold text-gray-600">{{ $stats['pages']['draft'] }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Info (right column, bottom) -->
     <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">System Info</h3>
         <div class="space-y-3 text-sm">
