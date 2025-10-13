@@ -260,20 +260,41 @@ export function initDashboardCharts(chartData) {
     // Normalize content object if caller passes full dataset
     const contentData = chartData.content || chartData;
     const doc = document;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fadeIn = (el) => {
+        if (!el) return;
+        if (reduceMotion) {
+            el.classList.remove('opacity-0');
+            return;
+        }
+        requestAnimationFrame(() => {
+            el.classList.remove('opacity-0');
+        });
+    };
     const toggleEmpty = (id, show) => {
         const el = doc.getElementById(id);
         if (!el) return;
         if (show) {
             el.classList.remove('hidden');
             el.classList.add('flex');
+            // allow transition
+            requestAnimationFrame(() => el.classList.remove('opacity-0'));
         } else {
-            el.classList.add('hidden');
+            if (!reduceMotion) el.classList.add('opacity-0');
+            // hide after transition
+            setTimeout(() => el.classList.add('hidden'), reduceMotion ? 0 : 200);
             el.classList.remove('flex');
         }
     };
     const hideSkeleton = (id) => {
         const el = doc.getElementById(id);
-        if (el) el.classList.add('hidden');
+        if (!el) return;
+        if (reduceMotion) {
+            el.classList.add('hidden');
+            return;
+        }
+        el.classList.add('opacity-0');
+        setTimeout(() => el.classList.add('hidden'), 150);
     };
     // Articles Chart
     const articlesCtx = doc.getElementById('articlesChart');
@@ -283,6 +304,7 @@ export function initDashboardCharts(chartData) {
         hideSkeleton('articlesChartSkeleton');
         const hasArticles = Array.isArray(chartData.articles) && chartData.articles.some(v => (v || 0) > 0);
         toggleEmpty('articlesChartEmpty', !hasArticles);
+        fadeIn(articlesCtx);
     }
 
     // Users Chart
@@ -292,6 +314,7 @@ export function initDashboardCharts(chartData) {
         hideSkeleton('usersChartSkeleton');
         const hasUsers = Array.isArray(chartData.users) && chartData.users.some(v => (v || 0) > 0);
         toggleEmpty('usersChartEmpty', !hasUsers);
+        fadeIn(usersCtx);
     }
 
     // Content Chart
@@ -302,6 +325,7 @@ export function initDashboardCharts(chartData) {
         hideSkeleton('contentChartSkeleton');
         const totalContent = (safeContent.articles || 0) + (safeContent.pages || 0) + (safeContent.categories || 0) + (safeContent.media || 0);
         toggleEmpty('contentChartEmpty', totalContent === 0);
+        fadeIn(contentCtx);
     }
 }
 
