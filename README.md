@@ -1,168 +1,334 @@
-# Jejakawan Content Management System (JA-CMS)# 🎉 Laravel 12 CMS
+# JA-CMS - Jejakawan Content Management System# Jejakawan Content Management System (JA-CMS)# 🎉 Laravel 12 CMS
 
 
 
-<div align="center">**Production-Ready Content Management System**
+<div align="center">
 
 
+
+![Laravel](https://img.shields.io/badge/Laravel-12.33-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)<div align="center">**Production-Ready Content Management System**
+
+![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 ![Laravel](https://img.shields.io/badge/Laravel-12.33-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)[![Status](https://img.shields.io/badge/Status-100%25%20Complete-success)](docs/PROJECT_COMPLETION_REPORT.md)
 
+**Modern Content Management System Built with Laravel 12**
+
 ![PHP](https://img.shields.io/badge/PHP-8.3+-777BB4?style=for-the-badge&logo=php&logoColor=white)[![Laravel](https://img.shields.io/badge/Laravel-12-red)](https://laravel.com)
+
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [License](#-license)
 
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)[![Tailwind](https://img.shields.io/badge/Tailwind-v4-blue)](https://tailwindcss.com)
 
+</div>
+
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)[![License](https://img.shields.io/badge/License-MIT-yellow)]()
-
-
-
-**A Modern, Modular Content Management System Built with Laravel**> A comprehensive, modular CMS built with Laravel 12, featuring full RBAC, media management, hierarchical content, SEO optimization, and multi-theme support.
-
-
-
-[Features](#-features) • [Installation](#-installation) • [Documentation](#-documentation) • [Screenshots](#-screenshots) • [Contributing](#-contributing)---
-
-
-
-</div>## ✨ Quick Overview
-
-
-
----This Laravel 12 CMS is a **complete, production-ready** system with:
-
-
-
-## 📋 About- ✅ **10/10 TODOs Completed** (100%)
-
-- ✅ **Full RBAC** (4 roles, 24 permissions)
-
-**JA-CMS** is a powerful and flexible content management system built on Laravel 12. Designed with modularity in mind, it provides a complete solution for managing websites, blogs, and digital content with an intuitive admin panel and extensible architecture.- ✅ **Media Management** (Intervention Image v3, automatic thumbnails)
-
-- ✅ **Hierarchical Content** (Articles, Pages, Categories)
-
-### Project Information- ✅ **SEO Optimized** (Sitemap, breadcrumbs, meta tags)
-
-- ✅ **Search Functionality** (Full-text search across content)
-
-- **Name**: Jejakawan Content Management System (JA-CMS)- ✅ **Dynamic Menus** (3 locations: header, footer, social)
-
-- **Framework**: Laravel 12.33- ✅ **Settings System** (Type casting, caching)
-
-- **Version**: 1.0.0- ✅ **Multi-Theme** (Tailwind CSS v4 responsive design)
-
-- **Code Build**: Janari
-
-- **Author**: Jejakawan Team---
-
-- **Repository**: [https://github.com/jejak-awan/ja-cms](https://github.com/jejak-awan/ja-cms)
-
-## 📚 Documentation
 
 ---
 
-**All comprehensive documentation is located in the [`docs/`](docs/) folder:**
+
+
+## 📋 About
+
+**A Modern, Modular Content Management System Built with Laravel**> A comprehensive, modular CMS built with Laravel 12, featuring full RBAC, media management, hierarchical content, SEO optimization, and multi-theme support.
+
+JA-CMS is a powerful and flexible content management system built on Laravel 12. Designed with modularity and extensibility in mind, it provides everything you need to build and manage modern websites.
+
+
+
+- **Version**: 1.0.0
+
+- **Code Build**: Janari[Features](#-features) • [Installation](#-installation) • [Documentation](#-documentation) • [Screenshots](#-screenshots) • [Contributing](#-contributing)---
+
+- **Author**: Jejakawan Team
+
+
+
+---
+
+</div>## ✨ Quick Overview
 
 ## ✨ Features
 
+
+
+### Content Management
+
+- 📝 **Articles & Pages** - Rich text editor with multiple templates---This Laravel 12 CMS is a **complete, production-ready** system with:
+
+- 🗂️ **Categories** - Hierarchical organization with drag-and-drop
+
+- 🏷️ **Tags** - Flexible content tagging system
+
+- 🔍 **SEO Ready** - Meta tags, sitemaps, and SEO-friendly URLs
+
+## 📋 About- ✅ **10/10 TODOs Completed** (100%)
+
+### Media & Assets
+
+- 📤 **Media Library** - Drag & drop file uploads- ✅ **Full RBAC** (4 roles, 24 permissions)
+
+- 🖼️ **Image Processing** - Automatic thumbnails and optimization
+
+- 📁 **Folder Organization** - Organize files in custom folders**JA-CMS** is a powerful and flexible content management system built on Laravel 12. Designed with modularity in mind, it provides a complete solution for managing websites, blogs, and digital content with an intuitive admin panel and extensible architecture.- ✅ **Media Management** (Intervention Image v3, automatic thumbnails)
+
+
+
+### User Management- ✅ **Hierarchical Content** (Articles, Pages, Categories)
+
+- 👥 **Role-Based Access** - 4 default roles with granular permissions
+
+- 🔐 **Secure Authentication** - Built on Laravel's authentication### Project Information- ✅ **SEO Optimized** (Sitemap, breadcrumbs, meta tags)
+
+- 📊 **User Dashboard** - Individual statistics and activity tracking
+
+- ✅ **Search Functionality** (Full-text search across content)
+
+### Customization
+
+- 🎨 **Theme System** - Separate themes for admin and public site- **Name**: Jejakawan Content Management System (JA-CMS)- ✅ **Dynamic Menus** (3 locations: header, footer, social)
+
+- 🔌 **Plugin Architecture** - Extend functionality with plugins
+
+- 🎯 **Menu Builder** - Drag & drop menu management- **Framework**: Laravel 12.33- ✅ **Settings System** (Type casting, caching)
+
+- ⚙️ **Settings Panel** - Global configuration management
+
+- **Version**: 1.0.0- ✅ **Multi-Theme** (Tailwind CSS v4 responsive design)
+
+### Modern Interface
+
+- 📱 **Responsive Design** - Mobile-first admin interface- **Code Build**: Janari
+
+- 🌙 **Dark Mode** - Full dark mode support
+
+- 🔔 **Notifications** - Real-time notification system- **Author**: Jejakawan Team---
+
+
+
+---- **Repository**: [https://github.com/jejak-awan/ja-cms](https://github.com/jejak-awan/ja-cms)
+
+
+
+## 🚀 Installation## 📚 Documentation
+
+
+
+### Requirements---
+
+
+
+- PHP 8.3 or higher**All comprehensive documentation is located in the [`docs/`](docs/) folder:**
+
+- Composer
+
+- Node.js & NPM## ✨ Features
+
+- Database (SQLite/MySQL/PostgreSQL)
+
 ### 🎯 Start Here
+
+### Quick Start
 
 ### 🎨 Content Management
 
-- **📝 Articles & Pages**: Full CRUD with rich text editor (TinyMCE)- **[📖 Complete Documentation](docs/PROJECT_COMPLETION_REPORT.md)** - Full project report with all features, implementation details, and usage guide
+```bash
 
-- **🗂️ Categories**: Hierarchical category system with drag-and-drop tree view- **[📑 Documentation Index](docs/INDEX.md)** - Quick navigation to all docs
+# Clone repository- **📝 Articles & Pages**: Full CRUD with rich text editor (TinyMCE)- **[📖 Complete Documentation](docs/PROJECT_COMPLETION_REPORT.md)** - Full project report with all features, implementation details, and usage guide
 
-- **🏷️ Tags**: Flexible tagging system for content organization
+git clone https://github.com/jejak-awan/ja-cms.git
 
-- **📄 Multiple Page Templates**: 5 built-in templates (Default, Full Width, Landing, Contact, About)### 🎨 Theme & Design
-
-- **🔍 SEO Optimization**: Meta tags, descriptions, and SEO-friendly URLs
-
-- **[THEME_SYSTEM.md](docs/THEME_SYSTEM.md)** - Multi-theme architecture
-
-### 📁 Media Management- **[THEME_GUIDE.md](docs/THEME_GUIDE.md)** - Practical theme development guide
-
-- **📤 Drag & Drop Upload**: Modern file upload interface- **[THEME_FOLDERS_EXPLANATION.md](docs/THEME_FOLDERS_EXPLANATION.md)** - Folder structure
-
-- **🖼️ Image Processing**: Automatic thumbnail generation and optimization
-
-- **📂 Folder Organization**: Organize media files in custom folders### 🔧 Technical Docs
-
-- **🔗 Media Library**: Centralized media management with search and filtering
-
-- **[REFACTORING_SUMMARY.md](docs/REFACTORING_SUMMARY.md)** - Code improvements
-
-### 👥 User Management- **[VERIFICATION_REPORT.txt](docs/VERIFICATION_REPORT.txt)** - Test results
-
-- **👤 User Roles**: 4 default roles (Super Admin, Admin, Editor, Author)
-
-- **🔐 Permissions System**: Granular access control---
-
-- **📊 User Dashboard**: Individual user statistics and activity
-
-- **🔒 Secure Authentication**: Laravel's built-in authentication## 🚀 Quick Start
+cd ja-cms- **🗂️ Categories**: Hierarchical category system with drag-and-drop tree view- **[📑 Documentation Index](docs/INDEX.md)** - Quick navigation to all docs
 
 
 
-### 🎨 Theme System### Installation
+# Install dependencies- **🏷️ Tags**: Flexible tagging system for content organization
 
-- **🎭 Dual Theme Support**: Separate themes for Admin Panel and Public Website
+composer install
 
-- **📑 Tab-Based Management**: Easy switching between admin and public themes```bash
-
-- **🖼️ Theme Preview**: Visual theme selection with screenshots# Clone repository
-
-- **⚙️ Theme Settings**: Customizable theme configurationsgit clone <repository-url>
-
-- **🔄 Auto-Sync**: Automatic theme detection from filesystemcd cms-app
+npm install- **📄 Multiple Page Templates**: 5 built-in templates (Default, Full Width, Landing, Contact, About)### 🎨 Theme & Design
 
 
 
-### 🔌 Plugin System# Install dependencies
-
-- **⚡ Extensible Architecture**: Add custom functionality via pluginscomposer install
-
-- **🎛️ Enable/Disable Plugins**: Easy plugin managementnpm install
-
-- **📦 Plugin Metadata**: Version control and author information
-
-- **🔄 Auto-Discovery**: Automatic plugin detection and registration# Environment setup
+# Environment setup- **🔍 SEO Optimization**: Meta tags, descriptions, and SEO-friendly URLs
 
 cp .env.example .env
 
+php artisan key:generate- **[THEME_SYSTEM.md](docs/THEME_SYSTEM.md)** - Multi-theme architecture
+
+
+
+# Configure database in .env file### 📁 Media Management- **[THEME_GUIDE.md](docs/THEME_GUIDE.md)** - Practical theme development guide
+
+# DB_CONNECTION=sqlite
+
+- **📤 Drag & Drop Upload**: Modern file upload interface- **[THEME_FOLDERS_EXPLANATION.md](docs/THEME_FOLDERS_EXPLANATION.md)** - Folder structure
+
+# Run migrations
+
+php artisan migrate --seed- **🖼️ Image Processing**: Automatic thumbnail generation and optimization
+
+
+
+# Build assets- **📂 Folder Organization**: Organize media files in custom folders### 🔧 Technical Docs
+
+npm run build
+
+- **🔗 Media Library**: Centralized media management with search and filtering
+
+# Create storage link
+
+php artisan storage:link- **[REFACTORING_SUMMARY.md](docs/REFACTORING_SUMMARY.md)** - Code improvements
+
+
+
+# Start server### 👥 User Management- **[VERIFICATION_REPORT.txt](docs/VERIFICATION_REPORT.txt)** - Test results
+
+php artisan serve
+
+```- **👤 User Roles**: 4 default roles (Super Admin, Admin, Editor, Author)
+
+
+
+### Access Application- **🔐 Permissions System**: Granular access control---
+
+
+
+- **Frontend**: http://localhost:8000- **📊 User Dashboard**: Individual user statistics and activity
+
+- **Admin Panel**: http://localhost:8000/admin
+
+- **🔒 Secure Authentication**: Laravel's built-in authentication## 🚀 Quick Start
+
+Default admin credentials are created during seeding (check database/seeders).
+
+
+
+---
+
+### 🎨 Theme System### Installation
+
+## 💻 Usage
+
+- **🎭 Dual Theme Support**: Separate themes for Admin Panel and Public Website
+
+### Creating Content
+
+- **📑 Tab-Based Management**: Easy switching between admin and public themes```bash
+
+1. Log in to admin panel
+
+2. Navigate to Articles or Pages- **🖼️ Theme Preview**: Visual theme selection with screenshots# Clone repository
+
+3. Click "Create New"
+
+4. Fill in content with rich text editor- **⚙️ Theme Settings**: Customizable theme configurationsgit clone <repository-url>
+
+5. Set SEO options and publish
+
+- **🔄 Auto-Sync**: Automatic theme detection from filesystemcd cms-app
+
+### Managing Themes
+
+
+
+1. Go to **Admin → Themes**
+
+2. Browse available themes in tabs (Admin/Public)### 🔌 Plugin System# Install dependencies
+
+3. Click "Activate" to apply theme
+
+4. Configure theme settings as needed- **⚡ Extensible Architecture**: Add custom functionality via pluginscomposer install
+
+
+
+### Managing Plugins- **🎛️ Enable/Disable Plugins**: Easy plugin managementnpm install
+
+
+
+1. Go to **Admin → Plugins**- **📦 Plugin Metadata**: Version control and author information
+
+2. View available plugins
+
+3. Enable/Disable plugins as needed- **🔄 Auto-Discovery**: Automatic plugin detection and registration# Environment setup
+
+4. Configure plugin settings
+
+cp .env.example .env
+
+### Building Menus
+
 ### 🎯 Menu Builderphp artisan key:generate
 
-- **🏗️ Drag & Drop Interface**: WordPress-style menu builder
+1. Go to **Admin → Menus**
 
-- **🔗 Multiple Link Types**: Pages, Categories, Custom URLs# Database setup
+2. Create new menu or edit existing- **🏗️ Drag & Drop Interface**: WordPress-style menu builder
+
+3. Add items (Pages, Categories, Custom URLs)
+
+4. Drag to reorder and nest items- **🔗 Multiple Link Types**: Pages, Categories, Custom URLs# Database setup
+
+5. Assign menu to location
 
 - **📊 Nested Menus**: Unlimited menu depthphp artisan migrate
 
+---
+
 - **📍 Multiple Locations**: Create menus for different site areasphp artisan db:seed
 
+## 🛠️ Technology Stack
 
 
-### ⚙️ Settings & Configuration# Build assets
 
-- **🌐 General Settings**: Site name, description, logo, faviconnpm run build
+- **Backend**: Laravel 12.33, PHP 8.3
+
+- **Frontend**: Tailwind CSS 4.0, Alpine.js, Vite### ⚙️ Settings & Configuration# Build assets
+
+- **Database**: SQLite/MySQL/PostgreSQL
+
+- **Editor**: TinyMCE- **🌐 General Settings**: Site name, description, logo, faviconnpm run build
+
+- **Image Processing**: Intervention Image
 
 - **🔍 SEO Settings**: Global SEO configuration
 
+---
+
 - **📱 Social Media**: Social media links and integration# Start server
+
+## 🤝 Contributing
 
 - **💾 Cache Management**: Built-in cache clearingphp artisan serve
 
+Contributions are welcome! Please follow these steps:
+
 ```
 
-### 🎨 Modern UI/UX
+1. Fork the repository
 
-- **📱 Responsive Design**: Mobile-first admin interface### Access Points
+2. Create feature branch (`git checkout -b feature/amazing-feature`)### 🎨 Modern UI/UX
+
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+
+4. Push to branch (`git push origin feature/amazing-feature`)- **📱 Responsive Design**: Mobile-first admin interface### Access Points
+
+5. Open Pull Request
 
 - **🌙 Dark Mode**: Full dark mode support
 
+---
+
 - **🔔 Notifications**: Real-time notification system- **Public Site:** http://localhost:8000
 
+## 📄 License
+
 - **📊 Dashboard Analytics**: Visual statistics and charts- **Sitemap:** http://localhost:8000/sitemap.xml
+
+This project is licensed under the MIT License.
 
 - **🍔 Mobile Menu**: Touch-friendly navigation
 
@@ -170,17 +336,35 @@ cp .env.example .env
 
 ---
 
-## 📊 System Statistics
+## 📞 Contact
+
+---
+
+- **Email**: jejakawan007@gmail.com
+
+- **GitHub**: [jejak-awan](https://github.com/jejak-awan)## 📊 System Statistics
+
+- **Issues**: [Report Issues](https://github.com/jejak-awan/ja-cms/issues)
 
 ## 🚀 Installation
 
+---
+
 | Metric | Value |
+
+<div align="center">
 
 ### Requirements|--------|-------|
 
+**⭐ Star us on GitHub if you find this helpful!**
+
 | **Completion** | 100% (10/10 TODOs) |
 
+Made with ❤️ by [Jejakawan Team](https://github.com/jejak-awan)
+
 - PHP 8.3 or higher| **Database Tables** | 20+ |
+
+</div>
 
 - Composer| **Total Records** | 81 |
 
