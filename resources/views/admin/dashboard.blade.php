@@ -406,17 +406,21 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Chart data from Laravel
+    // Data dari controller
     const chartData = @json($chartData);
-    
-    // Initialize dashboard charts
+
+    // Panggil initializer dari app.js (Vite akan handle dynamic import)
     if (typeof window.initDashboardCharts === 'function') {
         window.initDashboardCharts(chartData);
     } else {
-        // Fallback: load charts dynamically if not available
-        import('/resources/js/dashboard-charts.js').then(module => {
-            module.initDashboardCharts(chartData);
-        });
+        console.warn('initDashboardCharts not available yet. Retrying shortly...');
+        setTimeout(() => {
+            if (typeof window.initDashboardCharts === 'function') {
+                window.initDashboardCharts(chartData);
+            } else {
+                console.error('Failed to initialize charts: initDashboardCharts is undefined');
+            }
+        }, 300);
     }
 });
 </script>

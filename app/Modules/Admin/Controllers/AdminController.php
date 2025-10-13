@@ -76,10 +76,17 @@ class AdminController extends Controller
             $date = Carbon::now()->subMonths($i);
             $months[] = $date->format('M Y');
             
-            // Articles published in this month
-            $articlesCount = Article::whereYear('published_at', $date->year)
-                ->whereMonth('published_at', $date->month)
-                ->where('status', 'published')
+            // Articles created/published in this month (fallback to created_at if published_at null)
+            $articlesCount = Article::where(function($q) use ($date) {
+                    $q->whereYear('published_at', $date->year)
+                        ->whereMonth('published_at', $date->month)
+                        ->where('status', 'published');
+                })
+                ->orWhere(function($q) use ($date) {
+                    $q->whereNull('published_at')
+                        ->whereYear('created_at', $date->year)
+                        ->whereMonth('created_at', $date->month);
+                })
                 ->count();
             $articlesData[] = $articlesCount;
             

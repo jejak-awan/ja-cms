@@ -285,7 +285,8 @@ export function initDashboardCharts(chartData) {
     // Content Chart
     const contentCtx = document.getElementById('contentChart');
     if (contentCtx) {
-        createContentChart(contentCtx.getContext('2d'), chartData);
+        const contentData = chartData.content || { articles: 0, pages: 0, categories: 0, media: 0 };
+        createContentChart(contentCtx.getContext('2d'), contentData);
     }
 }
 
