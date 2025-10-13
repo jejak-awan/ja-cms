@@ -3,11 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="mb-8">
+<div class="mb-6 md:mb-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ auth()->user()->name }}! 👋</h1>
-            <p class="mt-1 text-gray-600">Here's what's happening with your site today.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Welcome back, {{ auth()->user()->name }}! 👋</h1>
+            <p class="mt-1 text-sm md:text-base text-gray-600">Here's what's happening with your site today.</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-2 text-sm text-gray-500">
@@ -21,9 +21,9 @@
 </div>
 
 <!-- Enhanced Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
     <!-- Articles Stats -->
-    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 border border-blue-200 hover:shadow-xl transition-all duration-300">
+    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-4 md:p-6 border border-blue-200 hover:shadow-xl transition-all duration-300">
         <div class="flex items-center justify-between">
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Categories Stats -->
-    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-6 border border-green-200 hover:shadow-xl transition-all duration-300">
+    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-4 md:p-6 border border-green-200 hover:shadow-xl transition-all duration-300">
         <div class="flex items-center justify-between">
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
@@ -77,7 +77,7 @@
     </div>
 
     <!-- Users Stats -->
-    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-6 border border-purple-200 hover:shadow-xl transition-all duration-300">
+    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-4 md:p-6 border border-purple-200 hover:shadow-xl transition-all duration-300">
         <div class="flex items-center justify-between">
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Media Stats -->
-    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl shadow-lg p-6 border border-yellow-200 hover:shadow-xl transition-all duration-300">
+    <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl shadow-lg p-4 md:p-6 border border-yellow-200 hover:shadow-xl transition-all duration-300">
         <div class="flex items-center justify-between">
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
@@ -138,9 +138,9 @@
 </div>
 
 <!-- Interactive Charts Section -->
-<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
     <!-- Articles Growth Chart -->
-    <div class="lg:col-span-1 xl:col-span-2 bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+    <div class="lg:col-span-1 xl:col-span-2 bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Articles Growth</h3>
             <div class="flex items-center space-x-2">
@@ -149,7 +149,7 @@
                 </span>
             </div>
         </div>
-        <div class="h-64 relative">
+    <div class="h-56 md:h-64 relative">
             <canvas id="articlesChart" class="w-full h-full"></canvas>
             <!-- Skeleton Loader -->
             <div id="articlesChartSkeleton" class="absolute inset-0 flex items-center justify-center">
@@ -172,11 +172,11 @@
     </div>
 
     <!-- Content Distribution Chart -->
-    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Content Distribution</h3>
         </div>
-        <div class="h-64 relative">
+    <div class="h-56 md:h-64 relative">
             <canvas id="contentChart" class="w-full h-full"></canvas>
             <!-- Skeleton Loader -->
             <div id="contentChartSkeleton" class="absolute inset-0 flex items-center justify-center">
@@ -200,8 +200,8 @@
 </div>
 
 <!-- Users Registration Chart -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">User Registrations</h3>
             <div class="flex items-center space-x-2">
@@ -210,7 +210,7 @@
                 </span>
             </div>
         </div>
-        <div class="h-64 relative">
+    <div class="h-56 md:h-64 relative">
             <canvas id="usersChart" class="w-full h-full"></canvas>
             <!-- Skeleton Loader -->
             <div id="usersChartSkeleton" class="absolute inset-0 flex items-center justify-center">
@@ -233,7 +233,7 @@
     </div>
 
     <!-- Quick Actions Panel -->
-    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl shadow-lg p-6 border border-indigo-200">
+    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl shadow-lg p-4 md:p-6 border border-indigo-200">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
             <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,9 +294,9 @@
 </div>
 
 <!-- Recent Activity & Legacy Stats -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
     <!-- Pages Stats -->
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Pages Overview</h3>
         <div class="space-y-3">
             <div class="flex items-center justify-between">
@@ -315,7 +315,7 @@
     </div>
 
     <!-- Recent Activity Feed -->
-    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
             <div class="flex items-center space-x-2">
@@ -390,7 +390,7 @@
     </div>
 
     <!-- System Info -->
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">System Info</h3>
         <div class="space-y-3 text-sm">
             <div class="flex items-center justify-between">
@@ -411,7 +411,7 @@
 
 <!-- Recent Articles -->
 @if(isset($stats['articles']['recent']) && $stats['articles']['recent']->count() > 0)
-<div class="bg-white rounded-lg shadow-md p-6">
+<div class="bg-white rounded-lg shadow-md p-4 md:p-6">
     <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Articles</h3>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
