@@ -149,8 +149,25 @@
                 </span>
             </div>
         </div>
-        <div class="h-64">
-            <canvas id="articlesChart"></canvas>
+        <div class="h-64 relative">
+            <canvas id="articlesChart" class="w-full h-full"></canvas>
+            <!-- Skeleton Loader -->
+            <div id="articlesChartSkeleton" class="absolute inset-0 flex items-center justify-center">
+                <div class="w-3/4">
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+            </div>
+            <!-- Empty State Overlay -->
+            <div id="articlesChartEmpty" class="hidden absolute inset-0 flex-col items-center justify-center text-gray-500">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <p class="mt-2">No article data yet</p>
+                <a href="/admin/articles/create" class="mt-3 text-sm text-blue-600 hover:text-blue-800 font-medium">Create your first article →</a>
+            </div>
         </div>
     </div>
 
@@ -159,8 +176,25 @@
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Content Distribution</h3>
         </div>
-        <div class="h-64">
-            <canvas id="contentChart"></canvas>
+        <div class="h-64 relative">
+            <canvas id="contentChart" class="w-full h-full"></canvas>
+            <!-- Skeleton Loader -->
+            <div id="contentChartSkeleton" class="absolute inset-0 flex items-center justify-center">
+                <div class="w-3/4">
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+            </div>
+            <!-- Empty State Overlay -->
+            <div id="contentChartEmpty" class="hidden absolute inset-0 flex-col items-center justify-center text-gray-500">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 3v10a2 2 0 002 2h6a2 2 0 002-2V7H7z"></path>
+                </svg>
+                <p class="mt-2">No content yet</p>
+                <a href="/admin/articles/create" class="mt-3 text-sm text-blue-600 hover:text-blue-800 font-medium">Create your first article →</a>
+            </div>
         </div>
     </div>
 </div>
@@ -176,8 +210,25 @@
                 </span>
             </div>
         </div>
-        <div class="h-64">
-            <canvas id="usersChart"></canvas>
+        <div class="h-64 relative">
+            <canvas id="usersChart" class="w-full h-full"></canvas>
+            <!-- Skeleton Loader -->
+            <div id="usersChartSkeleton" class="absolute inset-0 flex items-center justify-center">
+                <div class="w-3/4">
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+            </div>
+            <!-- Empty State Overlay -->
+            <div id="usersChartEmpty" class="hidden absolute inset-0 flex-col items-center justify-center text-gray-500">
+                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <p class="mt-2">No registration data yet</p>
+                <a href="/admin/users/create" class="mt-3 text-sm text-blue-600 hover:text-blue-800 font-medium">Add your first user →</a>
+            </div>
         </div>
     </div>
 

@@ -4,69 +4,79 @@
  */
 import Chart from 'chart.js/auto';
 
+// Global chart registry
+window.DASHBOARD_CHARTS = window.DASHBOARD_CHARTS || {};
+
+function isDark() {
+    return document.documentElement.classList.contains('dark');
+}
+
+function getThemeColors() {
+    if (isDark()) {
+        return {
+            textPrimary: '#E5E7EB',
+            textSecondary: '#9CA3AF',
+            surface: '#111827',
+            grid: '#1F2937',
+            border: '#374151',
+            tooltipBg: 'rgba(17, 24, 39, 0.95)',
+            title: '#F3F4F6',
+        };
+    }
+    return {
+        textPrimary: '#111827',
+        textSecondary: '#6B7280',
+        surface: '#FFFFFF',
+        grid: '#F3F4F6',
+        border: '#E5E7EB',
+        tooltipBg: 'rgba(17, 24, 39, 0.95)',
+        title: '#111827',
+    };
+}
+
 /**
  * Chart.js default configuration with modern styling
  */
-const defaultChartConfig = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: 'top',
-            labels: {
-                usePointStyle: true,
-                padding: 20,
-                font: {
-                    size: 12,
-                    family: 'Inter, system-ui, sans-serif'
+function buildDefaultConfig() {
+    const c = getThemeColors();
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    color: c.textSecondary,
+                    font: { size: 12, family: 'Inter, system-ui, sans-serif' }
                 }
+            },
+            tooltip: {
+                backgroundColor: c.tooltipBg,
+                titleColor: '#F9FAFB',
+                bodyColor: '#F9FAFB',
+                borderColor: c.border,
+                borderWidth: 1,
+                cornerRadius: 8,
+                displayColors: true,
+                intersect: false,
+                mode: 'index'
             }
         },
-        tooltip: {
-            backgroundColor: 'rgba(17, 24, 39, 0.95)',
-            titleColor: '#F9FAFB',
-            bodyColor: '#F9FAFB',
-            borderColor: '#374151',
-            borderWidth: 1,
-            cornerRadius: 8,
-            displayColors: true,
-            intersect: false,
-            mode: 'index'
-        }
-    },
-    scales: {
-        x: {
-            grid: {
-                display: false
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 11, family: 'Inter, system-ui, sans-serif' }, color: c.textSecondary }
             },
-            ticks: {
-                font: {
-                    size: 11,
-                    family: 'Inter, system-ui, sans-serif'
-                },
-                color: '#6B7280'
+            y: {
+                grid: { color: c.grid, drawBorder: false },
+                ticks: { font: { size: 11, family: 'Inter, system-ui, sans-serif' }, color: c.textSecondary, padding: 10 }
             }
         },
-        y: {
-            grid: {
-                color: '#F3F4F6',
-                drawBorder: false
-            },
-            ticks: {
-                font: {
-                    size: 11,
-                    family: 'Inter, system-ui, sans-serif'
-                },
-                color: '#6B7280',
-                padding: 10
-            }
-        }   
-    },
-    animation: {
-        duration: 1000,
-        easing: 'easeInOutQuart'
-    }
-};
+        animation: { duration: 1000, easing: 'easeInOutQuart' }
+    };
+}
 
 /**
  * Create gradient for charts
@@ -83,6 +93,7 @@ function createGradient(ctx, color1, color2) {
  */
 export function createArticlesChart(ctx, data) {
     const gradient = createGradient(ctx, 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.1)');
+    const c = getThemeColors();
     
     return new Chart(ctx, {
         type: 'line',
@@ -104,9 +115,9 @@ export function createArticlesChart(ctx, data) {
             }]
         },
         options: {
-            ...defaultChartConfig,
+            ...buildDefaultConfig(),
             plugins: {
-                ...defaultChartConfig.plugins,
+                ...buildDefaultConfig().plugins,
                 title: {
                     display: true,
                     text: 'Articles Published (Last 6 Months)',
@@ -115,7 +126,7 @@ export function createArticlesChart(ctx, data) {
                         weight: 'bold',
                         family: 'Inter, system-ui, sans-serif'
                     },
-                    color: '#111827',
+                    color: c.title,
                     padding: 20
                 }
             }
@@ -128,6 +139,7 @@ export function createArticlesChart(ctx, data) {
  */
 export function createUsersChart(ctx, data) {
     const gradient = createGradient(ctx, 'rgba(16, 185, 129, 0.8)', 'rgba(16, 185, 129, 0.1)');
+    const c = getThemeColors();
     
     return new Chart(ctx, {
         type: 'bar',
@@ -144,9 +156,9 @@ export function createUsersChart(ctx, data) {
             }]
         },
         options: {
-            ...defaultChartConfig,
+            ...buildDefaultConfig(),
             plugins: {
-                ...defaultChartConfig.plugins,
+                ...buildDefaultConfig().plugins,
                 title: {
                     display: true,
                     text: 'New User Registrations',
@@ -155,7 +167,7 @@ export function createUsersChart(ctx, data) {
                         weight: 'bold',
                         family: 'Inter, system-ui, sans-serif'
                     },
-                    color: '#111827',
+                    color: c.title,
                     padding: 20
                 }
             }
@@ -167,6 +179,7 @@ export function createUsersChart(ctx, data) {
  * Content Types Pie Chart
  */
 export function createContentChart(ctx, data) {
+    const c = getThemeColors();
     return new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -197,6 +210,7 @@ export function createContentChart(ctx, data) {
                     labels: {
                         usePointStyle: true,
                         padding: 20,
+                        color: c.textSecondary,
                         font: {
                             size: 12,
                             family: 'Inter, system-ui, sans-serif'
@@ -211,14 +225,14 @@ export function createContentChart(ctx, data) {
                         weight: 'bold',
                         family: 'Inter, system-ui, sans-serif'
                     },
-                    color: '#111827',
+                    color: c.title,
                     padding: 20
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                    backgroundColor: c.tooltipBg,
                     titleColor: '#F9FAFB',
                     bodyColor: '#F9FAFB',
-                    borderColor: '#374151',
+                    borderColor: c.border,
                     borderWidth: 1,
                     cornerRadius: 8,
                     callbacks: {
@@ -243,25 +257,96 @@ export function createContentChart(ctx, data) {
  * Initialize all dashboard charts
  */
 export function initDashboardCharts(chartData) {
+    // Normalize content object if caller passes full dataset
+    const contentData = chartData.content || chartData;
+    const doc = document;
+    const toggleEmpty = (id, show) => {
+        const el = doc.getElementById(id);
+        if (!el) return;
+        if (show) {
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        } else {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    };
+    const hideSkeleton = (id) => {
+        const el = doc.getElementById(id);
+        if (el) el.classList.add('hidden');
+    };
     // Articles Chart
-    const articlesCtx = document.getElementById('articlesChart');
+    const articlesCtx = doc.getElementById('articlesChart');
     if (articlesCtx) {
-        createArticlesChart(articlesCtx.getContext('2d'), chartData);
+        window.DASHBOARD_CHARTS.articles = createArticlesChart(articlesCtx.getContext('2d'), chartData);
+        // Hide skeleton and toggle empty state based on data
+        hideSkeleton('articlesChartSkeleton');
+        const hasArticles = Array.isArray(chartData.articles) && chartData.articles.some(v => (v || 0) > 0);
+        toggleEmpty('articlesChartEmpty', !hasArticles);
     }
 
     // Users Chart
-    const usersCtx = document.getElementById('usersChart');
+    const usersCtx = doc.getElementById('usersChart');
     if (usersCtx) {
-        createUsersChart(usersCtx.getContext('2d'), chartData);
+        window.DASHBOARD_CHARTS.users = createUsersChart(usersCtx.getContext('2d'), chartData);
+        hideSkeleton('usersChartSkeleton');
+        const hasUsers = Array.isArray(chartData.users) && chartData.users.some(v => (v || 0) > 0);
+        toggleEmpty('usersChartEmpty', !hasUsers);
     }
 
     // Content Chart
-    const contentCtx = document.getElementById('contentChart');
+    const contentCtx = doc.getElementById('contentChart');
     if (contentCtx) {
-        const contentData = chartData.content || { articles: 0, pages: 0, categories: 0, media: 0 };
-        createContentChart(contentCtx.getContext('2d'), contentData);
+        const safeContent = contentData || { articles: 0, pages: 0, categories: 0, media: 0 };
+        window.DASHBOARD_CHARTS.content = createContentChart(contentCtx.getContext('2d'), safeContent);
+        hideSkeleton('contentChartSkeleton');
+        const totalContent = (safeContent.articles || 0) + (safeContent.pages || 0) + (safeContent.categories || 0) + (safeContent.media || 0);
+        toggleEmpty('contentChartEmpty', totalContent === 0);
     }
 }
+
+export function applyThemeToCharts() {
+    const charts = window.DASHBOARD_CHARTS;
+    if (!charts) return;
+    const c = getThemeColors();
+    const updateCommon = (chart) => {
+        if (!chart) return;
+        const o = chart.options;
+        if (o.plugins?.legend?.labels) {
+            o.plugins.legend.labels.color = c.textSecondary;
+        }
+        if (o.plugins?.title) {
+            o.plugins.title.color = c.title;
+        }
+        if (o.plugins?.tooltip) {
+            o.plugins.tooltip.backgroundColor = c.tooltipBg;
+            o.plugins.tooltip.borderColor = c.border;
+        }
+        if (o.scales?.x) {
+            if (o.scales.x.ticks) o.scales.x.ticks.color = c.textSecondary;
+            if (o.scales.x.grid) o.scales.x.grid.color = false; // keep hidden
+        }
+        if (o.scales?.y) {
+            if (o.scales.y.ticks) o.scales.y.ticks.color = c.textSecondary;
+            if (o.scales.y.grid) o.scales.y.grid.color = c.grid;
+        }
+        chart.update();
+    };
+    updateCommon(charts.articles);
+    updateCommon(charts.users);
+    updateCommon(charts.content);
+}
+
+// React to theme changes
+window.addEventListener('themechange', () => {
+    applyThemeToCharts();
+});
+
+// Fallback: observe class changes for 'dark' toggle
+try {
+    const mo = new MutationObserver(() => applyThemeToCharts());
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+} catch (_) {}
 
 // Make functions globally available
 window.initDashboardCharts = initDashboardCharts;
