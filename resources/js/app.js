@@ -1,6 +1,12 @@
 import './bootstrap';
 import { createApp } from 'vue';
 
+// Dashboard Charts (lazy loaded)
+window.initDashboardCharts = async function(chartData) {
+    const { initDashboardCharts } = await import('./dashboard-charts');
+    return initDashboardCharts(chartData);
+};
+
 // Make TinyMCE functions available globally (lazy loaded)
 // TinyMCE will be loaded on-demand when initTinyMCE is called
 window.initTinyMCE = async function(selector = '#content', customConfig = {}) {
