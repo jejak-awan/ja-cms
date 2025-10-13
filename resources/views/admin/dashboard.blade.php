@@ -293,10 +293,10 @@
     </div>
 </div>
 
-<!-- Recent Activity & Stats (2-column layout) -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
-    <!-- Recent Activity Feed (span 2 columns) -->
-    <div id="activityFeedContainer" class="lg:col-span-2 bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
+<!-- Recent Activity, Pages Overview, Recent Articles, System Info -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
+    <!-- Row 1: Recent Activity (left) -->
+    <div id="activityFeedContainer" class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
         <div class="activity-header flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
             <div class="flex items-center space-x-2">
@@ -361,7 +361,7 @@
         <!-- Pagination controls will be inserted here by JS -->
     </div>
 
-    <!-- Pages Stats (right column, top) -->
+    <!-- Row 1: Pages Stats (right) -->
     <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Pages Overview</h3>
     <div class="space-y-3">
@@ -380,7 +380,52 @@
         </div>
     </div>
 
-    <!-- System Info (right column, bottom) -->
+    <!-- Row 2: Recent Articles (left) -->
+    @if(isset($stats['articles']['recent']) && $stats['articles']['recent']->count() > 0)
+    <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Articles</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Author</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @foreach($stats['articles']['recent'] as $article)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                                {{ Str::limit($article->title, 50) }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                            {{ $article->user->name ?? 'Unknown' }}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                            {{ $article->category->name ?? 'Uncategorized' }}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full {{ $article->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                {{ ucfirst($article->status) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                            {{ $article->created_at->diffForHumans() }}
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Row 2: System Info (right) -->
     <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">System Info</h3>
         <div class="space-y-3 text-sm">
@@ -399,51 +444,6 @@
         </div>
     </div>
 </div>
-
-<!-- Recent Articles -->
-@if(isset($stats['articles']['recent']) && $stats['articles']['recent']->count() > 0)
-<div class="bg-white rounded-lg shadow-md p-4 md:p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Articles</h3>
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead>
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Author</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @foreach($stats['articles']['recent'] as $article)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-blue-600 hover:text-blue-800 font-medium">
-                            {{ Str::limit($article->title, 50) }}
-                        </a>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                        {{ $article->user->name ?? 'Unknown' }}
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                        {{ $article->category->name ?? 'Uncategorized' }}
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs rounded-full {{ $article->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                            {{ ucfirst($article->status) }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                        {{ $article->created_at->diffForHumans() }}
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-@endif
 
 @push('scripts')
 <script>
