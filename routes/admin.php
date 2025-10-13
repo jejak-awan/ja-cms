@@ -28,6 +28,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Dashboard
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/dashboard', [AdminController::class, 'dashboard']);
+        Route::get('/activity-feed', [AdminController::class, 'activityFeed'])->name('activity.feed');
         
         // Media Upload (for TinyMCE)
         Route::post('/upload-image', [\App\Modules\Media\Controllers\MediaUploadController::class, 'uploadImage'])

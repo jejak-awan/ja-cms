@@ -113,15 +113,15 @@ class AdminController extends Controller
     /**
      * Get activity feed data
      */
-    private function getActivityFeed()
+    private function getActivityFeed($page = 1, $perPage = 10, $type = null)
     {
         $activities = collect();
 
         // Recent articles
-        $recentArticles = Article::with('user')
+        $articleQuery = Article::with('user')
             ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get()
+            ->limit($type === 'article' ? $perPage : 5);
+        $recentArticles = $articleQuery->get()
             ->map(function ($article) {
                 return [
                     'type' => 'article',
@@ -136,9 +136,9 @@ class AdminController extends Controller
             });
 
         // Recent users
-        $recentUsers = User::orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get()
+        $userQuery = User::orderBy('created_at', 'desc')
+            ->limit($type === 'user' ? $perPage : 3);
+        $recentUsers = $userQuery->get()
             ->map(function ($user) {
                 return [
                     'type' => 'user',
@@ -153,10 +153,10 @@ class AdminController extends Controller
             });
 
         // Recent media uploads
-        $recentMedia = Media::with('user')
+        $mediaQuery = Media::with('user')
             ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get()
+            ->limit($type === 'media' ? $perPage : 3);
+        $recentMedia = $mediaQuery->get()
             ->map(function ($media) {
                 return [
                     'type' => 'media',
@@ -170,12 +170,49 @@ class AdminController extends Controller
                 ];
             });
 
-        return $activities
-            ->merge($recentArticles)
-            ->merge($recentUsers)
-            ->merge($recentMedia)
-            ->sortByDesc('time')
-            ->take(10)
-            ->values();
+        // Filter by type if specified
+        if ($type) {
+            switch ($type) {
+                case 'article':
+                    $activities = $activities->merge($recentArticles);
+                    break;
+                case 'user':
+                    $activities = $activities->merge($recentUsers);
+                    break;
+                case 'media':
+                    $activities = $activities->merge($recentMedia);
+                    break;
+            }
+        } else {
+            $activities = $activities->merge($recentArticles)
+                ->merge($recentUsers)
+                ->merge($recentMedia);
+        }
+
+        $sorted = $activities->sortByDesc('time');
+        
+        // Simple pagination
+        $offset = ($page - 1) * $perPage;
+        return $sorted->slice($offset, $perPage)->values();
+    }
+
+    /**
+     * API endpoint for activity feed updates
+     */
+    public function activityFeed(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $perPage = $request->get('per_page', 10);
+        $type = $request->get('type');
+        
+        $activities = $this->getActivityFeed($page, $perPage, $type);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $activities,
+            'page' => $page,
+            'per_page' => $perPage,
+            'type' => $type,
+        ]);
     }
 }

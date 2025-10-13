@@ -315,8 +315,8 @@
     </div>
 
     <!-- Recent Activity Feed -->
-    <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
-        <div class="flex items-center justify-between mb-4">
+    <div id="activityFeedContainer" class="bg-white rounded-xl shadow-lg p-4 md:p-6 border border-gray-200">
+        <div class="activity-header flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
             <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -377,16 +377,7 @@
             @endforelse
         </div>
         
-        @if(($activities ?? collect())->count() > 0)
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center justify-center">
-                    View all activity
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-            </div>
-        @endif
+        <!-- Pagination controls will be inserted here by JS -->
     </div>
 
     <!-- System Info -->
@@ -473,6 +464,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 300);
     }
+
+    // Load activity feed module
+    import('../js/activity-feed.js').then(module => {
+        console.log('Activity feed module loaded');
+    }).catch(error => {
+        console.error('Failed to load activity feed module:', error);
+    });
 });
 </script>
 @endpush
