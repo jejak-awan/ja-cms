@@ -220,6 +220,13 @@ class ArticleController extends Controller
             $article->tags()->sync($request->tags ?? []);
         }
 
+        // Clear cached article content
+        cache()->forget("public_article_{$article->slug}");
+        cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
+        cache()->forget('public_featured_articles');
+        cache()->forget('public_latest_articles');
+        cache()->forget('admin_articles_index_page1');
+
         return redirect()
             ->route('admin.articles.index')
             ->with('success', 'Article updated successfully!');

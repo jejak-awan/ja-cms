@@ -90,21 +90,26 @@ class PublicController extends Controller
      */
     public function article(string $slug): View
     {
-        $article = Article::where('slug', $slug)
-            ->where('status', 'published')
-            ->with(['category', 'author'])
-            ->firstOrFail();
+        // Cache article content for 30 minutes (excluding view count)
+        $article = cache()->remember("public_article_{$slug}", 1800, function() use ($slug) {
+            return Article::where('slug', $slug)
+                ->where('status', 'published')
+                ->with(['category', 'author'])
+                ->firstOrFail();
+        });
             
-        // Increment view count
-        $article->increment('views');
+        // Increment view count (not cached)
+        Article::where('slug', $slug)->increment('views');
         
-        // Get related articles (same category)
-        $relatedArticles = Article::where('status', 'published')
-            ->where('category_id', $article->category_id)
-            ->where('id', '!=', $article->id)
-            ->latest('published_at')
-            ->take(3)
-            ->get();
+        // Cache related articles for 20 minutes
+        $relatedArticles = cache()->remember("public_related_articles_{$article->category_id}_{$article->id}", 1200, function() use ($article) {
+            return Article::where('status', 'published')
+                ->where('category_id', $article->category_id)
+                ->where('id', '!=', $article->id)
+                ->latest('published_at')
+                ->take(3)
+                ->get();
+        });
             
         return view('public.pages.article-detail', compact('article', 'relatedArticles'));
     }
@@ -147,9 +152,12 @@ class PublicController extends Controller
      */
     public function page(string $slug): View
     {
-        $page = Page::where('slug', $slug)
-            ->where('status', 'published')
-            ->firstOrFail();
+        // Cache page content for 60 minutes
+        $page = cache()->remember("public_page_{$slug}", 3600, function() use ($slug) {
+            return Page::where('slug', $slug)
+                ->where('status', 'published')
+                ->firstOrFail();
+        });
             
         // Use custom template if specified
         $template = $page->template ?? 'default';

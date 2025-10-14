@@ -124,9 +124,13 @@ class PageController extends Controller
                 ->update(['is_homepage' => false]);
         }
 
-        $page->update($validated);
+                $page->update($validated);
 
-        return redirect()->route('admin.pages.index')
+        // Clear cached page content
+        cache()->forget("public_page_{$page->slug}");
+
+        return redirect()
+            ->route('admin.pages.index')
             ->with('success', 'Page updated successfully!');
     }
 
