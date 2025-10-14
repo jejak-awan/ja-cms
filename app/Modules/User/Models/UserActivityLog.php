@@ -76,7 +76,7 @@ class UserActivityLog extends Model
     // ========================================
 
     public static function logActivity(
-        int $userId,
+        ?int $userId,
         string $action,
         ?string $description = null,
         ?string $ipAddress = null,
@@ -150,7 +150,7 @@ class UserActivityLog extends Model
     public static function logFailedLogin(string $email, ?string $ipAddress = null): self
     {
         return self::create([
-            'user_id' => 0, // Use 0 for failed logins (no user)
+            'user_id' => null, // Use null for failed logins (no user)
             'action' => 'failed_login',
             'description' => "Failed login attempt for email: {$email}",
             'ip_address' => $ipAddress ?? request()->ip(),
