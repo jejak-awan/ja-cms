@@ -7,6 +7,7 @@ use App\Modules\Category\Models\Category;
 use App\Modules\Page\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Support\CacheHelper;
 
 class PublicController extends Controller
 {
@@ -16,7 +17,7 @@ class PublicController extends Controller
     public function index(): View
     {
         // Cache featured articles for 15 minutes
-        $featuredArticles = cache()->remember('public_featured_articles', 900, function() {
+        $featuredArticles = CacheHelper::remember('public_featured_articles', 'article', 900, function() {
             return Article::where('status', 'published')
                 ->where('featured', true)
                 ->latest('published_at')
@@ -25,7 +26,7 @@ class PublicController extends Controller
         });
             
         // Cache latest articles for 10 minutes
-        $latestArticles = cache()->remember('public_latest_articles', 600, function() {
+        $latestArticles = CacheHelper::remember('public_latest_articles', 'article', 600, function() {
             return Article::where('status', 'published')
                 ->latest('published_at')
                 ->take(6)
@@ -33,7 +34,7 @@ class PublicController extends Controller
         });
             
         // Cache categories for 30 minutes
-        $categories = cache()->remember('public_categories_homepage', 1800, function() {
+        $categories = CacheHelper::remember('public_categories_homepage', 'category', 1800, function() {
             return Category::withCount('articles')
                 ->orderBy('name')
                 ->take(6)
@@ -76,7 +77,7 @@ class PublicController extends Controller
             ->paginate(12);
             
         // Cache categories for 30 minutes
-        $categories = cache()->remember('public_categories_list', 1800, function() {
+        $categories = CacheHelper::remember('public_categories_list', 'category', 1800, function() {
             return Category::withCount('articles')
                 ->orderBy('name')
                 ->get();
@@ -91,7 +92,7 @@ class PublicController extends Controller
     public function article(string $slug): View
     {
         // Cache article content for 30 minutes (excluding view count)
-        $article = cache()->remember("public_article_{$slug}", 1800, function() use ($slug) {
+        $article = CacheHelper::remember("public_article_{$slug}", 'article', 1800, function() use ($slug) {
             return Article::where('slug', $slug)
                 ->where('status', 'published')
                 ->with(['category', 'author'])
@@ -102,7 +103,7 @@ class PublicController extends Controller
         Article::where('slug', $slug)->increment('views');
         
         // Cache related articles for 20 minutes
-        $relatedArticles = cache()->remember("public_related_articles_{$article->category_id}_{$article->id}", 1200, function() use ($article) {
+        $relatedArticles = CacheHelper::remember("public_related_articles_{$article->category_id}_{$article->id}", 'article', 1200, function() use ($article) {
             return Article::where('status', 'published')
                 ->where('category_id', $article->category_id)
                 ->where('id', '!=', $article->id)
@@ -153,7 +154,7 @@ class PublicController extends Controller
     public function page(string $slug): View
     {
         // Cache page content for 60 minutes
-        $page = cache()->remember("public_page_{$slug}", 3600, function() use ($slug) {
+        $page = CacheHelper::remember("public_page_{$slug}", 'page', 3600, function() use ($slug) {
             return Page::where('slug', $slug)
                 ->where('status', 'published')
                 ->firstOrFail();

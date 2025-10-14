@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Support\CacheHelper;
 
 class CategoryController extends Controller
 {
@@ -29,7 +30,7 @@ class CategoryController extends Controller
 
         // Cache category tree for 5 minutes (only for tree view, no search/filter)
         if ($request->get('view') === 'tree' || !$request->filled('search')) {
-            $categories = cache()->remember('admin_categories_tree', 300, function() use ($query) {
+            $categories = CacheHelper::remember('admin_categories_tree', 'category', 300, function() use ($query) {
                 return $query->root()->ordered()->get();
             });
             $viewType = 'tree';

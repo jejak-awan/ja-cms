@@ -10,6 +10,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Support\CacheHelper;
 
 class ArticleController extends Controller
 {
@@ -60,7 +61,7 @@ class ArticleController extends Controller
 
         // Cache articles list for 2 minutes (only for default filter, page 1, no search/filter)
         if (!$request->filled('search') && !$request->filled('category') && !$request->filled('status') && !$request->filled('author') && !$request->filled('date_from') && !$request->filled('date_to') && $request->get('page', 1) == 1) {
-            $articles = cache()->remember('admin_articles_index_page1', 120, function() use ($query) {
+            $articles = CacheHelper::remember('admin_articles_index_page1', 'article', 120, function() use ($query) {
                 return $query->paginate(15)->withQueryString();
             });
         } else {

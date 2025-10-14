@@ -32,6 +32,9 @@ return [
     */
 
     'stores' => [
+        'null' => [
+            'driver' => 'null',
+        ],
 
         'array' => [
             'driver' => 'array',

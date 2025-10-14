@@ -22,7 +22,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Admin Authenticated Routes
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware(['admin', 'cache.debug'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         
         // Dashboard
@@ -166,6 +166,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('settings.index');
         Route::put('/settings', [\App\Modules\Setting\Controllers\SettingController::class, 'update'])
             ->name('settings.update');
+
+        // Cache Management
+    Route::get('/cache', [\App\Modules\Admin\Controllers\CacheController::class, 'show'])->name('cache.show');
+    Route::get('/cache/status', [\App\Modules\Admin\Controllers\CacheController::class, 'status'])->name('cache.status');
+    Route::post('/cache/flush', [\App\Modules\Admin\Controllers\CacheController::class, 'flush'])->name('cache.flush');
+    Route::put('/cache/update', [\App\Modules\Admin\Controllers\CacheController::class, 'update'])->name('cache.update');
         
         // Menus
         Route::resource('menus', \App\Modules\Menu\Controllers\MenuController::class)

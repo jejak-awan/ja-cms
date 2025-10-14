@@ -284,6 +284,12 @@
                             </svg>
                             <span>Plugins</span>
                         </a>
+                        <a href="/admin/cache" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/cache*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v4a1 1 0 001 1h3v4a1 1 0 001 1h4a1 1 0 001-1v-4h3a1 1 0 001-1V7a1 1 0 00-1-1H4a1 1 0 00-1 1z" />
+                            </svg>
+                            <span>Cache Management</span>
+                        </a>
                     </div>
                 </div>
             </nav>
