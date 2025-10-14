@@ -373,17 +373,9 @@ function exportChart(type) {
     const format = prompt('Export format (csv/json):', 'csv');
     if (format && ['csv', 'json'].includes(format.toLowerCase())) {
         const form = document.createElement('form');
-        form.method = 'POST';
+        form.method = 'GET';
         form.action = '{{ route("admin.users.statistics.export") }}';
         form.style.display = 'none';
-
-        // Add CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = csrfToken;
-        form.appendChild(csrfInput);
 
         // Add form data
         const typeInput = document.createElement('input');

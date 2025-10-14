@@ -13,6 +13,12 @@ class User extends Authenticatable
 {
     use SoftDeletes;
 
+    public function activityLogs()
+    {
+        return $this->hasMany(\App\Modules\User\Models\UserActivityLog::class);
+    }
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'email',

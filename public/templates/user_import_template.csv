@@ -1,0 +1,3 @@
+name,email,password,role,status
+John Doe,john@example.com,secret,admin,active
+Jane Smith,jane@example.com,secret,editor,active

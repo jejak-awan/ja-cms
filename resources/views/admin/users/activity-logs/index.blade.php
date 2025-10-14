@@ -217,9 +217,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                            No activity logs found
-                        </td>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">No activity logs found for the selected filter.</td>
                     </tr>
                     @endforelse
                 </tbody>

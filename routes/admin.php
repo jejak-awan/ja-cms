@@ -88,19 +88,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         // Users CRUD
         Route::resource('users', \App\Modules\User\Controllers\UserController::class)
-            ->names('users');
+            ->names('users')
+            ->where(['user' => '[0-9]+']);
         
         // User Profile Management
         Route::get('/profile', [\App\Modules\User\Controllers\ProfileController::class, 'show'])
             ->name('profile.show');
+            Route::get('/users/{user}/profile', [\App\Modules\User\Controllers\ProfileController::class, 'showUserProfile'])
+            ->name('users.profile.show');
         Route::get('/profile/edit', [\App\Modules\User\Controllers\ProfileController::class, 'edit'])
             ->name('profile.edit');
+        Route::get('/users/{user}/profile/edit', [\App\Modules\User\Controllers\ProfileController::class, 'editUserProfile'])
+            ->name('users.profile.edit');
+            Route::put('/users/{user}/profile', [\App\Modules\User\Controllers\ProfileController::class, 'updateUserProfile'])
+                ->name('users.profile.update');
         Route::put('/profile', [\App\Modules\User\Controllers\ProfileController::class, 'update'])
             ->name('profile.update');
+        Route::delete('/profile/delete-avatar', [\App\Modules\User\Controllers\ProfileController::class, 'deleteAvatar'])
+            ->name('profile.delete-avatar');
         Route::get('/profile/change-password', [\App\Modules\User\Controllers\ProfileController::class, 'changePassword'])
             ->name('profile.change-password');
-        Route::put('/profile/password', [\App\Modules\User\Controllers\ProfileController::class, 'updatePassword'])
-            ->name('profile.password.update');
+        Route::put('/profile/update-password', [\App\Modules\User\Controllers\ProfileController::class, 'updatePassword'])
+            ->name('profile.update-password');
         
         // Roles Management
         Route::resource('roles', \App\Modules\User\Controllers\RoleController::class)
@@ -115,24 +124,42 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // User Activity Logs
         Route::get('/users/activity-logs', [\App\Modules\User\Controllers\ActivityLogController::class, 'index'])
             ->name('users.activity-logs');
-        Route::get('/users/{user}/activity-logs', [\App\Modules\User\Controllers\ActivityLogController::class, 'show'])
+        Route::get('/users/activity-logs/statistics', [\App\Modules\User\Controllers\ActivityLogController::class, 'statistics'])
+            ->name('users.activity-logs.statistics');
+        Route::get('/users/activity-logs/export', [\App\Modules\User\Controllers\ActivityLogController::class, 'export'])
+            ->name('users.activity-logs.export');
+        Route::get('/users/activity-logs/{activityLog}', [\App\Modules\User\Controllers\ActivityLogController::class, 'show'])
             ->name('users.activity-logs.show');
-        
-        // User Search & Filtering
+
+        // User Import/Export
+        Route::get('/users/import-export', [\App\Modules\User\Controllers\ImportExportController::class, 'index'])
+            ->name('users.import-export');
+        Route::post('/users/import-export/export', [\App\Modules\User\Controllers\ImportExportController::class, 'export'])
+            ->name('users.import-export.export');
+        Route::post('/users/import-export/import', [\App\Modules\User\Controllers\ImportExportController::class, 'import'])
+            ->name('users.import-export.import');
+        Route::get('/users/import-export/template', [\App\Modules\User\Controllers\ImportExportController::class, 'downloadTemplate'])
+            ->name('users.import-export.template');
+
+        // User Advanced Search
         Route::get('/users/search', [\App\Modules\User\Controllers\SearchController::class, 'index'])
             ->name('users.search');
         Route::post('/users/search', [\App\Modules\User\Controllers\SearchController::class, 'search'])
             ->name('users.search.post');
-        
+        Route::post('/users/search/export', [\App\Modules\User\Controllers\SearchController::class, 'export'])
+            ->name('users.search.export');
+        Route::post('/users/search/save', [\App\Modules\User\Controllers\SearchController::class, 'save'])
+            ->name('users.search.save');
+        Route::get('/users/search/saved', [\App\Modules\User\Controllers\SearchController::class, 'saved'])
+            ->name('users.search.saved');
+
         // User Statistics
         Route::get('/users/statistics', [\App\Modules\User\Controllers\StatisticsController::class, 'index'])
             ->name('users.statistics');
         Route::get('/users/statistics/data', [\App\Modules\User\Controllers\StatisticsController::class, 'data'])
             ->name('users.statistics.data');
-        
-        // User Import/Export
-        Route::get('/users/import-export', [\App\Modules\User\Controllers\ImportExportController::class, 'index'])
-            ->name('users.import-export');
+        Route::get('/users/statistics/export', [\App\Modules\User\Controllers\StatisticsController::class, 'export'])
+            ->name('users.statistics.export');
         
         // Settings
         Route::get('/settings', [\App\Modules\Setting\Controllers\SettingController::class, 'index'])

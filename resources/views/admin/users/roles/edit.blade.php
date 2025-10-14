@@ -27,9 +27,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Role Name *</label>
-                    <input type="text" id="name" name="name" value="{{ old('name', $role->name) }}" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-500 @enderror"
-                           placeholder="e.g., Content Manager" required>
+                        <input type="text" id="name" name="name" value="{{ old('name', $role->name) }}" 
+                               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('name') ? 'border-red-500' : 'border-gray-300' }}"
+                               placeholder="e.g., Content Manager" required>
                     @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -37,9 +37,9 @@
 
                 <div>
                     <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
-                    <input type="text" id="slug" name="slug" value="{{ old('slug', $role->slug) }}" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('slug') border-red-500 @enderror"
-                           placeholder="Auto-generated from name" readonly>
+                  <input type="text" id="slug" name="slug" value="{{ old('slug', $role->slug) }}" 
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('slug') ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Auto-generated from name" readonly>
                     <p class="mt-1 text-xs text-gray-500">Auto-generated from role name</p>
                 </div>
             </div>
@@ -47,7 +47,7 @@
             <div class="mt-6">
                 <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <textarea id="description" name="description" rows="3" 
-                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('description') border-red-500 @enderror"
+                          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('description') ? 'border-red-500' : 'border-gray-300' }}"
                           placeholder="Describe the role's responsibilities...">{{ old('description', $role->description) }}</textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -69,7 +69,7 @@
                         <label class="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                             <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" 
                                    class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                   {{ in_array($permission->id, old('permissions', $role->permissions ? $role->permissions->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
+                                   {{ in_array($permission->id, old('permissions', $role->permissions instanceof \Illuminate\Support\Collection ? $role->permissions->pluck('id')->toArray() : [])) ? 'checked' : '' }}>
                             <div class="flex-1 min-w-0">
                                 <div class="text-sm font-medium text-gray-900">{{ $permission->display_name }}</div>
                                 @if($permission->description)
@@ -112,7 +112,7 @@
                 </div>
                 <div>
                     <h5 class="font-medium text-blue-800 mb-2">Assigned Permissions</h5>
-                    <p class="text-blue-700">{{ $role->permissions ? $role->permissions->count() : 0 }} permissions</p>
+                    <p class="text-blue-700">{{ $role->permissions instanceof \Illuminate\Support\Collection ? $role->permissions->count() : 0 }} permissions</p>
                 </div>
             </div>
         </div>

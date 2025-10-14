@@ -19,7 +19,8 @@ class Role extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        // SQLite uses 'role' string, not 'role_id'
+        return $this->hasMany(User::class, 'role', 'name');
     }
 
     public function hasPermission($permission)
@@ -45,5 +46,10 @@ class Role extends Model
             'manage_themes',
             'manage_plugins',
         ];
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'role_permission', 'role_id', 'permission_id');
     }
 }

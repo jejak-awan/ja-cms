@@ -126,6 +126,17 @@ class ImportExportController extends Controller
         $format = $request->get('format', 'csv');
         $filename = 'users_import_template.' . $format;
 
+        if ($format === 'csv') {
+            $path = public_path('templates/user_import_template.csv');
+            if (!file_exists($path)) {
+                abort(404, 'Template file not found');
+            }
+            return response()->download($path, $filename, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        }
+
         $templateData = [
             [
                 'name' => 'John Doe',

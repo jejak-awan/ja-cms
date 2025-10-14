@@ -38,11 +38,12 @@ class StatisticsController extends Controller
             ];
         }
 
-        // Role Distribution
-        $roleDistribution = Role::withCount('users')->get()->map(function($role) {
+        // Role Distribution (SQLite: join by name, not role_id)
+        $roleDistribution = Role::all()->map(function($role) {
+            $count = User::where('role', $role->name)->count();
             return [
                 'role' => $role->display_name,
-                'count' => $role->users_count,
+                'count' => $count,
                 'percentage' => 0 // Will be calculated in frontend
             ];
         });

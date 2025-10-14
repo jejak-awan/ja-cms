@@ -72,7 +72,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600">Permissions</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $role->permissions ? $role->permissions->count() : 0 }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $role->permissions instanceof \Illuminate\Support\Collection ? $role->permissions->count() : 0 }}</p>
                 </div>
             </div>
         </div>
@@ -141,7 +141,7 @@
     @endif
 
     <!-- Permissions -->
-    @if($role->permissions && $role->permissions->count() > 0)
+    @if($role->permissions instanceof \Illuminate\Support\Collection && $role->permissions->count() > 0)
     <div class="bg-white rounded-lg shadow-sm p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Assigned Permissions</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
