@@ -84,9 +84,12 @@ class CategoryController extends Controller
             $validated['order'] = $maxOrder + 1;
         }
 
-        Category::create($validated);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully!');
+    Category::create($validated);
+    // Clear category cache after create
+    cache()->forget('admin_categories_tree');
+    cache()->forget('public_categories_homepage');
+    cache()->forget('public_categories_list');
+    return redirect()->route('admin.categories.index')->with('success', 'Category created successfully!');
     }
 
     public function edit($id)
@@ -128,9 +131,12 @@ class CategoryController extends Controller
             $validated['icon'] = $request->file('icon')->store('categories/icons', 'public');
         }
 
-        $category->update($validated);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully!');
+    $category->update($validated);
+    // Clear category cache after update
+    cache()->forget('admin_categories_tree');
+    cache()->forget('public_categories_homepage');
+    cache()->forget('public_categories_list');
+    return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully!');
     }
 
     public function destroy($id)
@@ -149,9 +155,12 @@ class CategoryController extends Controller
             Storage::disk('public')->delete($category->icon);
         }
 
-        $category->delete();
-
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully!');
+    $category->delete();
+    // Clear category cache after delete
+    cache()->forget('admin_categories_tree');
+    cache()->forget('public_categories_homepage');
+    cache()->forget('public_categories_list');
+    return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully!');
     }
 
     public function updateOrder(Request $request)
@@ -173,6 +182,10 @@ class CategoryController extends Controller
             }
             DB::commit();
 
+            // Clear category cache after order update
+            cache()->forget('admin_categories_tree');
+            cache()->forget('public_categories_homepage');
+            cache()->forget('public_categories_list');
             return response()->json(['success' => true, 'message' => 'Order updated successfully!']);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -183,9 +196,12 @@ class CategoryController extends Controller
     public function toggleStatus($id)
     {
         $category = Category::findOrFail($id);
-        $category->is_active = !$category->is_active;
-        $category->save();
-
-        return response()->json(['success' => true, 'is_active' => $category->is_active]);
+    $category->is_active = !$category->is_active;
+    $category->save();
+    // Clear category cache after status toggle
+    cache()->forget('admin_categories_tree');
+    cache()->forget('public_categories_homepage');
+    cache()->forget('public_categories_list');
+    return response()->json(['success' => true, 'is_active' => $category->is_active]);
     }
 }

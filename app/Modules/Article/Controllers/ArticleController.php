@@ -267,6 +267,12 @@ class ArticleController extends Controller
         switch ($request->action) {
             case 'delete':
                 foreach ($articles as $article) {
+                    // Clear cache before deletion
+                    cache()->forget("public_article_{$article->slug}");
+                    cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
+                    cache()->forget('public_featured_articles');
+                    cache()->forget('public_latest_articles');
+                    cache()->forget('admin_articles_index_page1');
                     if ($article->featured_image) {
                         Storage::disk('public')->delete($article->featured_image);
                     }
@@ -281,6 +287,12 @@ class ArticleController extends Controller
                         'status' => 'published',
                         'published_at' => $article->published_at ?? now(),
                     ]);
+                    // Clear cache after status change
+                    cache()->forget("public_article_{$article->slug}");
+                    cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
+                    cache()->forget('public_featured_articles');
+                    cache()->forget('public_latest_articles');
+                    cache()->forget('admin_articles_index_page1');
                 });
                 $message = count($articles) . ' articles published successfully!';
                 break;
@@ -288,6 +300,12 @@ class ArticleController extends Controller
             case 'draft':
                 $articles->each(function($article) {
                     $article->update(['status' => 'draft']);
+                    // Clear cache after status change
+                    cache()->forget("public_article_{$article->slug}");
+                    cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
+                    cache()->forget('public_featured_articles');
+                    cache()->forget('public_latest_articles');
+                    cache()->forget('admin_articles_index_page1');
                 });
                 $message = count($articles) . ' articles moved to draft!';
                 break;

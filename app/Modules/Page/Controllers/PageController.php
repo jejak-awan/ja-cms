@@ -161,13 +161,12 @@ class PageController extends Controller
     {
         $page = Page::findOrFail($id);
         $page->status = $page->status === 'published' ? 'draft' : 'published';
-        
         if ($page->status === 'published' && !$page->published_at) {
             $page->published_at = now();
         }
-        
         $page->save();
-
+        // Clear page cache after status toggle
+        cache()->forget("public_page_{$page->slug}");
         return response()->json([
             'success' => true,
             'status' => $page->status
