@@ -190,29 +190,8 @@ class AdminController extends Controller
         }
 
         $sorted = $activities->sortByDesc('time');
-        
         // Simple pagination
         $offset = ($page - 1) * $perPage;
         return $sorted->slice($offset, $perPage)->values();
-    }
-
-    /**
-     * API endpoint for activity feed updates
-     */
-    public function activityFeed(Request $request)
-    {
-        $page = $request->get('page', 1);
-        $perPage = $request->get('per_page', 10);
-        $type = $request->get('type');
-        
-        $activities = $this->getActivityFeed($page, $perPage, $type);
-        
-        return response()->json([
-            'success' => true,
-            'data' => $activities,
-            'page' => $page,
-            'per_page' => $perPage,
-            'type' => $type,
-        ]);
     }
 }
