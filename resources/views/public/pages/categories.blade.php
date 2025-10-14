@@ -8,7 +8,7 @@
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
             <span class="text-white">Categories</span>
         </nav>
@@ -24,7 +24,7 @@
         @if($categories->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
                 @foreach($categories as $category)
-                <a href="{{ route('categories.show', $category->slug) }}" 
+                <a href="{{ route(app()->getLocale() . '.categories.show', $category->slug) }}" 
                    class="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                    data-animate>
                     <div class="h-32 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
@@ -57,11 +57,6 @@
                 </a>
                 @endforeach
             </div>
-            
-            <!-- Pagination -->
-            <div class="flex justify-center">
-                {{ $categories->links() }}
-            </div>
         @else
             <!-- Empty State -->
             <div class="text-center py-16">
@@ -70,7 +65,7 @@
                 </svg>
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">No categories found</h3>
                 <p class="text-gray-600 mb-6">There are no categories available yet</p>
-                <a href="{{ route('home') }}" class="btn-primary">
+                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">
                     Back to Home
                 </a>
             </div>

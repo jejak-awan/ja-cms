@@ -7,7 +7,7 @@
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
             <span class="text-white">Search</span>
         </nav>
@@ -15,7 +15,7 @@
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Search Results</h1>
         
         <!-- Search Form -->
-        <form action="{{ route('search') }}" method="GET" class="max-w-2xl">
+        <form action="{{ route(app()->getLocale() . '.search') }}" method="GET" class="max-w-2xl">
             <div class="relative">
                 <input 
                     type="text" 
@@ -52,7 +52,7 @@
                     @foreach($articles as $article)
                     <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
                         <div class="md:flex">
-                            <a href="{{ route('articles.show', $article->slug) }}" class="block md:w-64 flex-shrink-0 image-overlay">
+                            <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block md:w-64 flex-shrink-0 image-overlay">
                                 @if($article->featured_image)
                                     <img src="{{ asset('storage/' . $article->featured_image) }}" 
                                          alt="{{ $article->title }}"
@@ -74,7 +74,7 @@
                                 </div>
                                 
                                 <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                                    <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
+                                    <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
                                 </h3>
                                 
                                 <p class="text-gray-600 mb-4 line-clamp-2">
@@ -133,7 +133,7 @@
                                 </div>
                                 
                                 <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition">
-                                    <a href="{{ route('pages.show', $page->slug) }}">{{ $page->title }}</a>
+                                    <a href="{{ route(app()->getLocale() . '.pages.show', $page->slug) }}">{{ $page->title }}</a>
                                 </h3>
                                 
                                 <p class="text-gray-600 mb-3 line-clamp-2">
@@ -170,10 +170,10 @@
                     Try different keywords or browse our categories.
                 </p>
                 <div class="flex gap-4 justify-center">
-                    <a href="{{ route('articles.index') }}" class="btn-primary">
+                    <a href="{{ route(app()->getLocale() . '.articles.index') }}" class="btn-primary">
                         Browse Articles
                     </a>
-                    <a href="{{ route('categories.index') }}" class="btn-secondary">
+                    <a href="{{ route(app()->getLocale() . '.categories.index') }}" class="btn-secondary">
                         View Categories
                     </a>
                 </div>

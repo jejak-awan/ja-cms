@@ -8,7 +8,7 @@
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
             <span class="text-white">Articles</span>
         </nav>
@@ -23,7 +23,7 @@
     <div class="container mx-auto">
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
             <!-- Search Form -->
-            <form action="{{ route('articles.index') }}" method="GET" class="flex-1 max-w-md">
+            <form action="{{ route(app()->getLocale() . '.articles.index') }}" method="GET" class="flex-1 max-w-md">
                 <div class="relative">
                     <input 
                         type="text" 
@@ -40,12 +40,12 @@
             
             <!-- Category Filter -->
             <div class="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0">
-                <a href="{{ route('articles.index') }}" 
+                <a href="{{ route(app()->getLocale() . '.articles.index') }}" 
                    class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition {{ !request('category') ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     All
                 </a>
                 @foreach($categories as $cat)
-                <a href="{{ route('articles.index', ['category' => $cat->slug]) }}" 
+                <a href="{{ route(app()->getLocale() . '.articles.index', ['category' => $cat->slug]) }}" 
                    class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition {{ request('category') == $cat->slug ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                     {{ $cat->name }} ({{ $cat->articles_count }})
                 </a>
@@ -70,7 +70,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                 @foreach($articles as $article)
                 <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden" data-animate>
-                    <a href="{{ route('articles.show', $article->slug) }}" class="block image-overlay">
+                    <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                         @if($article->featured_image)
                             <img src="{{ asset('storage/' . $article->featured_image) }}" 
                                  alt="{{ $article->title }}"
@@ -91,7 +91,7 @@
                     
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
-                            <a href="{{ route('categories.show', $article->category->slug) }}" class="category-badge hover:bg-blue-700 transition">
+                            <a href="{{ route(app()->getLocale() . '.categories.show', $article->category->slug) }}" class="category-badge hover:bg-blue-700 transition">
                                 {{ $article->category->name ?? 'Uncategorized' }}
                             </a>
                             
@@ -107,7 +107,7 @@
                         </div>
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                            <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
+                            <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
                         </h3>
                         
                         <p class="text-gray-600 mb-4 line-clamp-3">
@@ -151,7 +151,7 @@
                         There are no published articles yet
                     @endif
                 </p>
-                <a href="{{ route('home') }}" class="btn-primary">
+                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">
                     Back to Home
                 </a>
             </div>

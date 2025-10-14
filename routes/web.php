@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\LoginController;
 // Homepage - localized
 Route::localized('/', [PublicController::class, 'index']);
 
-// Articles - localized  
+// Articles - localized
 Route::localized('/articles', [PublicController::class, 'articles']);
 Route::localized('/articles/{slug}', [PublicController::class, 'article']);
 

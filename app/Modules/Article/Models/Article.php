@@ -75,6 +75,7 @@ class Article extends Model
         return $this->morphToMany(\App\Modules\Tag\Models\Tag::class, 'taggable');
     }
 
+
     /**
      * Scopes
      */
@@ -93,6 +94,11 @@ class Article extends Model
     public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('featured', true);
+    }
+
+    public function scopeLatest(Builder $query, string $column = 'created_at'): Builder
+    {
+        return $query->orderBy($column, 'desc');
     }
 
     public function scopeRecent(Builder $query): Builder

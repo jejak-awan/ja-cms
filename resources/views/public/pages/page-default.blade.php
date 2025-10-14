@@ -8,7 +8,7 @@
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
             <span class="text-white">{{ $page->title }}</span>
         </nav>

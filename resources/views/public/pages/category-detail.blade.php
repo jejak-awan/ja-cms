@@ -8,9 +8,9 @@
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
-            <a href="{{ route('categories.index') }}">Categories</a>
+            <a href="{{ route(app()->getLocale() . '.categories.index') }}">Categories</a>
             <span class="mx-2">/</span>
             <span class="text-white">{{ $category->name }}</span>
         </nav>
@@ -47,7 +47,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                 @foreach($articles as $article)
                 <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden" data-animate>
-                    <a href="{{ route('articles.show', $article->slug) }}" class="block image-overlay">
+                    <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                         @if($article->featured_image)
                             <img src="{{ asset('storage/' . $article->featured_image) }}" 
                                  alt="{{ $article->title }}"
@@ -80,7 +80,7 @@
                         @endif
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                            <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
+                            <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
                         </h3>
                         
                         <p class="text-gray-600 mb-4 line-clamp-3">
@@ -117,10 +117,10 @@
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">No articles yet</h3>
                 <p class="text-gray-600 mb-6">There are no published articles in this category</p>
                 <div class="flex gap-4 justify-center">
-                    <a href="{{ route('categories.index') }}" class="btn-secondary">
+                    <a href="{{ route(app()->getLocale() . '.categories.index') }}" class="btn-secondary">
                         Browse Categories
                     </a>
-                    <a href="{{ route('articles.index') }}" class="btn-primary">
+                    <a href="{{ route(app()->getLocale() . '.articles.index') }}" class="btn-primary">
                         View All Articles
                     </a>
                 </div>
@@ -144,7 +144,7 @@
             @endphp
             
             @foreach($otherCategories as $cat)
-            <a href="{{ route('categories.show', $cat->slug) }}" 
+            <a href="{{ route(app()->getLocale() . '.categories.show', $cat->slug) }}" 
                class="group bg-gradient-to-br from-gray-100 to-gray-200 hover:from-blue-500 hover:to-purple-600 rounded-xl p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📁</div>
                 <h3 class="font-bold text-gray-900 group-hover:text-white transition mb-1">{{ $cat->name }}</h3>

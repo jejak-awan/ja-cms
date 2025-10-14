@@ -1,20 +1,20 @@
 @extends('admin.layouts.admin')
 
-@section('title', @t('admin.nav.dashboard'))
+@section('title', __('admin.nav.dashboard'))
 
 @section('content')
 <div class="mb-6 md:mb-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">@t('admin.dashboard.welcome', ['name' => auth()->user()->name]) 👋</h1>
-            <p class="mt-1 text-sm md:text-base text-gray-600">@t('admin.dashboard.subtitle')</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ __('admin.dashboard.welcome', ['name' => auth()->user()->name]) }} 👋</h1>
+            <p class="mt-1 text-sm md:text-base text-gray-600">{{ __('admin.dashboard.subtitle') }}</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-2 text-sm text-gray-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span>@t('admin.dashboard.last_updated'): {{ now()->format('M d, Y \a\t H:i') }}</span>
+                <span>{{ __('admin.dashboard.last_updated') }}: {{ now()->format('M d, Y \a\t H:i') }}</span>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
         <div class="flex items-center justify-between">
             <div class="flex-1">
                 <div class="flex items-center space-x-2">
-                    <p class="text-blue-600 text-sm font-semibold uppercase tracking-wide">@t('admin.nav.articles')</p>
+                    <p class="text-blue-600 text-sm font-semibold uppercase tracking-wide">{{ __('admin.nav.articles') }}</p>
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-200 text-blue-800">
                         Total
                     </span>

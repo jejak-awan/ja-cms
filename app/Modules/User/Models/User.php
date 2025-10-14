@@ -192,8 +192,16 @@ class User extends Authenticatable
 
     public function hasRole(string|array $roles): bool
     {
+        // Check direct role field first
         if (is_array($roles)) {
+            if (in_array($this->role, $roles)) {
+                return true;
+            }
             return $this->roles()->whereIn('slug', $roles)->exists();
+        }
+
+        if ($this->role === $roles) {
+            return true;
         }
 
         return $this->roles()->where('slug', $roles)->exists();

@@ -21,8 +21,8 @@ class AdminController extends Controller
         $stats = [
             'articles' => [
                 'total' => Article::count(),
-                'published' => Article::published()->count(),
-                'draft' => Article::draft()->count(),
+                'published' => Article::where('status', 'published')->count(),
+                'draft' => Article::where('status', 'draft')->count(),
                 'recent' => Article::with('user', 'category')
                     ->orderBy('created_at', 'desc')
                     ->limit(5)
@@ -30,25 +30,23 @@ class AdminController extends Controller
             ],
             'pages' => [
                 'total' => Page::count(),
-                'published' => Page::published()->count(),
-                'draft' => Page::draft()->count(),
+                'published' => Page::where('status', 'published')->count(),
+                'draft' => Page::where('status', 'draft')->count(),
             ],
             'categories' => [
                 'total' => Category::count(),
-                'active' => Category::active()->count(),
+                'active' => Category::where('is_active', true)->count(),
             ],
             'media' => [
                 'total' => Media::count(),
-                'images' => Media::images()->count(),
-                'documents' => Media::documents()->count(),
-                'total_size' => Media::getTotalSize(),
+                'images' => Media::whereIn('mime_type', ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'])->count(),
+                'documents' => Media::whereIn('mime_type', ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'text/plain'])->count(),
+                'total_size' => Media::sum('size'),
             ],
             'users' => [
                 'total' => User::count(),
-                'active' => User::active()->count(),
-                'admins' => User::whereHas('roles', function($q) {
-                    $q->where('name', 'admin');
-                })->count(),
+                'active' => User::where('status', 'active')->count(),
+                'admins' => User::where('role', 'admin')->count(),
                 'recent' => User::orderBy('created_at', 'desc')->limit(5)->get(),
             ],
         ];

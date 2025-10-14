@@ -29,17 +29,17 @@
             <div class="container mx-auto px-4 pb-12">
                 <!-- Breadcrumb -->
                 <nav class="breadcrumb text-white/90 mb-4">
-                    <a href="{{ route('home') }}" class="hover:text-white">Home</a>
+                    <a href="{{ route(app()->getLocale() . '.home') }}" class="hover:text-white">Home</a>
                     <span class="mx-2">/</span>
-                    <a href="{{ route('articles.index') }}" class="hover:text-white">Articles</a>
+                    <a href="{{ route(app()->getLocale() . '.articles.index') }}" class="hover:text-white">Articles</a>
                     <span class="mx-2">/</span>
-                    <a href="{{ route('categories.show', $article->category->slug) }}" class="hover:text-white">
+                    <a href="{{ route(app()->getLocale() . '.categories.show', $article->category->slug) }}" class="hover:text-white">
                         {{ $article->category->name }}
                     </a>
                 </nav>
                 
                 <!-- Category Badge -->
-                <a href="{{ route('categories.show', $article->category->slug) }}" class="category-badge inline-block mb-4">
+                <a href="{{ route(app()->getLocale() . '.categories.show', $article->category->slug) }}" class="category-badge inline-block mb-4">
                     {{ $article->category->name ?? 'Uncategorized' }}
                 </a>
                 
@@ -120,7 +120,7 @@
                 <div class="flex flex-wrap gap-3">
                     <button data-share 
                             data-title="{{ $article->title }}"
-                            data-url="{{ route('articles.show', $article->slug) }}"
+                            data-url="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}"
                             class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
@@ -128,7 +128,7 @@
                         Share
                     </button>
                     
-                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($article->title) }}&url={{ urlencode(route('articles.show', $article->slug)) }}" 
+                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($article->title) }}&url={{ urlencode(route(app()->getLocale() . '.articles.show', $article->slug)) }}" 
                        target="_blank"
                        class="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@
                         Twitter
                     </a>
                     
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('articles.show', $article->slug)) }}" 
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route(app()->getLocale() . '.articles.show', $article->slug)) }}" 
                        target="_blank"
                        class="flex items-center gap-2 px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($relatedArticles as $related)
             <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden">
-                <a href="{{ route('articles.show', $related->slug) }}" class="block image-overlay">
+                <a href="{{ route(app()->getLocale() . '.articles.show', $related->slug) }}" class="block image-overlay">
                     @if($related->featured_image)
                         <img src="{{ asset('storage/' . $related->featured_image) }}" 
                              alt="{{ $related->title }}"
@@ -191,7 +191,7 @@
                     <span class="category-badge text-xs">{{ $related->category->name }}</span>
                     
                     <h3 class="text-lg font-bold text-gray-900 mb-2 mt-3 hover:text-blue-600 transition">
-                        <a href="{{ route('articles.show', $related->slug) }}">{{ $related->title }}</a>
+                        <a href="{{ route(app()->getLocale() . '.articles.show', $related->slug) }}">{{ $related->title }}</a>
                     </h3>
                     
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">
