@@ -15,21 +15,30 @@ class PublicController extends Controller
      */
     public function index(): View
     {
-        $featuredArticles = Article::where('status', 'published')
-            ->where('featured', true)
-            ->latest('published_at')
-            ->take(3)
-            ->get();
+        // Cache featured articles for 15 minutes
+        $featuredArticles = cache()->remember('public_featured_articles', 900, function() {
+            return Article::where('status', 'published')
+                ->where('featured', true)
+                ->latest('published_at')
+                ->take(3)
+                ->get();
+        });
             
-        $latestArticles = Article::where('status', 'published')
-            ->latest('published_at')
-            ->take(6)
-            ->get();
+        // Cache latest articles for 10 minutes
+        $latestArticles = cache()->remember('public_latest_articles', 600, function() {
+            return Article::where('status', 'published')
+                ->latest('published_at')
+                ->take(6)
+                ->get();
+        });
             
-        $categories = Category::withCount('articles')
-            ->orderBy('name')
-            ->take(6)
-            ->get();
+        // Cache categories for 30 minutes
+        $categories = cache()->remember('public_categories_homepage', 1800, function() {
+            return Category::withCount('articles')
+                ->orderBy('name')
+                ->take(6)
+                ->get();
+        });
             
         return view('public.pages.home', compact(
             'featuredArticles',
@@ -66,10 +75,13 @@ class PublicController extends Controller
             ->latest('published_at')
             ->paginate(12);
             
-        $categories = Category::withCount('articles')
-            ->orderBy('name')
-            ->get();
-            
+        // Cache categories for 30 minutes
+        $categories = cache()->remember('public_categories_list', 1800, function() {
+            return Category::withCount('articles')
+                ->orderBy('name')
+                ->get();
+        });
+
         return view('public.pages.articles', compact('articles', 'categories'));
     }
     
@@ -102,10 +114,13 @@ class PublicController extends Controller
      */
     public function categories(): View
     {
-        $categories = Category::withCount('articles')
-            ->orderBy('name')
-            ->paginate(12);
-            
+        // Cache categories for 30 minutes
+        $categories = cache()->remember('public_categories_list', 1800, function() {
+            return Category::withCount('articles')
+                ->orderBy('name')
+                ->get();
+        });
+
         return view('public.pages.categories', compact('categories'));
     }
     

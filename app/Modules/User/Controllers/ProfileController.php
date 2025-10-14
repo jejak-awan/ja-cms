@@ -15,13 +15,21 @@ class ProfileController extends Controller
 {
     public function show()
     {
-        $user = Auth::user();
+        $userId = Auth::id();
+        // Cache user profile for 5 minutes
+        $user = cache()->remember("user_profile_{$userId}", 300, function() {
+            return Auth::user();
+        });
         return view('admin.users.profile.show', compact('user'));
     }
 
     public function edit()
     {
-        $user = Auth::user();
+        $userId = Auth::id();
+        // Cache user profile for 5 minutes
+        $user = cache()->remember("user_profile_{$userId}", 300, function() {
+            return Auth::user();
+        });
         return view('admin.users.profile.edit', compact('user'));
     }
 
@@ -74,9 +82,13 @@ class ProfileController extends Controller
             $data['avatar'] = $filename;
         }
 
-        $user->update($data);
+                $user->update($data);
 
-        return redirect()->route('admin.profile.show')
+        // Clear cached user profile after update
+        cache()->forget("user_profile_{$user->id}");
+
+        return redirect()
+            ->route('admin.profile.show')
             ->with('success', 'Profile updated successfully!');
     }
 

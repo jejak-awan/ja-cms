@@ -24,7 +24,11 @@ class RoleController extends Controller
         }
 
         $roles = $query->paginate(20);
-        $permissions = Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        
+        // Cache permissions list for 10 minutes
+        $permissions = cache()->remember('admin_permissions_grouped', 600, function() {
+            return Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        });
 
         $stats = [
             'total' => Role::count(),
@@ -37,7 +41,10 @@ class RoleController extends Controller
 
     public function create()
     {
-        $permissions = Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        // Cache permissions list for 10 minutes
+        $permissions = cache()->remember('admin_permissions_grouped', 600, function() {
+            return Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        });
         return view('admin.users.roles.create', compact('permissions'));
     }
 
@@ -73,7 +80,10 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        $permissions = Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        // Cache permissions list for 10 minutes
+        $permissions = cache()->remember('admin_permissions_grouped', 600, function() {
+            return Permission::orderBy('group')->orderBy('name')->get()->groupBy('group');
+        });
         $role->load('permissions');
         return view('admin.users.roles.edit', compact('role', 'permissions'));
     }

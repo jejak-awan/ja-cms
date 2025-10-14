@@ -27,8 +27,11 @@ class CategoryController extends Controller
             }
         }
 
+        // Cache category tree for 5 minutes (only for tree view, no search/filter)
         if ($request->get('view') === 'tree' || !$request->filled('search')) {
-            $categories = $query->root()->ordered()->get();
+            $categories = cache()->remember('admin_categories_tree', 300, function() use ($query) {
+                return $query->root()->ordered()->get();
+            });
             $viewType = 'tree';
         } else {
             $categories = $query->ordered()->get();
