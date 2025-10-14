@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('roles', function (Blueprint $table) {
-            $table->string('slug')->nullable()->after('name');
-            $table->boolean('is_active')->default(true)->after('description');
+            // Only add is_active since slug already exists
+            if (!Schema::hasColumn('roles', 'is_active')) {
+                $table->boolean('is_active')->default(true)->after('description');
+            }
         });
     }
 
@@ -23,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('roles', function (Blueprint $table) {
-            $table->dropColumn(['slug', 'is_active']);
+            // Only drop is_active since we didn't add slug
+            if (Schema::hasColumn('roles', 'is_active')) {
+                $table->dropColumn('is_active');
+            }
         });
     }
 };

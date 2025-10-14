@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,25 +12,55 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            if (!Schema::hasColumn('articles', 'status')) return;
-            $table->index('status');
-            if (Schema::hasColumn('articles', 'published_at')) {
-                $table->index('published_at');
+        // SQLite-specific approach to check if indexes exist
+        $db = DB::connection();
+        
+        // Check articles table indexes
+        if (Schema::hasColumn('articles', 'status')) {
+            $exists = $db->select("SELECT name FROM sqlite_master WHERE type='index' AND name='articles_status_index'");
+            if (empty($exists)) {
+                Schema::table('articles', function (Blueprint $table) {
+                    $table->index('status');
+                });
             }
-            if (Schema::hasColumn('articles', 'featured')) {
-                $table->index('featured');
+        }
+        
+        if (Schema::hasColumn('articles', 'published_at')) {
+            $exists = $db->select("SELECT name FROM sqlite_master WHERE type='index' AND name='articles_published_at_index'");
+            if (empty($exists)) {
+                Schema::table('articles', function (Blueprint $table) {
+                    $table->index('published_at');
+                });
             }
-        });
-
-        Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'role')) {
-                $table->index('role');
+        }
+        
+        if (Schema::hasColumn('articles', 'featured')) {
+            $exists = $db->select("SELECT name FROM sqlite_master WHERE type='index' AND name='articles_featured_index'");
+            if (empty($exists)) {
+                Schema::table('articles', function (Blueprint $table) {
+                    $table->index('featured');
+                });
             }
-            if (Schema::hasColumn('users', 'is_active')) {
-                $table->index('is_active');
+        }
+        
+        // Check users table indexes
+        if (Schema::hasColumn('users', 'role')) {
+            $exists = $db->select("SELECT name FROM sqlite_master WHERE type='index' AND name='users_role_index'");
+            if (empty($exists)) {
+                Schema::table('users', function (Blueprint $table) {
+                    $table->index('role');
+                });
             }
-        });
+        }
+        
+        if (Schema::hasColumn('users', 'is_active')) {
+            $exists = $db->select("SELECT name FROM sqlite_master WHERE type='index' AND name='users_is_active_index'");
+            if (empty($exists)) {
+                Schema::table('users', function (Blueprint $table) {
+                    $table->index('is_active');
+                });
+            }
+        }
     }
 
     /**
