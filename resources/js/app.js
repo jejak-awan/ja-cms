@@ -1,5 +1,13 @@
 import './bootstrap';
-import { createApp } from 'vue';
+import Alpine from 'alpinejs';
+import { registerAlpineComponents } from './alpine-utils';
+
+// Register Alpine components
+registerAlpineComponents();
+
+// Initialize Alpine.js
+window.Alpine = Alpine;
+Alpine.start();
 
 // Dashboard Charts (lazy loaded)
 window.initDashboardCharts = async function(chartData) {
@@ -29,15 +37,5 @@ window.setTinyMCEContent = async function(selector = '#content', content = '') {
     return setTinyMCEContent(selector, content);
 };
 
-// Import all Vue components
-const app = createApp({});
-
-// Auto-register all components in the components directory
-const components = import.meta.glob('./components/**/*.vue', { eager: true });
-for (const path in components) {
-    const componentName = path.split('/').pop().replace(/\.\w+$/, '');
-    app.component(componentName, components[path].default);
-}
-
-// Mount the app
-app.mount('#app');
+// Vue components removed - using Alpine.js only for admin panel
+// Vue is only used for public frontend if needed

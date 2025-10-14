@@ -6,31 +6,31 @@ use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Public Routes (Localized)
 |--------------------------------------------------------------------------
 */
 
-// Homepage
-Route::get('/', [PublicController::class, 'index'])->name('home');
+// Homepage - localized
+Route::localized('/', [PublicController::class, 'index']);
 
-// Articles
-Route::get('/articles', [PublicController::class, 'articles'])->name('articles.index');
-Route::get('/articles/{slug}', [PublicController::class, 'article'])->name('articles.show');
+// Articles - localized  
+Route::localized('/articles', [PublicController::class, 'articles']);
+Route::localized('/articles/{slug}', [PublicController::class, 'article']);
 
-// Categories
-Route::get('/categories', [PublicController::class, 'categories'])->name('categories.index');
-Route::get('/categories/{slug}', [PublicController::class, 'category'])->name('categories.show');
+// Categories - localized
+Route::localized('/categories', [PublicController::class, 'categories']);
+Route::localized('/categories/{slug}', [PublicController::class, 'category']);
 
-// Pages
-Route::get('/pages/{slug}', [PublicController::class, 'page'])->name('page.show');
+// Pages - localized
+Route::localized('/pages/{slug}', [PublicController::class, 'page']);
 
-// Search
-Route::get('/search', [PublicController::class, 'search'])->name('search');
+// Search - localized
+Route::localized('/search', [PublicController::class, 'search']);
 
-// Sitemap
+// Sitemap (no localization needed)
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
-// API Routes
+// API Routes (no localization needed)
 Route::post('/api/articles/{id}/view', [PublicController::class, 'incrementView'])->name('api.articles.view');
 
 /*
@@ -48,11 +48,40 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
+| Locale/Language Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/locale/{locale}', [\App\Http\Controllers\LocaleController::class, 'switch'])
+    ->name('locale.switch')
+    ->where('locale', '[a-z]{2}');
+
+Route::get('/api/locale/current', [\App\Http\Controllers\LocaleController::class, 'current'])
+    ->name('locale.current');
+
+/*
+|--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
-| All admin routes are defined in routes/admin.php
-| They use 'admin' middleware with proper role checking
+| Admin routes must be defined before catch-all routes to avoid conflicts
 */
+
+// Admin Authentication Routes (Guest only)
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [\App\Modules\Admin\Controllers\AuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [\App\Modules\Admin\Controllers\AuthController::class, 'login'])->name('login.post');
+    });
+
+    // Admin Authenticated Routes
+    Route::middleware(['admin', 'cache.debug'])->group(function () {
+        Route::post('/logout', [\App\Modules\Admin\Controllers\AuthController::class, 'logout'])->name('logout');
+        
+        // Dashboard
+        Route::get('/', [\App\Modules\Admin\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [\App\Modules\Admin\Controllers\AdminController::class, 'dashboard']);
+    });
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +92,5 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 | Exclude 'admin' from catch-all to prevent conflicts with admin routes
 */
 
-Route::get('/{slug}', [PublicController::class, 'page'])
-    ->where('slug', '^(?!admin).*')
-    ->name('pages.show');
+// Localized catch-all for pages (exclude 'admin' to prevent conflicts)
+Route::localized('/{slug}', [PublicController::class, 'page']);

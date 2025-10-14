@@ -38,6 +38,6 @@ class PublicPagesTest extends TestCase
         $response = $this->get('/');
         
         $response->assertStatus(200);
-        $response->assertViewIs('public.home');
+        $response->assertViewIs('public.pages.home');
     }
 }

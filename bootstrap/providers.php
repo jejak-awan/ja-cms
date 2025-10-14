@@ -4,4 +4,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\ThemeServiceProvider::class,
     App\Providers\CacheCustomServiceProvider::class,
+    App\Providers\BladeServiceProvider::class,
 ];

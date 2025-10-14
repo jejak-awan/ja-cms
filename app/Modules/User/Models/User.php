@@ -4,6 +4,7 @@ namespace App\Modules\User\Models;
 
 use App\Modules\User\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +12,12 @@ use Illuminate\Support\Facades\Storage;
 #[ObservedBy(UserObserver::class)]
 class User extends Authenticatable
 {
-    use SoftDeletes;
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\UserFactory::new();
+    }
 
     public function activityLogs()
     {
@@ -117,6 +123,15 @@ class User extends Authenticatable
         return $query->where('role', $role);
     }
 
+    public function scopeSearch($query, string $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('name', 'LIKE', "%{$term}%")
+              ->orWhere('email', 'LIKE', "%{$term}%")
+              ->orWhere('bio', 'LIKE', "%{$term}%");
+        });
+    }
+
     public function scopeVerified($query)
     {
         return $query->whereNotNull('email_verified_at');
@@ -178,10 +193,10 @@ class User extends Authenticatable
     public function hasRole(string|array $roles): bool
     {
         if (is_array($roles)) {
-            return in_array($this->role, $roles);
+            return $this->roles()->whereIn('slug', $roles)->exists();
         }
 
-        return $this->role === $roles;
+        return $this->roles()->where('slug', $roles)->exists();
     }
 
     public function hasAnyRole(array $roles): bool
@@ -197,14 +212,14 @@ class User extends Authenticatable
         }
 
         // Check direct permissions
-        if ($this->permissions()->where('name', $permission)->exists()) {
+        if ($this->permissions()->where('slug', $permission)->exists()) {
             return true;
         }
 
         // Check role permissions
         return $this->roles()
             ->whereHas('permissions', function ($query) use ($permission) {
-                $query->where('name', $permission);
+                $query->where('slug', $permission);
             })
             ->exists();
     }

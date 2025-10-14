@@ -3,12 +3,18 @@
 namespace App\Modules\Category\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\CategoryFactory::new();
+    }
 
     protected $fillable = [
         'name',
@@ -103,6 +109,11 @@ class Category extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeInactive(Builder $query): Builder
+    {
+        return $query->where('is_active', false);
     }
 
     public function scopeRoot(Builder $query): Builder

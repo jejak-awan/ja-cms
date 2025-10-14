@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@locale" dir="@localeDir">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- SEO Meta Tags -->
-    <title>@yield('meta_title', config('app.name', 'Laravel CMS'))</title>
-    <meta name="description" content="@yield('meta_description', 'Modern Content Management System built with Laravel')">
-    <meta name="keywords" content="@yield('meta_keywords', 'cms, laravel, blog, articles')">
-    <meta name="author" content="@yield('meta_author', config('app.name'))">
+    <title>@yield('title', config('app.name'))</title>
+    <meta name="description" content="@yield('description', 'Laravel CMS with multilingual support')">
+    <meta name="keywords" content="@yield('keywords', 'laravel, cms, multilingual')">
+    <meta name="author" content="{{ config('app.name') }}">
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="@yield('og_title', config('app.name'))">
-    <meta property="og:description" content="@yield('og_description', 'Modern CMS')">
-    <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:title" content="@yield('title', config('app.name'))">
+    <meta property="og:description" content="@yield('description', 'Laravel CMS with multilingual support')">
+    <meta property="og:image" content="@yield('og_image', asset('images/default-og.jpg'))">
     
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('twitter_title', config('app.name'))">
-    <meta name="twitter:description" content="@yield('twitter_description', 'Modern CMS')">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-default.jpg'))">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@yield('title', config('app.name'))">
+    <meta property="twitter:description" content="@yield('description', 'Laravel CMS with multilingual support')">
+    <meta property="twitter:image" content="@yield('og_image', asset('images/default-og.jpg'))">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     
-    <!-- Base Tailwind CSS -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    
+    <!-- Styles -->
     @vite('resources/css/app.css')
-    
-    <!-- Theme-specific CSS -->
-    @if(file_exists(public_path('themes/public/' . active_theme() . '/css/style.css')))
-        <link rel="stylesheet" href="{{ asset('themes/public/' . active_theme() . '/css/style.css') }}">
-    @endif
-    
     @stack('styles')
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -54,14 +54,14 @@
                 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium transition">Home</a>
-                    <a href="/articles" class="text-gray-700 hover:text-blue-600 font-medium transition">Articles</a>
-                    <a href="/categories" class="text-gray-700 hover:text-blue-600 font-medium transition">Categories</a>
-                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
-                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition">Contact</a>
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('messages.home')</a>
+                    <a href="/articles" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('admin.nav.articles')</a>
+                    <a href="/categories" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('admin.nav.categories')</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('messages.about')</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('messages.contact')</a>
                 </div>
                 
-                <!-- Search & Login -->
+                <!-- Search, Language & Login -->
                 <div class="hidden md:flex items-center space-x-4">
                     <button data-search-toggle class="p-2 text-gray-600 hover:text-blue-600 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,10 +69,15 @@
                         </svg>
                     </button>
                     
+                    <!-- Language Switcher -->
+                    @if(count(active_languages()) > 1)
+                        <x-language-switcher size="sm" :showLabel="false" />
+                    @endif
+                    
                     @auth
-                        <a href="/admin" class="btn-primary text-sm py-2 px-4">Dashboard</a>
+                        <a href="/admin" class="btn-primary text-sm py-2 px-4">@t('admin.nav.dashboard')</a>
                     @else
-                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium transition">Login</a>
+                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium transition">@t('auth.login')</a>
                     @endauth
                 </div>
                 
@@ -87,15 +92,23 @@
             <!-- Mobile Menu -->
             <div data-mobile-menu class="hidden md:hidden py-4 border-t border-gray-200">
                 <div class="flex flex-col space-y-3">
-                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">Home</a>
-                    <a href="/articles" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">Articles</a>
-                    <a href="/categories" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">Categories</a>
-                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">About</a>
-                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">Contact</a>
+                    <a href="/" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('messages.home')</a>
+                    <a href="/articles" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('admin.nav.articles')</a>
+                    <a href="/categories" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('admin.nav.categories')</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('messages.about')</a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('messages.contact')</a>
+                    
+                    <!-- Language Switcher for Mobile -->
+                    @if(count(active_languages()) > 1)
+                        <div class="py-2">
+                            <x-language-switcher size="sm" :showLabel="true" position="bottom-left" />
+                        </div>
+                    @endif
+                    
                     @auth
-                        <a href="/admin" class="text-blue-600 font-medium py-2">Dashboard</a>
+                        <a href="/admin" class="text-blue-600 font-medium py-2">@t('admin.nav.dashboard')</a>
                     @else
-                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">Login</a>
+                        <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium transition py-2">@t('auth.login')</a>
                     @endauth
                 </div>
             </div>
@@ -121,40 +134,40 @@
                 
                 <!-- Quick Links -->
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <h3 class="text-lg font-bold mb-4">@t('messages.quick_links')</h3>
                     <ul class="footer-links space-y-2 text-sm">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/articles">Articles</a></li>
-                        <li><a href="/categories">Categories</a></li>
-                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/">@t('messages.home')</a></li>
+                        <li><a href="/articles">@t('admin.nav.articles')</a></li>
+                        <li><a href="/categories">@t('admin.nav.categories')</a></li>
+                        <li><a href="/about">@t('messages.about')</a></li>
                     </ul>
                 </div>
                 
                 <!-- Categories -->
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Categories</h3>
+                    <h3 class="text-lg font-bold mb-4">@t('admin.nav.categories')</h3>
                     <ul class="footer-links space-y-2 text-sm">
-                        <li><a href="/categories/technology">Technology</a></li>
-                        <li><a href="/categories/lifestyle">Lifestyle</a></li>
-                        <li><a href="/categories/business">Business</a></li>
-                        <li><a href="/categories/travel">Travel</a></li>
+                        <li><a href="/categories/technology">@t('messages.categories.technology')</a></li>
+                        <li><a href="/categories/lifestyle">@t('messages.categories.lifestyle')</a></li>
+                        <li><a href="/categories/business">@t('messages.categories.business')</a></li>
+                        <li><a href="/categories/travel">@t('messages.categories.travel')</a></li>
                     </ul>
                 </div>
                 
                 <!-- Newsletter -->
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Newsletter</h3>
-                    <p class="text-gray-400 text-sm mb-4">Subscribe to get latest updates and news.</p>
+                    <h3 class="text-lg font-bold mb-4">@t('messages.newsletter.title')</h3>
+                    <p class="text-gray-400 text-sm mb-4">@t('messages.newsletter.description')</p>
                     <form data-newsletter-form class="space-y-2">
                         @csrf
                         <input 
                             type="email" 
-                            placeholder="Your email" 
+                            placeholder="@t('messages.newsletter.email_placeholder')" 
                             required
                             class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition"
                         >
                         <button type="submit" class="w-full btn-primary text-sm py-2">
-                            Subscribe
+                            @t('messages.newsletter.subscribe')
                         </button>
                     </form>
                 </div>

@@ -106,12 +106,12 @@
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
-                    <span class="font-medium">Dashboard</span>
+                    <span class="font-medium">@t('admin.nav.dashboard')</span>
                 </a>
                 
                 <!-- Content Management -->
                 <div class="mt-6 mb-3">
-                    <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Content Management</h3>
+                    <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">@t('admin.nav.content')</h3>
                 </div>
                 <div class="mb-2">
                     <button onclick="toggleDropdown('content-dropdown')" class="w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:bg-gray-700 group">
@@ -119,7 +119,7 @@
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                             </svg>
-                            <span class="font-medium">Content</span>
+                            <span class="font-medium">@t('admin.nav.content')</span>
                         </div>
                         <svg id="content-dropdown-arrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -130,32 +130,32 @@
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                            <span>Articles</span>
+                            <span>@t('admin.nav.articles')</span>
                 </a>
                         <a href="/admin/categories" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/categories*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                     </svg>
-                            <span>Categories</span>
+                            <span>@t('admin.nav.categories')</span>
                 </a>
                         <a href="/admin/pages" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/pages*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                            <span>Pages</span>
+                            <span>@t('admin.nav.pages')</span>
                 </a>
                         <a href="/admin/media" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/media*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
-                            <span>Media</span>
+                            <span>@t('admin.nav.media')</span>
                         </a>
                     </div>
                 </div>
                 
                 <!-- User Management Dropdown -->
                 <div class="mt-6 mb-3">
-                    <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">User Management</h3>
+                    <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">@t('admin.nav.users')</h3>
                 </div>
                 <div class="mb-2">
                     <button onclick="toggleDropdown('user-dropdown')" class="w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:bg-gray-700 group">
@@ -377,12 +377,133 @@
                             </div>
                         </div>
                         
+                        <!-- Language Switcher -->
+                        <div class="relative inline-block" x-data="{ open: false }" @click.away="open = false">
+                            <button 
+                                @click="open = !open"
+                                type="button"
+                                class="text-sm px-3 py-2 flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200 font-medium text-gray-700 dark:text-gray-300"
+                                aria-label="Ganti Bahasa"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                            >
+                                <!-- Current Flag -->
+                                <span class="text-lg" aria-hidden="true">
+                                    @if(current_locale() === 'id')
+                                        🇮🇩
+                                    @else
+                                        🇬🇧
+                                    @endif
+                                </span>
+                                
+                                <!-- Current Language Name -->
+                                <span class="hidden md:inline">
+                                    @if(current_locale() === 'id')
+                                        ID
+                                    @else
+                                        EN
+                                    @endif
+                                </span>
+                                
+                                <!-- Dropdown Arrow -->
+                                <svg 
+                                    class="w-4 h-4 transition-transform duration-200"
+                                    :class="{ 'rotate-180': open }"
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div 
+                                x-show="open"
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95"
+                                class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 py-1"
+                                style="display: none;"
+                                role="menu"
+                                aria-orientation="vertical"
+                            >
+                                <!-- Language Options -->
+                                <form method="POST" action="{{ route('locale.switch', 'id') }}" class="inline-block w-full">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3 transition-colors duration-150
+                                            @if(current_locale() === 'id')
+                                                bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold
+                                            @else
+                                                text-gray-700 dark:text-gray-300
+                                            @endif"
+                                        role="menuitem"
+                                    >
+                                        <!-- Flag -->
+                                        <span class="text-lg" aria-hidden="true">🇮🇩</span>
+                                        
+                                        <!-- Language Name -->
+                                        <span class="flex-1">Bahasa Indonesia</span>
+                                        
+                                        <!-- Active Indicator -->
+                                        @if(current_locale() === 'id')
+                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </form>
+                                
+                                <form method="POST" action="{{ route('locale.switch', 'en') }}" class="inline-block w-full">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3 transition-colors duration-150
+                                            @if(current_locale() === 'en')
+                                                bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold
+                                            @else
+                                                text-gray-700 dark:text-gray-300
+                                            @endif"
+                                        role="menuitem"
+                                    >
+                                        <!-- Flag -->
+                                        <span class="text-lg" aria-hidden="true">🇬🇧</span>
+                                        
+                                        <!-- Language Name -->
+                                        <span class="flex-1">English</span>
+                                        
+                                        <!-- Active Indicator -->
+                                        @if(current_locale() === 'en')
+                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </form>
+                                
+                                <!-- Divider -->
+                                <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                                <!-- Additional Info -->
+                                <div class="px-4 py-2">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                        @t('admin.language.current'): <span class="font-semibold">{{ strtoupper(current_locale()) }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- View Site Button (Hidden on mobile) -->
                         <a href="/" class="hidden md:flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition text-gray-700 dark:text-gray-300">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                             </svg>
-                            <span class="text-sm font-medium">View Site</span>
+                            <span class="text-sm font-medium">@t('admin.nav.view_site')</span>
                         </a>
                         
                         <!-- User Dropdown (Simplified for mobile) -->

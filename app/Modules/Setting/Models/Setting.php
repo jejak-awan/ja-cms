@@ -3,10 +3,17 @@
 namespace App\Modules\Setting\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\SettingFactory::new();
+    }
     protected $fillable = [
         'key',
         'value',
@@ -150,7 +157,7 @@ class Setting extends Model
             'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
             'integer', 'number' => (int) $value,
             'float', 'decimal' => (float) $value,
-            'json', 'array' => json_decode($value, true) ?? [],
+            'json', 'array' => is_string($value) ? (json_decode($value, true) ?? []) : $value,
             default => $value,
         };
     }

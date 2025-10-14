@@ -26,11 +26,8 @@ class DashboardTest extends TestCase
      */
     public function test_admin_dashboard_loads_successfully_with_auth(): void
     {
-        // Create admin user
-        $admin = \App\Modules\User\Models\User::factory()->create([
-            'role' => 'admin',
-            'is_active' => true
-        ]);
+        // Create admin user with permissions
+        $admin = createAdmin();
 
         // Create some test data
         \App\Modules\Category\Models\Category::factory()->count(3)->create();
@@ -49,10 +46,7 @@ class DashboardTest extends TestCase
      */
     public function test_activity_feed_api_returns_json(): void
     {
-        $admin = \App\Modules\User\Models\User::factory()->create([
-            'role' => 'admin',
-            'is_active' => true
-        ]);
+        $admin = createAdmin();
 
         // Create test data
         \App\Modules\Article\Models\Article::factory()->count(3)->create();
@@ -77,10 +71,7 @@ class DashboardTest extends TestCase
      */
     public function test_activity_feed_can_filter_by_type(): void
     {
-        $admin = \App\Modules\User\Models\User::factory()->create([
-            'role' => 'admin',
-            'is_active' => true
-        ]);
+        $admin = createAdmin();
 
         // Create test data
         \App\Modules\Article\Models\Article::factory()->count(2)->create();

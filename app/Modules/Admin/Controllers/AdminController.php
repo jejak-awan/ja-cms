@@ -194,4 +194,24 @@ class AdminController extends Controller
         $offset = ($page - 1) * $perPage;
         return $sorted->slice($offset, $perPage)->values();
     }
+
+    /**
+     * Get activity feed API endpoint
+     */
+    public function activityFeed(Request $request)
+    {
+        $type = $request->get('type');
+        $page = $request->get('page', 1);
+        $perPage = $request->get('per_page', 10);
+
+        $activities = $this->getActivityFeed($page, $perPage, $type);
+
+        return response()->json([
+            'success' => true,
+            'data' => $activities,
+            'page' => (int) $page,
+            'per_page' => (int) $perPage,
+            'type' => $type,
+        ]);
+    }
 }

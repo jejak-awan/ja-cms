@@ -3,9 +3,16 @@
 namespace App\Modules\Menu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Menu extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\MenuFactory::new();
+    }
     protected $fillable = [
         'name',
         'display_name',

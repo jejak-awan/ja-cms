@@ -9,12 +9,17 @@ use App\Modules\User\Models\User;
 
 class Page extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\PageFactory::new();
+    }
 
     protected $fillable = [
         'title', 'slug', 'content', 'excerpt', 'template', 'featured_image',
-        'status', 'order', 'is_homepage', 'meta_title', 'meta_description',
-        'meta_keywords', 'user_id', 'published_at'
+        'status', 'order', 'is_homepage', 'parent_id', 'meta_title', 'meta_description',
+        'meta_keywords', 'user_id', 'published_at', 'views'
     ];
 
     protected $casts = [
@@ -27,6 +32,37 @@ class Page extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Page::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Page::class, 'parent_id');
+    }
+
+    /**
+     * Accessors
+     */
+    public function getHasChildrenAttribute()
+    {
+        return $this->children()->exists();
+    }
+
+    public function getHasParentAttribute()
+    {
+        return !is_null($this->parent_id);
+    }
+
+    public function getUrlAttribute()
+    {
+        return route('public.pages.show', $this->slug);
+    }
+
+    /**
+     * Scopes
+     */
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
@@ -39,9 +75,47 @@ class Page extends Model
         return $query->where('status', 'draft');
     }
 
+    public function scopeRoot($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+
     public function scopeOrdered($query)
     {
         return $query->orderBy('order', 'asc');
+    }
+
+    public function scopeSearch($query, string $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('title', 'LIKE', "%{$term}%")
+              ->orWhere('content', 'LIKE', "%{$term}%")
+              ->orWhere('excerpt', 'LIKE', "%{$term}%");
+        });
+    }
+
+    /**
+     * Helper Methods
+     */
+    public function publish(): bool
+    {
+        $this->status = 'published';
+        $this->published_at = $this->published_at ?? now();
+        
+        return $this->save();
+    }
+
+    public function unpublish(): bool
+    {
+        $this->status = 'draft';
+        $this->published_at = null;
+        
+        return $this->save();
+    }
+
+    public function incrementViews(): void
+    {
+        $this->increment('views');
     }
 
     public static function homepage()

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
 
         // Seed categories and articles
         $this->call([
+            LanguageSeeder::class,
             CategorySeeder::class,
             ArticleSeeder::class,
         ]);

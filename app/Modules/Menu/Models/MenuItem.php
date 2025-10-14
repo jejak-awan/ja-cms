@@ -3,9 +3,16 @@
 namespace App\Modules\Menu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MenuItem extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\MenuItemFactory::new();
+    }
     protected $fillable = [
         'menu_id',
         'parent_id',
@@ -13,7 +20,6 @@ class MenuItem extends Model
         'url',
         'route',
         'type',
-        'reference_id',
         'target_id',
         'target',
         'icon',
@@ -26,7 +32,6 @@ class MenuItem extends Model
         'is_active' => 'boolean',
         'order' => 'integer',
         'target_id' => 'integer',
-        'reference_id' => 'integer',
     ];
 
     // ========================================

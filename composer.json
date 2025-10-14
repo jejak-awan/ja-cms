@@ -18,6 +18,8 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2",
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
@@ -27,7 +29,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Http/Helpers/theme_helpers.php"
+            "app/Http/Helpers/theme_helpers.php",
+            "app/Support/helpers.php"
         ]
     },
     "autoload-dev": {

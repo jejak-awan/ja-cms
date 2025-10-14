@@ -4,6 +4,7 @@ namespace App\Modules\Media\Models;
 
 use App\Modules\Media\Observers\MediaObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +12,12 @@ use Illuminate\Support\Facades\Storage;
 #[ObservedBy(MediaObserver::class)]
 class Media extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\MediaFactory::new();
+    }
 
     protected $fillable = [
         'user_id',
@@ -84,6 +90,16 @@ class Media extends Model
     public function scopeByType($query, string $type)
     {
         return $query->where('mime_type', 'LIKE', $type . '%');
+    }
+
+    public function scopeSearch($query, string $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('filename', 'LIKE', "%{$term}%")
+              ->orWhere('original_filename', 'LIKE', "%{$term}%")
+              ->orWhere('alt_text', 'LIKE', "%{$term}%")
+              ->orWhere('description', 'LIKE', "%{$term}%");
+        });
     }
 
     public function scopeInFolder($query, ?string $folder)

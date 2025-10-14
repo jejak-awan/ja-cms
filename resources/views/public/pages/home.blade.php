@@ -14,10 +14,10 @@
             Discover amazing content, stories, and insights from our community of writers
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('articles.index') }}" class="btn-primary">
+            <a href="{{ route(app()->getLocale() . '.articles.index') }}" class="btn-primary">
                 Browse Articles
             </a>
-            <a href="{{ route('categories.index') }}" class="btn-secondary">
+            <a href="{{ route(app()->getLocale() . '.categories.index') }}" class="btn-secondary">
                 Explore Categories
             </a>
         </div>
@@ -38,7 +38,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($featuredArticles as $article)
             <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden" data-animate>
-                <a href="{{ route('articles.show', $article->slug) }}" class="block image-overlay">
+                <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                     @if($article->featured_image)
                         <img src="{{ str_starts_with($article->featured_image, 'http') ? $article->featured_image : asset('storage/' . $article->featured_image) }}" 
                              alt="{{ $article->title }}"
@@ -60,7 +60,7 @@
                     </div>
                     
                     <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                        <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
+                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
                     </h3>
                     
                     <p class="text-gray-600 mb-4 line-clamp-3">
@@ -97,7 +97,7 @@
                 <h2 class="text-4xl font-bold text-gray-900">Latest Articles</h2>
                 <p class="text-gray-600 mt-2">Fresh content just for you</p>
             </div>
-            <a href="{{ route('articles.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2">
+            <a href="{{ route(app()->getLocale() . '.articles.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2">
                 View All
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -108,7 +108,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($latestArticles as $article)
             <article class="card-hover bg-white rounded-xl shadow-lg overflow-hidden" data-animate>
-                <a href="{{ route('articles.show', $article->slug) }}" class="block image-overlay">
+                <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                     @if($article->featured_image)
                         <img src="{{ str_starts_with($article->featured_image, 'http') ? $article->featured_image : asset('storage/' . $article->featured_image) }}" 
                              alt="{{ $article->title }}"
@@ -127,7 +127,7 @@
                     <span class="category-badge text-xs">{{ $article->category->name ?? 'Uncategorized' }}</span>
                     
                     <h3 class="text-xl font-bold text-gray-900 mb-2 mt-3 hover:text-blue-600 transition">
-                        <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
+                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
                     </h3>
                     
                     <p class="text-gray-600 mb-4 line-clamp-2">
@@ -155,7 +155,7 @@
         
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             @foreach($categories as $category)
-            <a href="{{ route('categories.show', $category->slug) }}" 
+            <a href="{{ route(app()->getLocale() . '.categories.show', $category->slug) }}" 
                class="group bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-center text-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                data-animate>
                 <div class="text-3xl mb-3">📁</div>
@@ -166,7 +166,7 @@
         </div>
         
         <div class="text-center mt-10">
-            <a href="{{ route('categories.index') }}" class="btn-primary">
+            <a href="{{ route(app()->getLocale() . '.categories.index') }}" class="btn-primary">
                 View All Categories
             </a>
         </div>

@@ -3,11 +3,18 @@
 namespace App\Modules\Article\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class Article extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\ArticleFactory::new();
+    }
     protected $fillable = [
         'title',
         'slug',
@@ -167,6 +174,20 @@ class Article extends Model
     {
         $this->status = 'draft';
         $this->published_at = null;
+        
+        return $this->save();
+    }
+
+    public function archive(): bool
+    {
+        $this->status = 'archived';
+        
+        return $this->save();
+    }
+
+    public function feature(): bool
+    {
+        $this->featured = true;
         
         return $this->save();
     }
