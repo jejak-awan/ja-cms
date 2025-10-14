@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 | Here are all the admin panel routes. These routes are loaded by the
 | RouteServiceProvider and all of them will have the "admin" prefix.
 |
+| Updated: October 14, 2025 - User Management System Routes Added
+|
 */
 
 // Admin Authentication Routes (Guest only)
