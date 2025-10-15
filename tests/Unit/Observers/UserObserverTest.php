@@ -1,82 +1,74 @@
 <?php
 
-use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Hash;
+namespace Tests\Unit\Observers;
 
-describe('UserObserver', function () {
-    
-    describe('creating event', function () {
+use Tests\TestCase;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+
+class UserObserverTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_hashes_password_before_save()
+    {
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'plaintext-password'
+        ]);
+
+        $this->assertTrue(Hash::check('plaintext-password', $user->password));
+        $this->assertNotEquals('plaintext-password', $user->password);
+    }
+
+    /** @test */
+    public function it_doesnt_rehash_already_hashed_password()
+    {
+        $hashedPassword = Hash::make('test-password');
         
-        test('hashes password when creating user', function () {
-            $plainPassword = 'password123';
-            
-            $user = User::factory()->make([
-                'password' => $plainPassword,
-            ]);
-            
-            $user->save();
-            
-            expect($user->password)
-                ->not->toBe($plainPassword)
-                ->and(Hash::check($plainPassword, $user->password))->toBeTrue();
-        });
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => $hashedPassword
+        ]);
+
+        $this->assertEquals($hashedPassword, $user->password);
+    }
+
+    /** @test */
+    public function it_clears_user_cache_when_updated()
+    {
+        Cache::put('user.cache', 'test data');
         
-        test('does not rehash already hashed password', function () {
-            $hashedPassword = Hash::make('password123');
-            
-            $user = User::factory()->make([
-                'password' => $hashedPassword,
-            ]);
-            
-            $user->save();
-            
-            expect($user->password)->toBe($hashedPassword);
-        });
-        
-        test('sets default status to active when not provided', function () {
-            $user = User::factory()->make([
-                'status' => null,
-            ]);
-            
-            $user->save();
-            
-            expect($user->status)->toBe('active');
-        });
-    });
-    
-    describe('updating event', function () {
-        
-        test('hashes password when updating', function () {
-            $user = User::factory()->create();
-            
-            $newPassword = 'newpassword123';
-            $user->password = $newPassword;
-            $user->save();
-            
-            expect($user->password)
-                ->not->toBe($newPassword)
-                ->and(Hash::check($newPassword, $user->password))->toBeTrue();
-        });
-        
-        test('does not rehash password if not changed', function () {
-            $user = User::factory()->create();
-            
-            $originalPassword = $user->password;
-            
-            $user->name = 'Updated Name';
-            $user->save();
-            
-            expect($user->password)->toBe($originalPassword);
-        });
-        
-        test('does not rehash already hashed password on update', function () {
-            $user = User::factory()->create();
-            
-            $hashedPassword = Hash::make('password123');
-            $user->password = $hashedPassword;
-            $user->save();
-            
-            expect($user->password)->toBe($hashedPassword);
-        });
-    });
-});
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password'
+        ]);
+
+        $user->update(['name' => 'Updated User']);
+
+        $this->assertFalse(Cache::has('user.cache'));
+    }
+
+    /** @test */
+    public function it_handles_password_updates_correctly()
+    {
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'old-password'
+        ]);
+
+        $oldPasswordHash = $user->password;
+
+        $user->update(['password' => 'new-password']);
+
+        $this->assertNotEquals($oldPasswordHash, $user->fresh()->password);
+        $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+    }
+}

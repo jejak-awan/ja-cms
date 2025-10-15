@@ -21,9 +21,11 @@ class PageFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
+            'title_id' => fake()->sentence(),
+            'title_en' => fake()->sentence(),
             'slug' => fake()->slug(),
-            'content' => fake()->paragraphs(5, true),
+            'content_id' => fake()->paragraphs(5, true),
+            'content_en' => fake()->paragraphs(5, true),
             'excerpt' => fake()->paragraph(),
             'user_id' => User::factory(),
             'parent_id' => null,

@@ -16,10 +16,13 @@ class Article extends Model
         return \Database\Factories\ArticleFactory::new();
     }
     protected $fillable = [
-        'title',
+        'title_id',
+        'title_en',
         'slug',
-        'excerpt',
-        'content',
+        'excerpt_id',
+        'excerpt_en',
+        'content_id',
+        'content_en',
         'category_id',
         'user_id',
         'featured_image',
@@ -29,7 +32,8 @@ class Article extends Model
         'views',
         'meta_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
+        'locale'
     ];
 
     protected $casts = [

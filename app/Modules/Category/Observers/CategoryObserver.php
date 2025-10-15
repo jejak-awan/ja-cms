@@ -4,6 +4,7 @@ namespace App\Modules\Category\Observers;
 
 use App\Modules\Category\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryObserver
 {
@@ -12,19 +13,19 @@ class CategoryObserver
      */
     public function creating(Category $category): void
     {
-        // Auto-generate slug from name if not provided
-        if (empty($category->slug) && !empty($category->name)) {
-            $category->slug = $this->generateUniqueSlug($category->name);
+        // Auto-generate slug from name_id if not provided
+        if (empty($category->slug) && !empty($category->name_id)) {
+            $category->slug = $this->generateUniqueSlug($category->name_id);
         }
 
-        // Auto-generate meta_title from name if not provided
-        if (empty($category->meta_title) && !empty($category->name)) {
-            $category->meta_title = $category->name;
+        // Auto-generate meta_title from name_id if not provided
+        if (empty($category->meta_title) && !empty($category->name_id)) {
+            $category->meta_title = $category->name_id;
         }
 
-        // Auto-generate meta_description from description if not provided
-        if (empty($category->meta_description) && !empty($category->description)) {
-            $category->meta_description = Str::limit(strip_tags($category->description), 160);
+        // Auto-generate meta_description from description_id if not provided
+        if (empty($category->meta_description) && !empty($category->description_id)) {
+            $category->meta_description = Str::limit(strip_tags($category->description_id), 160);
         }
 
         // Set default order if not provided
@@ -38,24 +39,24 @@ class CategoryObserver
      */
     public function updating(Category $category): void
     {
-        // Regenerate slug if name changed and slug wasn't manually changed
-        if ($category->isDirty('name') && !$category->isDirty('slug')) {
-            $oldSlug = Str::slug($category->getOriginal('name'));
+        // Regenerate slug if name_id changed and slug wasn't manually changed
+        if ($category->isDirty('name_id') && !$category->isDirty('slug')) {
+            $oldSlug = Str::slug($category->getOriginal('name_id'));
             if ($category->slug === $oldSlug) {
-                $category->slug = $this->generateUniqueSlug($category->name, $category->id);
+                $category->slug = $this->generateUniqueSlug($category->name_id, $category->id);
             }
         }
 
-        // Update meta_title if name changed and meta_title wasn't manually changed
-        if ($category->isDirty('name') && !$category->isDirty('meta_title')) {
-            if (empty($category->meta_title) || $category->meta_title === $category->getOriginal('name')) {
-                $category->meta_title = $category->name;
+        // Update meta_title if name_id changed and meta_title wasn't manually changed
+        if ($category->isDirty('name_id') && !$category->isDirty('meta_title')) {
+            if (empty($category->meta_title) || $category->meta_title === $category->getOriginal('name_id')) {
+                $category->meta_title = $category->name_id;
             }
         }
 
-        // Update meta_description if description changed
-        if ($category->isDirty('description') && !$category->isDirty('meta_description')) {
-            $category->meta_description = Str::limit(strip_tags($category->description), 160);
+        // Update meta_description if description_id changed
+        if ($category->isDirty('description_id') && !$category->isDirty('meta_description')) {
+            $category->meta_description = Str::limit(strip_tags($category->description_id), 160);
         }
 
         // Prevent self-referencing parent
@@ -67,6 +68,15 @@ class CategoryObserver
         if ($category->parent_id && $this->hasCircularReference($category)) {
             $category->parent_id = null;
         }
+    }
+
+    /**
+     * Handle the Category "updated" event.
+     */
+    public function updated(Category $category): void
+    {
+        // Clear cache when category is updated
+        Cache::forget('categories.cache');
     }
 
     /**

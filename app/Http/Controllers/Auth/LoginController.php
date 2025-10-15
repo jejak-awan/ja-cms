@@ -16,10 +16,67 @@ class LoginController extends Controller
     {
         // Redirect if already authenticated
         if (Auth::check()) {
-            return redirect('/admin');
+            $user = Auth::user();
+            if ($user->hasAnyRole(['admin', 'editor', 'author'])) {
+                return redirect('/admin/dashboard');
+            } else {
+                return redirect('/dashboard');
+            }
         }
         
+        // Auto-detect browser language if not set
+        $this->detectBrowserLanguage();
+        
         return view('auth.login');
+    }
+
+    /**
+     * Detect browser language and set locale
+     */
+    private function detectBrowserLanguage()
+    {
+        // Skip if locale already set in session
+        if (session()->has('locale')) {
+            return;
+        }
+
+        $browserLanguages = $this->getBrowserLanguages();
+        $supportedLanguages = ['id', 'en']; // Supported languages
+        $defaultLanguage = 'id'; // Default language
+
+        // Check if browser language is supported
+        foreach ($browserLanguages as $lang) {
+            if (in_array($lang, $supportedLanguages)) {
+                app()->setLocale($lang);
+                session(['locale' => $lang]);
+                return;
+            }
+        }
+
+        // Fallback to default language
+        app()->setLocale($defaultLanguage);
+        session(['locale' => $defaultLanguage]);
+    }
+
+    /**
+     * Get browser languages from Accept-Language header
+     */
+    private function getBrowserLanguages()
+    {
+        $acceptLanguage = request()->header('Accept-Language', '');
+        $languages = [];
+
+        if ($acceptLanguage) {
+            $parts = explode(',', $acceptLanguage);
+            foreach ($parts as $part) {
+                $lang = trim(explode(';', $part)[0]);
+                // Extract language code (e.g., 'en-US' -> 'en')
+                $langCode = explode('-', $lang)[0];
+                $languages[] = $langCode;
+            }
+        }
+
+        return $languages;
     }
 
     /**
@@ -32,10 +89,10 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ], [
-            'email.required' => 'Email address is required.',
-            'email.email' => 'Please enter a valid email address.',
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 6 characters.',
+            'email.required' => __('auth.email_required'),
+            'email.email' => __('auth.email_invalid'),
+            'password.required' => __('auth.password_required'),
+            'password.min' => __('auth.password_min'),
         ]);
 
         $credentials = $request->only('email', 'password');
@@ -45,15 +102,22 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
-            // TODO: Log successful login to activity_logs table
-            // Will be implemented when Activity Log module is ready
+            $user = Auth::user();
             
-            return redirect()->intended('/admin')->with('success', 'Welcome back, ' . Auth::user()->name . '!');
+            // Update last login
+            $user->updateLastLogin($request->ip());
+            
+            // Role-based redirect
+            if ($user->hasAnyRole(['admin', 'editor', 'author'])) {
+                return redirect()->intended('/admin/dashboard')->with('success', __('auth.welcome_admin', ['name' => $user->name]));
+            } else {
+                return redirect()->intended('/dashboard')->with('success', __('auth.welcome_user', ['name' => $user->name]));
+            }
         }
 
         // Authentication failed
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => __('auth.failed'),
         ])->onlyInput('email');
     }
 
@@ -62,14 +126,13 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        // TODO: Log the logout activity to activity_logs table
-        // Will be implemented when Activity Log module is ready
-
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
-        return redirect('/login')->with('success', 'You have been successfully logged out.');
+
+        return redirect()->route('login')
+            ->with('success', __('auth.logout_success'));
     }
+
 }

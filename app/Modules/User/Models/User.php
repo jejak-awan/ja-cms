@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\HasApiTokens;
 
 #[ObservedBy(UserObserver::class)]
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected static function newFactory()
     {
@@ -36,17 +37,23 @@ class User extends Authenticatable
         'last_login_ip',
         'bio',
         'email_verified_at',
+        'two_factor_secret',
+        'two_factor_enabled',
+        'two_factor_recovery_codes',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'password' => 'hashed',
+        'two_factor_enabled' => 'boolean',
     ];
 
     // ========================================

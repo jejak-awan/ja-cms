@@ -66,16 +66,20 @@ Route::get('/api/locale/current', [\App\Http\Controllers\LocaleController::class
 | Admin routes must be defined before catch-all routes to avoid conflicts
 */
 
-// Admin Authentication Routes (Guest only)
+// Admin Authentication Routes (Guest only) - Redirect to main login
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
-        Route::get('/login', [\App\Modules\Admin\Controllers\AuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [\App\Modules\Admin\Controllers\AuthController::class, 'login'])->name('login.post');
+        Route::get('/login', function () {
+            return redirect()->route('login')->with('info', __('auth.admin_login_redirect'));
+        })->name('login');
+        Route::post('/login', function () {
+            return redirect()->route('login');
+        })->name('login.post');
     });
 
     // Admin Authenticated Routes
     Route::middleware(['admin', 'cache.debug'])->group(function () {
-        Route::post('/logout', [\App\Modules\Admin\Controllers\AuthController::class, 'logout'])->name('logout');
+        Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
         
         // Dashboard
         Route::get('/', [\App\Modules\Admin\Controllers\AdminController::class, 'dashboard'])->name('dashboard');

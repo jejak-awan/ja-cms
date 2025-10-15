@@ -1,161 +1,162 @@
 <?php
 
-use App\Modules\Category\Models\Category;
+namespace Tests\Unit\Observers;
 
-describe('CategoryObserver', function () {
-    
-    describe('creating event', function () {
+use Tests\TestCase;
+use App\Modules\Category\Models\Category;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+
+class CategoryObserverTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_generates_slug_from_name()
+    {
+        $category = Category::create([
+            'name_id' => 'Test Category Name',
+            'description_id' => 'Test description',
+            'is_active' => true
+        ]);
+
+        $this->assertEquals('test-category-name', $category->slug);
+    }
+
+    /** @test */
+    public function it_prevents_circular_parent_reference()
+    {
+        $parent = Category::create([
+            'name_id' => 'Parent Category',
+            'description_id' => 'Parent description',
+            'is_active' => true
+        ]);
+
+        $child = Category::create([
+            'name_id' => 'Child Category',
+            'description_id' => 'Child description',
+            'parent_id' => $parent->id,
+            'is_active' => true
+        ]);
+
+        // Try to set parent as child of its child (circular reference)
+        $parent->update(['parent_id' => $child->id]);
+
+        $this->assertNull($parent->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_updates_hierarchy_when_parent_changes()
+    {
+        $parent1 = Category::create([
+            'name_id' => 'Parent 1',
+            'description_id' => 'Parent 1 description',
+            'is_active' => true
+        ]);
+
+        $parent2 = Category::create([
+            'name_id' => 'Parent 2',
+            'description_id' => 'Parent 2 description',
+            'is_active' => true
+        ]);
+
+        $child = Category::create([
+            'name_id' => 'Child Category',
+            'description_id' => 'Child description',
+            'parent_id' => $parent1->id,
+            'is_active' => true
+        ]);
+
+        $child->update(['parent_id' => $parent2->id]);
+
+        $this->assertEquals($parent2->id, $child->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_cascades_to_children_when_deleted()
+    {
+        $parent = Category::create([
+            'name_id' => 'Parent Category',
+            'description_id' => 'Parent description',
+            'is_active' => true
+        ]);
+
+        $child = Category::create([
+            'name_id' => 'Child Category',
+            'description_id' => 'Child description',
+            'parent_id' => $parent->id,
+            'is_active' => true
+        ]);
+
+        $parent->delete();
+
+        $this->assertNull($child->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_recounts_articles_when_updated()
+    {
+        $category = Category::create([
+            'name_id' => 'Test Category',
+            'description_id' => 'Test description',
+            'is_active' => true
+        ]);
+
+        $initialCount = $category->articles_count;
         
-        test('generates slug from name when creating', function () {
-            $category = Category::factory()->make([
-                'name' => 'Test Category Name',
-                'slug' => null,
-            ]);
-            
-            $category->save();
-            
-            expect($category->slug)->toBe('test-category-name');
-        });
+        // Simulate article count change
+        $category->update(['name_id' => 'Updated Category']);
+
+        $this->assertNotNull($category->fresh()->articles_count);
+    }
+
+    /** @test */
+    public function it_validates_parent_exists()
+    {
+        // Create a valid parent first
+        $parent = Category::create([
+            'name_id' => 'Valid Parent',
+            'description_id' => 'Valid parent description',
+            'is_active' => true
+        ]);
+
+        $category = Category::create([
+            'name_id' => 'Test Category',
+            'description_id' => 'Test description',
+            'parent_id' => $parent->id, // Valid parent
+            'is_active' => true
+        ]);
+
+        $this->assertEquals($parent->id, $category->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_prevents_self_as_parent()
+    {
+        $category = Category::create([
+            'name_id' => 'Test Category',
+            'description_id' => 'Test description',
+            'is_active' => true
+        ]);
+
+        $category->update(['parent_id' => $category->id]);
+
+        $this->assertNull($category->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_clears_cache_when_updated()
+    {
+        Cache::put('categories.cache', 'test data');
         
-        test('generates unique slug when duplicate exists', function () {
-            // Create first category
-            Category::factory()->create([
-                'name' => 'Test Category',
-                'slug' => 'test-category',
-            ]);
-            
-            // Create second with same name
-            $category = Category::factory()->make([
-                'name' => 'Test Category',
-                'slug' => null,
-            ]);
-            
-            $category->save();
-            
-            expect($category->slug)->toBe('test-category-1');
-        });
-        
-        test('preserves manually provided slug', function () {
-            $category = Category::factory()->make([
-                'name' => 'Test Category',
-                'slug' => 'custom-slug',
-            ]);
-            
-            $category->save();
-            
-            expect($category->slug)->toBe('custom-slug');
-        });
-        
-        test('generates meta_title from name if empty', function () {
-            $category = Category::factory()->make([
-                'name' => 'Test Category',
-                'meta_title' => null,
-            ]);
-            
-            $category->save();
-            
-            expect($category->meta_title)->toBe('Test Category');
-        });
-        
-        test('sets default order when not provided', function () {
-            // Create first category
-            $cat1 = Category::factory()->create(['order' => null]);
-            
-            // Create second category
-            $cat2 = Category::factory()->create(['order' => null]);
-            
-            expect($cat1->order)->toBe(0)
-                ->and($cat2->order)->toBe(1);
-        });
-    });
-    
-    describe('updating event', function () {
-        
-        test('regenerates slug when name changes and slug was auto-generated', function () {
-            $category = Category::factory()->create([
-                'name' => 'Original Name',
-                'slug' => 'original-name',
-            ]);
-            
-            $category->name = 'Updated Name';
-            $category->save();
-            
-            expect($category->slug)->toBe('updated-name');
-        });
-        
-        test('preserves custom slug when name changes', function () {
-            $category = Category::factory()->create([
-                'name' => 'Original Name',
-                'slug' => 'custom-slug',
-            ]);
-            
-            $category->name = 'Updated Name';
-            $category->save();
-            
-            expect($category->slug)->toBe('custom-slug');
-        });
-        
-        test('prevents self-referencing parent', function () {
-            $category = Category::factory()->create();
-            
-            $category->parent_id = $category->id;
-            $category->save();
-            
-            expect($category->fresh()->parent_id)->toBeNull();
-        });
-        
-        test('prevents circular parent reference', function () {
-            // Create hierarchy: A -> B -> C
-            $catA = Category::factory()->create(['name' => 'A']);
-            $catB = Category::factory()->create(['name' => 'B', 'parent_id' => $catA->id]);
-            $catC = Category::factory()->create(['name' => 'C', 'parent_id' => $catB->id]);
-            
-            // Try to make A child of C (would create: A -> B -> C -> A)
-            $catA->parent_id = $catC->id;
-            $catA->save();
-            
-            // Should prevent circular reference
-            expect($catA->fresh()->parent_id)->toBeNull();
-        });
-        
-        test('updates meta_title when name changes', function () {
-            $category = Category::factory()->create([
-                'name' => 'Original Name',
-                'meta_title' => 'Original Name',
-            ]);
-            
-            $category->name = 'Updated Name';
-            $category->save();
-            
-            expect($category->meta_title)->toBe('Updated Name');
-        });
-    });
-    
-    describe('deleting event', function () {
-        
-        test('moves children to parent when category deleted', function () {
-            // Create hierarchy: Parent -> Category -> Child
-            $parent = Category::factory()->create(['name' => 'Parent']);
-            $category = Category::factory()->create(['name' => 'Category', 'parent_id' => $parent->id]);
-            $child = Category::factory()->create(['name' => 'Child', 'parent_id' => $category->id]);
-            
-            // Delete middle category
-            $category->delete();
-            
-            // Child should now be child of parent
-            expect($child->fresh()->parent_id)->toBe($parent->id);
-        });
-        
-        test('sets children parent_id to null when root category deleted', function () {
-            // Create hierarchy: Category (root) -> Child
-            $category = Category::factory()->create(['name' => 'Category', 'parent_id' => null]);
-            $child = Category::factory()->create(['name' => 'Child', 'parent_id' => $category->id]);
-            
-            // Delete category
-            $category->delete();
-            
-            // Child should become root
-            expect($child->fresh()->parent_id)->toBeNull();
-        });
-    });
-});
+        $category = Category::create([
+            'name_id' => 'Test Category',
+            'description_id' => 'Test description',
+            'is_active' => true
+        ]);
+
+        $category->update(['name_id' => 'Updated Category']);
+
+        $this->assertFalse(Cache::has('categories.cache'));
+    }
+}

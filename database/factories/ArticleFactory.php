@@ -21,10 +21,13 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
+            'title_id' => fake()->sentence(),
+            'title_en' => fake()->sentence(),
             'slug' => fake()->slug(),
-            'excerpt' => fake()->paragraph(),
-            'content' => fake()->paragraphs(5, true),
+            'excerpt_id' => fake()->paragraph(),
+            'excerpt_en' => fake()->paragraph(),
+            'content_id' => fake()->paragraphs(5, true),
+            'content_en' => fake()->paragraphs(5, true),
             'category_id' => \App\Modules\Category\Models\Category::factory(),
             'user_id' => User::factory(),
             'featured_image' => null,

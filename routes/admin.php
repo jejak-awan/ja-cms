@@ -1,6 +1,5 @@
 <?php
 
-use App\Modules\Admin\Controllers\AuthController;
 use App\Modules\Admin\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,18 +11,25 @@ use Illuminate\Support\Facades\Route;
 | Here are all the admin panel routes. These routes are loaded by the
 | RouteServiceProvider and all of them will have the "admin" prefix.
 |
+| Note: Admin login is now handled by the unified login system.
+| Admin routes redirect to the main login page.
+|
 */
 
-// Admin Authentication Routes (Guest only)
+// Admin Authentication Routes (Guest only) - Redirect to main login
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
-        Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+        Route::get('/login', function () {
+            return redirect()->route('login')->with('info', __('auth.admin_login_redirect'));
+        })->name('login');
+        Route::post('/login', function () {
+            return redirect()->route('login');
+        })->name('login.post');
     });
 
     // Admin Authenticated Routes
-    Route::middleware(['admin', 'cache.debug'])->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::middleware(['admin', 'cache.debug', 'security.headers'])->group(function () {
+        Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
         
         // Dashboard
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -166,12 +172,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('settings.index');
         Route::put('/settings', [\App\Modules\Setting\Controllers\SettingController::class, 'update'])
             ->name('settings.update');
+        
+        // Language Settings
+        Route::get('/settings/languages', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'index'])->name('settings.languages');
+        Route::put('/settings/languages', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'update'])->name('settings.languages.update');
+        Route::post('/settings/languages/{id}/toggle', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'toggleStatus'])->name('settings.languages.toggle');
+        Route::post('/settings/languages/{id}/default', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'setDefault'])->name('settings.languages.default');
+        Route::post('/settings/languages/order', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'updateOrder'])->name('settings.languages.order');
+        Route::get('/settings/languages/statistics', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'statistics'])->name('settings.languages.statistics');
+        Route::post('/settings/languages/clear-cache', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'clearCache'])->name('settings.languages.clear-cache');
 
-        // Cache Management
-    Route::get('/cache', [\App\Modules\Admin\Controllers\CacheController::class, 'show'])->name('cache.show');
-    Route::get('/cache/status', [\App\Modules\Admin\Controllers\CacheController::class, 'status'])->name('cache.status');
-    Route::post('/cache/flush', [\App\Modules\Admin\Controllers\CacheController::class, 'flush'])->name('cache.flush');
-    Route::put('/cache/update', [\App\Modules\Admin\Controllers\CacheController::class, 'update'])->name('cache.update');
         
         // Menus
         Route::resource('menus', \App\Modules\Menu\Controllers\MenuController::class)
@@ -204,5 +214,53 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('plugins.settings');
         Route::put('/plugins/{plugin}/settings', [\App\Modules\Plugin\Controllers\PluginController::class, 'updateSettings'])
             ->name('plugins.settings.update');
+        
+        // Security Routes
+        Route::prefix('security')->name('security.')->group(function () {
+            Route::get('/two-factor', [\App\Http\Controllers\TwoFactorController::class, 'show'])->name('two-factor');
+            Route::post('/two-factor/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('two-factor.enable');
+            Route::post('/two-factor/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('two-factor.disable');
+            Route::get('/two-factor/recovery-codes', [\App\Http\Controllers\TwoFactorController::class, 'recoveryCodes'])->name('two-factor.recovery-codes');
+            Route::post('/two-factor/regenerate-codes', [\App\Http\Controllers\TwoFactorController::class, 'regenerateRecoveryCodes'])->name('two-factor.regenerate-codes');
+        });
+        
+        // Performance Routes
+        Route::prefix('performance')->name('performance.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\PerformanceController::class, 'dashboard'])->name('dashboard');
+            Route::get('/data', [\App\Http\Controllers\PerformanceController::class, 'metrics'])->name('data');
+            Route::get('/cache-stats', [\App\Http\Controllers\PerformanceController::class, 'cacheStats'])->name('cache.stats');
+            Route::post('/clear-cache', [\App\Http\Controllers\PerformanceController::class, 'clearCache'])->name('cache.clear');
+            Route::post('/warm-cache', [\App\Http\Controllers\PerformanceController::class, 'warmUpCache'])->name('cache.warm');
+            Route::post('/add-indexes', [\App\Http\Controllers\PerformanceController::class, 'addIndexes'])->name('database.indexes');
+            Route::post('/optimize-database', [\App\Http\Controllers\PerformanceController::class, 'optimizeDatabase'])->name('database.optimize');
+            Route::get('/database-stats', [\App\Http\Controllers\PerformanceController::class, 'databaseStats'])->name('database.stats');
+            Route::post('/optimize-image', [\App\Http\Controllers\PerformanceController::class, 'optimizeImage'])->name('image.optimize');
+            Route::post('/batch-optimize-images', [\App\Http\Controllers\PerformanceController::class, 'batchOptimizeImages'])->name('image.batch-optimize');
+            Route::get('/report', [\App\Http\Controllers\PerformanceController::class, 'generateReport'])->name('report');
+            Route::get('/recommendations', [\App\Http\Controllers\PerformanceController::class, 'recommendations'])->name('recommendations');
+        });
+    });
+    
+    // 2FA Verification Routes (separate from admin middleware)
+    Route::middleware(['auth', 'two.factor'])->group(function () {
+        Route::get('/two-factor/verify', function () {
+            return view('admin.security.verify-two-factor');
+        })->name('admin.two-factor.verify');
+        Route::post('/two-factor/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify'])->name('admin.two-factor.verify');
+    });
+    
+    // Cache Management Routes
+    Route::prefix('cache')->name('cache.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\CacheController::class, 'dashboard'])->name('dashboard');
+        Route::get('/status', [\App\Http\Controllers\CacheController::class, 'status'])->name('status');
+        Route::get('/stats', [\App\Http\Controllers\CacheController::class, 'stats'])->name('stats');
+        Route::get('/metrics', [\App\Http\Controllers\CacheController::class, 'metrics'])->name('metrics');
+        Route::get('/config', [\App\Http\Controllers\CacheController::class, 'config'])->name('config');
+        Route::post('/config', [\App\Http\Controllers\CacheController::class, 'updateConfig'])->name('config.update');
+        Route::post('/clear-all', [\App\Http\Controllers\CacheController::class, 'clearAll'])->name('clear-all');
+        Route::post('/clear-pattern', [\App\Http\Controllers\CacheController::class, 'clearByPattern'])->name('clear-pattern');
+        Route::post('/warm-up', [\App\Http\Controllers\CacheController::class, 'warmUp'])->name('warm-up');
+        Route::post('/enable', [\App\Http\Controllers\CacheController::class, 'enable'])->name('enable');
+        Route::post('/disable', [\App\Http\Controllers\CacheController::class, 'disable'])->name('disable');
     });
 });

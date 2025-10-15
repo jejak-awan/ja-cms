@@ -38,6 +38,12 @@
                     </svg>
                     Social Media
                 </button>
+                <button onclick="showTab('languages')" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
+                    @t('admin.language_settings')
+                </button>
             </nav>
         </div>
 
@@ -200,6 +206,86 @@
                 </div>
             </div>
 
+            <!-- Languages Tab -->
+            <div id="languages-tab" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-sm font-medium text-blue-800">@t('admin.language_management')</h3>
+                        </div>
+                        <p class="text-sm text-blue-700 mt-1">@t('admin.language_management_description')</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Language List -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">@t('admin.active_languages')</h4>
+                            <div class="space-y-3">
+                                @php
+                                    $languages = \App\Modules\Language\Models\Language::orderBy('order')->get();
+                                @endphp
+                                @foreach($languages as $language)
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <span class="text-2xl mr-3">{{ $language->flag }}</span>
+                                        <div>
+                                            <div class="font-medium text-gray-900">{{ $language->native_name }}</div>
+                                            <div class="text-sm text-gray-500">{{ $language->english_name }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        @if($language->is_default)
+                                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">@t('admin.default')</span>
+                                        @endif
+                                        @if($language->is_active)
+                                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">@t('admin.active')</span>
+                                        @else
+                                        <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">@t('admin.inactive')</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">@t('admin.quick_actions')</h4>
+                            <div class="space-y-3">
+                                <a href="/admin/settings/languages" class="block w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg font-medium transition">
+                                    @t('admin.manage_languages')
+                                </a>
+                                <button onclick="clearLanguageCache()" class="block w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white text-center rounded-lg font-medium transition">
+                                    @t('admin.clear_language_cache')
+                                </button>
+                                <button onclick="viewLanguageStats()" class="block w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white text-center rounded-lg font-medium transition">
+                                    @t('admin.view_statistics')
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Browser Detection Settings -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">@t('admin.browser_detection')</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="browser_detection" name="settings[browser_language_detection_enabled]" 
+                                    value="1" {{ ($settings['browser_language_detection_enabled'] ?? true) ? 'checked' : '' }}
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="browser_detection" class="ml-2 text-sm text-gray-700">
+                                    @t('admin.enable_browser_detection')
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-500">@t('admin.browser_detection_description')</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex justify-end mt-8 pt-6 border-t">
                 <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
                     Save Settings
@@ -229,6 +315,61 @@ function showTab(tabName) {
     // Add active class to clicked button
     event.target.closest('.tab-btn').classList.add('active', 'border-blue-500', 'text-blue-600');
     event.target.closest('.tab-btn').classList.remove('border-transparent', 'text-gray-500');
+}
+
+// Language management functions
+function clearLanguageCache() {
+    if (confirm('{{ __("admin.confirm_clear_cache") }}')) {
+        fetch('/admin/settings/languages/clear-cache', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('{{ __("admin.error_occurred") }}');
+        });
+    }
+}
+
+function viewLanguageStats() {
+    fetch('/admin/settings/languages/statistics', {
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let stats = `
+            <div class="text-left">
+                <h3 class="text-lg font-medium mb-4">{{ __("admin.language_statistics") }}</h3>
+                <div class="space-y-2">
+                    <p><strong>{{ __("admin.total_languages") }}:</strong> ${data.total_languages}</p>
+                    <p><strong>{{ __("admin.active_languages") }}:</strong> ${data.active_languages}</p>
+                    <p><strong>{{ __("admin.default_language") }}:</strong> ${data.default_language}</p>
+                    <p><strong>{{ __("admin.browser_detection") }}:</strong> ${data.browser_detection_enabled ? '{{ __("admin.enabled") }}' : '{{ __("admin.disabled") }}'}</p>
+                </div>
+            </div>
+        `;
+        
+        // Create modal or alert with stats
+        alert(stats.replace(/<[^>]*>/g, '')); // Simple alert for now
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ __("admin.error_occurred") }}');
+    });
 }
 </script>
 @endpush

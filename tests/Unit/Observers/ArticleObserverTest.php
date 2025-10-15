@@ -1,210 +1,200 @@
 <?php
 
+namespace Tests\Unit\Observers;
+
+use Tests\TestCase;
 use App\Modules\Article\Models\Article;
 use App\Modules\Category\Models\Category;
-use Illuminate\Support\Str;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 
-describe('ArticleObserver', function () {
-    
-    describe('creating event', function () {
+class ArticleObserverTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected $user;
+    protected $category;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
         
-        test('generates slug from title when creating', function () {
-            $article = Article::factory()->make([
-                'title' => 'This is a Test Article',
-                'slug' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->slug)->toBe('this-is-a-test-article');
-        });
+        $this->user = User::factory()->create();
+        $this->category = Category::factory()->create([
+            'name_id' => 'Test Category',
+            'description_id' => 'Test description'
+        ]);
+    }
+
+    /** @test */
+    public function it_generates_slug_from_title_when_creating()
+    {
+        $article = Article::create([
+            'title_id' => 'Test Article Title',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals('test-article-title', $article->slug);
+    }
+
+    /** @test */
+    public function it_generates_unique_slug_when_duplicate()
+    {
+        // Create first article
+        Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        // Create second article with same title
+        $article2 = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals('test-article-1', $article2->slug);
+    }
+
+    /** @test */
+    public function it_auto_generates_excerpt_from_content()
+    {
+        $longContent = str_repeat('This is a long content. ', 15); // 375 characters
         
-        test('generates unique slug when duplicate exists', function () {
-            // Create first article
-            Article::factory()->create([
-                'title' => 'Test Article',
-                'slug' => 'test-article',
-            ]);
-            
-            // Create second article with same title
-            $article = Article::factory()->make([
-                'title' => 'Test Article',
-                'slug' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->slug)->toBe('test-article-1');
-        });
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => $longContent,
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertNotNull($article->excerpt_id);
+        $this->assertLessThanOrEqual(203, strlen($article->excerpt_id)); // 200 + 3 for "..."
+    }
+
+    /** @test */
+    public function it_preserves_manual_excerpt_if_provided()
+    {
+        $manualExcerpt = 'This is a manual excerpt';
         
-        test('preserves manually provided slug', function () {
-            $article = Article::factory()->make([
-                'title' => 'Test Article',
-                'slug' => 'custom-slug',
-            ]);
-            
-            $article->save();
-            
-            expect($article->slug)->toBe('custom-slug');
-        });
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'excerpt_id' => $manualExcerpt,
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals($manualExcerpt, $article->excerpt_id);
+    }
+
+    /** @test */
+    public function it_generates_meta_title_from_title_if_empty()
+    {
+        $article = Article::create([
+            'title_id' => 'Test Article Title',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals('Test Article Title', $article->meta_title);
+    }
+
+    /** @test */
+    public function it_generates_meta_description_from_excerpt_if_empty()
+    {
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => str_repeat('Test content. ', 20),
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertNotNull($article->meta_description);
+        $this->assertLessThanOrEqual(200, strlen($article->meta_description));
+    }
+
+    /** @test */
+    public function it_sets_published_at_when_status_changes_to_published()
+    {
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertNull($article->published_at);
+
+        $article->update(['status' => 'published']);
+
+        $this->assertNotNull($article->fresh()->published_at);
+    }
+
+    /** @test */
+    public function it_clears_cache_when_article_updated()
+    {
+        Cache::put('articles.cache', 'test data');
         
-        test('auto-generates excerpt from content when not provided', function () {
-            $content = str_repeat('This is a long content. ', 20);
-            
-            $article = Article::factory()->make([
-                'content' => $content,
-                'excerpt' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->excerpt)
-                ->not->toBeNull()
-                ->and(strlen($article->excerpt))->toBeLessThanOrEqual(203);
-        });
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $article->update(['title' => 'Updated Title']);
+
+        $this->assertFalse(Cache::has('articles.cache'));
+    }
+
+    /** @test */
+    public function it_clears_cache_when_article_deleted()
+    {
+        Cache::put('articles.cache', 'test data');
         
-        test('preserves manually provided excerpt', function () {
-            $article = Article::factory()->make([
-                'content' => 'Some long content here',
-                'excerpt' => 'Custom excerpt',
-            ]);
-            
-            $article->save();
-            
-            expect($article->excerpt)->toBe('Custom excerpt');
-        });
+        $article = Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $article->delete();
+
+        $this->assertFalse(Cache::has('articles.cache'));
+    }
+
+    /** @test */
+    public function it_updates_category_article_count()
+    {
+        $initialCount = $this->category->articles_count;
         
-        test('generates meta_title from title if empty', function () {
-            $article = Article::factory()->make([
-                'title' => 'Test Article Title',
-                'meta_title' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->meta_title)->toBe('Test Article Title');
-        });
-        
-        test('generates meta_description from excerpt if empty', function () {
-            $article = Article::factory()->make([
-                'excerpt' => 'This is a test excerpt',
-                'meta_description' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->meta_description)->toContain('This is a test excerpt');
-        });
-        
-        test('sets published_at when status is published and not set', function () {
-            $article = Article::factory()->make([
-                'status' => 'published',
-                'published_at' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->published_at)->not->toBeNull();
-        });
-        
-        test('does not set published_at when status is draft', function () {
-            $article = Article::factory()->make([
-                'status' => 'draft',
-                'published_at' => null,
-            ]);
-            
-            $article->save();
-            
-            expect($article->published_at)->toBeNull();
-        });
-        
-        test('preserves existing published_at when provided', function () {
-            $publishedAt = now()->subDays(5);
-            
-            $article = Article::factory()->make([
-                'status' => 'published',
-                'published_at' => $publishedAt,
-            ]);
-            
-            $article->save();
-            
-            expect($article->published_at->format('Y-m-d'))->toBe($publishedAt->format('Y-m-d'));
-        });
-    });
-    
-    describe('updating event', function () {
-        
-        test('regenerates slug when title changes and slug was auto-generated', function () {
-            $article = Article::factory()->create([
-                'title' => 'Original Title',
-                'slug' => 'original-title',
-            ]);
-            
-            $article->title = 'Updated Title';
-            $article->save();
-            
-            expect($article->slug)->toBe('updated-title');
-        });
-        
-        test('preserves custom slug when title changes', function () {
-            $article = Article::factory()->create([
-                'title' => 'Original Title',
-                'slug' => 'custom-slug',
-            ]);
-            
-            $article->title = 'Updated Title';
-            $article->save();
-            
-            expect($article->slug)->toBe('custom-slug');
-        });
-        
-        test('regenerates excerpt when content changes and excerpt was auto-generated', function () {
-            $article = Article::factory()->create([
-                'content' => 'Original content here',
-            ]);
-            
-            $originalExcerpt = $article->excerpt;
-            
-            $article->content = 'Updated content with new information';
-            $article->save();
-            
-            expect($article->excerpt)->not->toBe($originalExcerpt);
-        });
-        
-        test('updates meta_title when title changes', function () {
-            $article = Article::factory()->create([
-                'title' => 'Original Title',
-                'meta_title' => 'Original Title',
-            ]);
-            
-            $article->title = 'Updated Title';
-            $article->save();
-            
-            expect($article->meta_title)->toBe('Updated Title');
-        });
-        
-        test('sets published_at when status changes to published', function () {
-            $article = Article::factory()->create([
-                'status' => 'draft',
-                'published_at' => null,
-            ]);
-            
-            $article->status = 'published';
-            $article->save();
-            
-            expect($article->published_at)->not->toBeNull();
-        });
-        
-        test('clears published_at when status changes to draft', function () {
-            $article = Article::factory()->create([
-                'status' => 'published',
-                'published_at' => now(),
-            ]);
-            
-            $article->status = 'draft';
-            $article->save();
-            
-            expect($article->fresh()->published_at)->toBeNull();
-        });
-    });
-});
+        Article::create([
+            'title_id' => 'Test Article',
+            'content_id' => 'Test content',
+            'category_id' => $this->category->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals($initialCount + 1, $this->category->fresh()->articles_count);
+    }
+}

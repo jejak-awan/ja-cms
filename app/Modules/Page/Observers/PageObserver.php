@@ -4,21 +4,22 @@ namespace App\Modules\Page\Observers;
 
 use App\Modules\Page\Models\Page;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class PageObserver
 {
     public function creating(Page $page): void
     {
-        if (empty($page->slug) && !empty($page->title)) {
-            $page->slug = $this->generateUniqueSlug($page->title);
+        if (empty($page->slug) && !empty($page->title_id)) {
+            $page->slug = $this->generateUniqueSlug($page->title_id);
         }
 
-        if (empty($page->excerpt) && !empty($page->content)) {
-            $page->excerpt = Str::limit(strip_tags($page->content), 200);
+        if (empty($page->excerpt) && !empty($page->content_id)) {
+            $page->excerpt = Str::limit(strip_tags($page->content_id), 200);
         }
 
-        if (empty($page->meta_title) && !empty($page->title)) {
-            $page->meta_title = $page->title;
+        if (empty($page->meta_title) && !empty($page->title_id)) {
+            $page->meta_title = $page->title_id;
         }
 
         if (empty($page->meta_description) && !empty($page->excerpt)) {
@@ -36,15 +37,15 @@ class PageObserver
 
     public function updating(Page $page): void
     {
-        if ($page->isDirty('title') && !$page->isDirty('slug')) {
-            $oldSlug = Str::slug($page->getOriginal('title'));
+        if ($page->isDirty('title_id') && !$page->isDirty('slug')) {
+            $oldSlug = Str::slug($page->getOriginal('title_id'));
             if ($page->slug === $oldSlug) {
-                $page->slug = $this->generateUniqueSlug($page->title, $page->id);
+                $page->slug = $this->generateUniqueSlug($page->title_id, $page->id);
             }
         }
 
-        if ($page->isDirty('content') && !$page->isDirty('excerpt')) {
-            $page->excerpt = Str::limit(strip_tags($page->content), 200);
+        if ($page->isDirty('content_id') && !$page->isDirty('excerpt')) {
+            $page->excerpt = Str::limit(strip_tags($page->content_id), 200);
         }
 
         if ($page->isDirty('status') && $page->status === 'published' && empty($page->published_at)) {
@@ -54,6 +55,17 @@ class PageObserver
         if ($page->parent_id === $page->id) {
             $page->parent_id = null;
         }
+
+        // Prevent circular parent reference
+        if ($page->parent_id && $this->wouldCreateCircularReference($page)) {
+            $page->parent_id = null;
+        }
+    }
+
+    public function updated(Page $page): void
+    {
+        // Clear cache when page is updated
+        Cache::forget('pages.cache');
     }
 
     public function deleting(Page $page): void
@@ -86,5 +98,27 @@ class PageObserver
     private function getNextOrder(?int $parentId): int
     {
         return (Page::where('parent_id', $parentId)->max('order') ?? -1) + 1;
+    }
+
+    private function wouldCreateCircularReference(Page $page): bool
+    {
+        if (!$page->parent_id) {
+            return false;
+        }
+
+        $parentId = $page->parent_id;
+        $visited = [$page->id];
+
+        while ($parentId) {
+            if (in_array($parentId, $visited)) {
+                return true;
+            }
+
+            $visited[] = $parentId;
+            $parent = Page::find($parentId);
+            $parentId = $parent ? $parent->parent_id : null;
+        }
+
+        return false;
     }
 }

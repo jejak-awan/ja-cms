@@ -43,7 +43,39 @@ class UserController extends Controller
             'inactive' => User::where('status', 'inactive')->count(),
         ];
 
+        // API Response
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Users retrieved successfully',
+                'data' => $users->items(),
+                'pagination' => [
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                    'from' => $users->firstItem(),
+                    'to' => $users->lastItem(),
+                    'has_more_pages' => $users->hasMorePages(),
+                ],
+                'stats' => $stats
+            ]);
+        }
+
         return view('admin.users.index', compact('users', 'roles', 'stats'));
+    }
+
+    public function show(User $user)
+    {
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User retrieved successfully',
+                'data' => $user->load('roles')
+            ]);
+        }
+
+        return view('admin.users.show', compact('user'));
     }
 
     public function create()
@@ -71,6 +103,14 @@ class UserController extends Controller
             'status' => $request->status ?? 'active',
             'bio' => $request->bio,
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User created successfully',
+                'data' => $user->load('roles')
+            ], 201);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully');
@@ -106,6 +146,14 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User updated successfully',
+                'data' => $user->fresh()->load('roles')
+            ]);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully');

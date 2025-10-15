@@ -220,29 +220,31 @@ $stats = [
 
 ## 🔧 Controllers
 
-### AuthController
-**File**: `app/Modules/Admin/Controllers/AuthController.php`
+### Unified Authentication
+**File**: `app/Http/Controllers/Auth/LoginController.php`
+
+**Note**: Admin authentication is now handled by the unified login system. All users (admin and regular) use the same login page with role-based redirects.
 
 **Methods**:
 
-1. **showLogin()**
-   - Returns login view
-   - Redirects to dashboard if already authenticated
+1. **showLoginForm()**
+   - Returns unified login view
+   - Auto-detects browser language
+   - Redirects authenticated users based on role
 
 2. **login(Request $request)**
    - Validates credentials (email, password)
    - Attempts authentication with remember option
    - Checks RBAC access (admin/editor/author)
-   - Logs out if unauthorized
+   - Role-based redirect after login
    - Updates last login with IP
    - Regenerates session
-   - Redirects to dashboard with success message
 
 3. **logout(Request $request)**
    - Logs out user
    - Invalidates session
    - Regenerates CSRF token
-   - Redirects to login with message
+   - Redirects to unified login
 
 ### AdminController
 **File**: `app/Modules/Admin/Controllers/AdminController.php`
@@ -264,7 +266,7 @@ $stats = [
 1. **Authentication Check**
    ```php
    if (!auth()->check()) {
-       return redirect()->route('admin.login')
+       return redirect()->route('login')
            ->with('error', 'Please login to access admin panel.');
    }
    ```
@@ -285,8 +287,11 @@ $stats = [
 
 ### 1. Access Login Page
 ```bash
-# URL
+# URL (redirects to unified login)
 http://192.168.88.44/admin/login
+
+# Direct unified login
+http://192.168.88.44/login
 
 # Or direct navigation
 Visit the URL in your browser

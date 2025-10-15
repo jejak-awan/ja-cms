@@ -17,9 +17,9 @@ class Page extends Model
     }
 
     protected $fillable = [
-        'title', 'slug', 'content', 'excerpt', 'template', 'featured_image',
+        'title_id', 'title_en', 'slug', 'content_id', 'content_en', 'excerpt', 'template', 'featured_image',
         'status', 'order', 'is_homepage', 'parent_id', 'meta_title', 'meta_description',
-        'meta_keywords', 'user_id', 'published_at', 'views'
+        'meta_keywords', 'user_id', 'published_at', 'views', 'locale'
     ];
 
     protected $casts = [

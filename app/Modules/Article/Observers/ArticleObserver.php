@@ -4,6 +4,7 @@ namespace App\Modules\Article\Observers;
 
 use App\Modules\Article\Models\Article;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class ArticleObserver
 {
@@ -14,23 +15,23 @@ class ArticleObserver
     public function creating(Article $article): void
     {
         // Auto-generate slug from title if not provided
-        if (empty($article->slug) && !empty($article->title)) {
-            $article->slug = $this->generateUniqueSlug($article->title);
+        if (empty($article->slug) && !empty($article->title_id)) {
+            $article->slug = $this->generateUniqueSlug($article->title_id);
         }
 
         // Auto-generate excerpt from content if not provided
-        if (empty($article->excerpt) && !empty($article->content)) {
-            $article->excerpt = $this->generateExcerpt($article->content);
+        if (empty($article->excerpt_id) && !empty($article->content_id)) {
+            $article->excerpt_id = $this->generateExcerpt($article->content_id);
         }
 
         // Auto-generate meta_title from title if not provided
-        if (empty($article->meta_title) && !empty($article->title)) {
-            $article->meta_title = $article->title;
+        if (empty($article->meta_title) && !empty($article->title_id)) {
+            $article->meta_title = $article->title_id;
         }
 
         // Auto-generate meta_description from excerpt if not provided
-        if (empty($article->meta_description) && !empty($article->excerpt)) {
-            $article->meta_description = Str::limit(strip_tags($article->excerpt), 160);
+        if (empty($article->meta_description) && !empty($article->excerpt_id)) {
+            $article->meta_description = Str::limit(strip_tags($article->excerpt_id), 160);
         }
 
         // Set published_at to now if status is published and not set
@@ -46,28 +47,28 @@ class ArticleObserver
     public function updating(Article $article): void
     {
         // Regenerate slug if title changed and slug is same as old title's slug
-        if ($article->isDirty('title') && !$article->isDirty('slug')) {
-            $oldSlug = Str::slug($article->getOriginal('title'));
+        if ($article->isDirty('title_id') && !$article->isDirty('slug')) {
+            $oldSlug = Str::slug($article->getOriginal('title_id'));
             if ($article->slug === $oldSlug) {
-                $article->slug = $this->generateUniqueSlug($article->title, $article->id);
+                $article->slug = $this->generateUniqueSlug($article->title_id, $article->id);
             }
         }
 
         // Regenerate excerpt if content changed and excerpt wasn't manually changed
-        if ($article->isDirty('content') && !$article->isDirty('excerpt')) {
-            $article->excerpt = $this->generateExcerpt($article->content);
+        if ($article->isDirty('content_id') && !$article->isDirty('excerpt_id')) {
+            $article->excerpt_id = $this->generateExcerpt($article->content_id);
         }
 
         // Update meta_title if title changed and meta_title wasn't manually changed
-        if ($article->isDirty('title') && !$article->isDirty('meta_title')) {
-            if (empty($article->meta_title) || $article->meta_title === $article->getOriginal('title')) {
-                $article->meta_title = $article->title;
+        if ($article->isDirty('title_id') && !$article->isDirty('meta_title')) {
+            if (empty($article->meta_title) || $article->meta_title === $article->getOriginal('title_id')) {
+                $article->meta_title = $article->title_id;
             }
         }
 
         // Update meta_description if excerpt changed and meta_description wasn't manually changed
-        if ($article->isDirty('excerpt') && !$article->isDirty('meta_description')) {
-            $article->meta_description = Str::limit(strip_tags($article->excerpt), 160);
+        if ($article->isDirty('excerpt_id') && !$article->isDirty('meta_description')) {
+            $article->meta_description = Str::limit(strip_tags($article->excerpt_id), 160);
         }
 
         // Set published_at when status changes to published
@@ -145,7 +146,8 @@ class ArticleObserver
      */
     public function saved(Article $article): void
     {
-        // Log activity or trigger events here if needed
+        // Clear cache when article is saved
+        Cache::forget('articles.cache');
     }
 
     /**
@@ -153,7 +155,8 @@ class ArticleObserver
      */
     public function deleted(Article $article): void
     {
-        // Clean up related data if needed
+        // Clear cache when article is deleted
+        Cache::forget('articles.cache');
     }
 
     /**

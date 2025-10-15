@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
@@ -17,8 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Add SetLocale to web middleware group globally
+        // Add language detection to web middleware group globally
         $middleware->web(append: [
+            \App\Http\Middleware\DetectLanguage::class,
             \App\Http\Middleware\SetLocale::class,
         ]);
         
@@ -29,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'cache.debug' => \App\Http\Middleware\CacheDebugMiddleware::class,
             'locale' => \App\Http\Middleware\SetLocale::class,
             'localize.routes' => \App\Http\Middleware\LocalizeRoutes::class,
+            'api' => \App\Http\Middleware\ApiMiddleware::class,
+            'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            'rate.limit' => \App\Http\Middleware\CustomRateLimiter::class,
+            'two.factor' => \App\Http\Middleware\TwoFactorMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

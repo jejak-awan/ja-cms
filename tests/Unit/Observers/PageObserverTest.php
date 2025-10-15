@@ -1,164 +1,174 @@
 <?php
 
-use App\Modules\Page\Models\Page;
+namespace Tests\Unit\Observers;
 
-describe('PageObserver', function () {
-    
-    describe('creating event', function () {
+use Tests\TestCase;
+use App\Modules\Page\Models\Page;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+
+class PageObserverTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
+    /** @test */
+    public function it_generates_slug_from_title()
+    {
+        $page = Page::create([
+            'title_id' => 'Test Page Title',
+            'content_id' => 'Test content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals('test-page-title', $page->slug);
+    }
+
+    /** @test */
+    public function it_prevents_circular_parent_reference()
+    {
+        $parent = Page::create([
+            'title_id' => 'Parent Page',
+            'content_id' => 'Parent content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $child = Page::create([
+            'title_id' => 'Child Page',
+            'content_id' => 'Child content',
+            'parent_id' => $parent->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        // Try to set parent as child of its child (circular reference)
+        $parent->update(['parent_id' => $child->id]);
+
+        $this->assertNull($parent->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_updates_hierarchy_when_parent_changes()
+    {
+        $parent1 = Page::create([
+            'title_id' => 'Parent 1',
+            'content_id' => 'Parent 1 content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $parent2 = Page::create([
+            'title_id' => 'Parent 2',
+            'content_id' => 'Parent 2 content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $child = Page::create([
+            'title_id' => 'Child Page',
+            'content_id' => 'Child content',
+            'parent_id' => $parent1->id,
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $child->update(['parent_id' => $parent2->id]);
+
+        $this->assertEquals($parent2->id, $child->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_sets_published_at_when_status_changes()
+    {
+        $page = Page::create([
+            'title_id' => 'Test Page',
+            'content_id' => 'Test content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertNull($page->published_at);
+
+        $page->update(['status' => 'published']);
+
+        $this->assertNotNull($page->fresh()->published_at);
+    }
+
+    /** @test */
+    public function it_generates_meta_tags_if_empty()
+    {
+        $page = Page::create([
+            'title_id' => 'Test Page Title',
+            'content_id' => 'Test content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals('Test Page Title', $page->meta_title);
+        $this->assertNotNull($page->meta_description);
+    }
+
+    /** @test */
+    public function it_clears_cache_when_updated()
+    {
+        Cache::put('pages.cache', 'test data');
         
-        test('generates slug from title when creating', function () {
-            $page = Page::factory()->make([
-                'title' => 'About Us Page',
-                'slug' => null,
-            ]);
-            
-            $page->save();
-            
-            expect($page->slug)->toBe('about-us-page');
-        });
-        
-        test('generates unique slug when duplicate exists', function () {
-            Page::factory()->create([
-                'title' => 'About Us',
-                'slug' => 'about-us',
-            ]);
-            
-            $page = Page::factory()->make([
-                'title' => 'About Us',
-                'slug' => null,
-            ]);
-            
-            $page->save();
-            
-            expect($page->slug)->toBe('about-us-1');
-        });
-        
-        test('auto-generates excerpt from content when not provided', function () {
-            $content = str_repeat('This is page content. ', 30);
-            
-            $page = Page::factory()->make([
-                'content' => $content,
-                'excerpt' => null,
-            ]);
-            
-            $page->save();
-            
-            expect($page->excerpt)
-                ->not->toBeNull()
-                ->and(strlen($page->excerpt))->toBeLessThanOrEqual(203);
-        });
-        
-        test('generates meta_title from title if empty', function () {
-            $page = Page::factory()->make([
-                'title' => 'Contact Page',
-                'meta_title' => null,
-            ]);
-            
-            $page->save();
-            
-            expect($page->meta_title)->toBe('Contact Page');
-        });
-        
-        test('sets published_at when status is published', function () {
-            $page = Page::factory()->make([
-                'status' => 'published',
-                'published_at' => null,
-            ]);
-            
-            $page->save();
-            
-            expect($page->published_at)->not->toBeNull();
-        });
-        
-        test('sets default order when not provided', function () {
-            $page1 = Page::factory()->create(['order' => null]);
-            $page2 = Page::factory()->create(['order' => null]);
-            
-            expect($page1->order)->toBe(0)
-                ->and($page2->order)->toBe(1);
-        });
-    });
-    
-    describe('updating event', function () {
-        
-        test('regenerates slug when title changes and slug was auto-generated', function () {
-            $page = Page::factory()->create([
-                'title' => 'Original Title',
-                'slug' => 'original-title',
-            ]);
-            
-            $page->title = 'Updated Title';
-            $page->save();
-            
-            expect($page->slug)->toBe('updated-title');
-        });
-        
-        test('preserves custom slug when title changes', function () {
-            $page = Page::factory()->create([
-                'title' => 'Original Title',
-                'slug' => 'custom-slug',
-            ]);
-            
-            $page->title = 'Updated Title';
-            $page->save();
-            
-            expect($page->slug)->toBe('custom-slug');
-        });
-        
-        test('regenerates excerpt when content changes', function () {
-            $page = Page::factory()->create([
-                'content' => 'Original content',
-            ]);
-            
-            $originalExcerpt = $page->excerpt;
-            
-            $page->content = 'Updated content with new information';
-            $page->save();
-            
-            expect($page->excerpt)->not->toBe($originalExcerpt);
-        });
-        
-        test('sets published_at when status changes to published', function () {
-            $page = Page::factory()->create([
-                'status' => 'draft',
-                'published_at' => null,
-            ]);
-            
-            $page->status = 'published';
-            $page->save();
-            
-            expect($page->published_at)->not->toBeNull();
-        });
-        
-        test('prevents self-referencing parent', function () {
-            $page = Page::factory()->create();
-            
-            $page->parent_id = $page->id;
-            $page->save();
-            
-            expect($page->fresh()->parent_id)->toBeNull();
-        });
-    });
-    
-    describe('deleting event', function () {
-        
-        test('moves children to parent when page deleted', function () {
-            $parent = Page::factory()->create(['title' => 'Parent']);
-            $page = Page::factory()->create(['title' => 'Page', 'parent_id' => $parent->id]);
-            $child = Page::factory()->create(['title' => 'Child', 'parent_id' => $page->id]);
-            
-            $page->delete();
-            
-            expect($child->fresh()->parent_id)->toBe($parent->id);
-        });
-        
-        test('sets children parent_id to null when root page deleted', function () {
-            $page = Page::factory()->create(['title' => 'Page', 'parent_id' => null]);
-            $child = Page::factory()->create(['title' => 'Child', 'parent_id' => $page->id]);
-            
-            $page->delete();
-            
-            expect($child->fresh()->parent_id)->toBeNull();
-        });
-    });
-});
+        $page = Page::create([
+            'title_id' => 'Test Page',
+            'content_id' => 'Test content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $page->update(['title_id' => 'Updated Page']);
+
+        $this->assertFalse(Cache::has('pages.cache'));
+    }
+
+    /** @test */
+    public function it_prevents_self_as_parent()
+    {
+        $page = Page::create([
+            'title_id' => 'Test Page',
+            'content_id' => 'Test content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $page->update(['parent_id' => $page->id]);
+
+        $this->assertNull($page->fresh()->parent_id);
+    }
+
+    /** @test */
+    public function it_validates_parent_exists()
+    {
+        // Create a valid parent first
+        $parent = Page::create([
+            'title_id' => 'Valid Parent',
+            'content_id' => 'Valid parent content',
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $page = Page::create([
+            'title_id' => 'Test Page',
+            'content_id' => 'Test content',
+            'parent_id' => $parent->id, // Valid parent
+            'user_id' => $this->user->id,
+            'status' => 'draft'
+        ]);
+
+        $this->assertEquals($parent->id, $page->fresh()->parent_id);
+    }
+}

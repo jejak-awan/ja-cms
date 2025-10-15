@@ -56,4 +56,29 @@ return [
     'reset_password_notification' => 'Notifikasi Reset Password',
     'reset_password_text' => 'Klik tombol di bawah untuk reset password Anda:',
 
+    // Unified Login Page
+    'login_title' => 'Masuk',
+    'welcome_back' => 'Selamat Datang Kembali',
+    'sign_in_subtitle' => 'Masuk ke akun CMS Anda',
+    'email_address' => 'Alamat Email',
+    'sign_in' => 'Masuk',
+    'language' => 'Bahasa',
+    'back_to_website' => 'Kembali ke Website',
+    'all_rights_reserved' => 'Semua hak dilindungi.',
+    'admin_login_redirect' => 'Silakan gunakan halaman login utama. Anda akan diarahkan ke dashboard yang sesuai setelah login.',
+    
+    // Validation Messages
+    'email_required' => 'Alamat email wajib diisi.',
+    'email_invalid' => 'Masukkan alamat email yang valid.',
+    'password_required' => 'Password wajib diisi.',
+    'password_min' => 'Password minimal 6 karakter.',
+    'failed' => 'Email atau password yang Anda masukkan salah.',
+    
+    // Welcome Messages
+    'welcome_admin' => 'Selamat datang kembali, :name!',
+    'welcome_user' => 'Selamat datang kembali, :name!',
+    
+    // Logout Messages
+    'logout_success' => 'Anda telah berhasil keluar.',
+
 ];

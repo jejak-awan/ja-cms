@@ -17,9 +17,11 @@ class Category extends Model
     }
 
     protected $fillable = [
-        'name',
+        'name_id',
+        'name_en',
         'slug',
-        'description',
+        'description_id',
+        'description_en',
         'parent_id',
         'color',
         'icon',
@@ -27,7 +29,8 @@ class Category extends Model
         'is_active',
         'meta_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
+        'locale'
     ];
 
     protected $casts = [
