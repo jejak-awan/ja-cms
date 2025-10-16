@@ -52,15 +52,15 @@
                     </label>
                     <input 
                         type="text" 
-                        name="title" 
+                        name="title_id" 
                         id="title" 
-                        value="{{ old('title', $article->title) }}" 
+                        value="{{ old('title_id', $article->title) }}" 
                         required
-                        class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('title') border-red-500 @enderror"
+                        class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('title_id') border-red-500 @enderror"
                         placeholder="Enter article title..."
                         onkeyup="generateSlug()"
                     >
-                    @error('title')
+                    @error('title_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -93,14 +93,14 @@
                         Excerpt
                     </label>
                     <textarea 
-                        name="excerpt" 
+                        name="excerpt_id" 
                         id="excerpt" 
                         rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('excerpt') border-red-500 @enderror"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('excerpt_id') border-red-500 @enderror"
                         placeholder="Brief summary of the article (optional)"
-                    >{{ old('excerpt', $article->excerpt) }}</textarea>
+                    >{{ old('excerpt_id', $article->excerpt) }}</textarea>
                     <p class="mt-1 text-xs text-gray-500">A short description that appears in article listings</p>
-                    @error('excerpt')
+                    @error('excerpt_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -111,13 +111,13 @@
                         Content <span class="text-red-500">*</span>
                     </label>
                     <textarea 
-                        name="content" 
+                        name="content_id" 
                         id="content" 
                         rows="15"
                         required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('content') border-red-500 @enderror"
-                    >{{ old('content', $article->content) }}</textarea>
-                    @error('content')
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('content_id') border-red-500 @enderror"
+                    >{{ old('content_id', $article->content) }}</textarea>
+                    @error('content_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('initTinyMCE function available:', typeof window.initTinyMCE);
     
     if (typeof window.initTinyMCE === 'function') {
-        window.initTinyMCE('#content', {
+        window.initTinyMCE('[name="content_id"]', {
             height: 500,
             placeholder: 'Start writing your article content here...'
         });

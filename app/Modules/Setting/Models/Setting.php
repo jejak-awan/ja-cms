@@ -69,9 +69,15 @@ class Setting extends Model
             ]
         );
 
-        Cache::forget("setting.{$key}");
-        Cache::forget("settings.group.{$group}");
-        Cache::forget('settings.all');
+        // Clear cache for this setting
+        try {
+            Cache::forget("setting.{$key}");
+            Cache::forget("settings.group.{$group}");
+            Cache::forget('settings.all');
+        } catch (\Exception $e) {
+            // Log cache clear error but don't fail the operation
+            \Log::warning('Failed to clear setting cache', ['key' => $key, 'error' => $e->getMessage()]);
+        }
 
         return (bool) $setting;
     }

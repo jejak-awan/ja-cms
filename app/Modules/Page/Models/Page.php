@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\User\Models\User;
+use App\Support\Translatable;
 
 class Page extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
+
+    protected $translatable = ['title', 'content'];
 
     protected static function newFactory()
     {

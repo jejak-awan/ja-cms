@@ -36,7 +36,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium mb-2">Name <span class="text-red-500">*</span></label>
-                            <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full px-4 py-2 border rounded-lg" onkeyup="generateSlug()">
+                            <input type="text" name="name_id" id="name" value="{{ old('name_id') }}" required class="w-full px-4 py-2 border rounded-lg" onkeyup="generateSlug()">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Slug</label>
@@ -44,7 +44,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-2">Description</label>
-                            <textarea name="description" rows="4" class="w-full px-4 py-2 border rounded-lg">{{ old('description') }}</textarea>
+                            <textarea name="description_id" rows="4" class="w-full px-4 py-2 border rounded-lg">{{ old('description_id') }}</textarea>
                         </div>
                     </div>
                 </div>

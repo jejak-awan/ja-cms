@@ -57,9 +57,9 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name_id' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:categories,slug',
-            'description' => 'nullable|string',
+            'description_id' => 'nullable|string',
             'parent_id' => 'nullable|exists:categories,id',
             'color' => 'nullable|string|max:7',
             'icon' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:1024',
@@ -70,7 +70,7 @@ class CategoryController extends Controller
         ]);
 
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $validated['slug'] = Str::slug($validated['name_id']);
         }
 
         if ($request->hasFile('icon')) {
@@ -105,9 +105,9 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name_id' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:categories,slug,' . $id,
-            'description' => 'nullable|string',
+            'description_id' => 'nullable|string',
             'parent_id' => 'nullable|exists:categories,id',
             'color' => 'nullable|string|max:7',
             'icon' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:1024',
@@ -122,7 +122,7 @@ class CategoryController extends Controller
         }
 
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $validated['slug'] = Str::slug($validated['name_id']);
         }
 
         if ($request->hasFile('icon')) {

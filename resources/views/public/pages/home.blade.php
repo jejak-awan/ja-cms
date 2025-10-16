@@ -41,7 +41,7 @@
                 <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                     @if($article->featured_image)
                         <img src="{{ str_starts_with($article->featured_image, 'http') ? $article->featured_image : asset('storage/' . $article->featured_image) }}" 
-                             alt="{{ $article->title }}"
+                             alt="{{ $article->title_id }}"
                              class="w-full h-64 object-cover"
                              loading="lazy">
                     @else
@@ -60,7 +60,7 @@
                     </div>
                     
                     <h3 class="text-2xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
+                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title_id }}</a>
                     </h3>
                     
                     <p class="text-gray-600 mb-4 line-clamp-3">
@@ -111,7 +111,7 @@
                 <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                     @if($article->featured_image)
                         <img src="{{ str_starts_with($article->featured_image, 'http') ? $article->featured_image : asset('storage/' . $article->featured_image) }}" 
-                             alt="{{ $article->title }}"
+                             alt="{{ $article->title_id }}"
                              class="w-full h-48 object-cover"
                              loading="lazy">
                     @else
@@ -127,7 +127,7 @@
                     <span class="category-badge text-xs">{{ $article->category->name ?? 'Uncategorized' }}</span>
                     
                     <h3 class="text-xl font-bold text-gray-900 mb-2 mt-3 hover:text-blue-600 transition">
-                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
+                        <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title_id }}</a>
                     </h3>
                     
                     <p class="text-gray-600 mb-4 line-clamp-2">

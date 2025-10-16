@@ -66,9 +66,12 @@ class PublicController extends Controller
         if ($request->has('q')) {
             $searchTerm = $request->q;
             $query->where(function($q) use ($searchTerm) {
-                $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('content', 'like', "%{$searchTerm}%")
-                  ->orWhere('excerpt', 'like', "%{$searchTerm}%");
+                $q->where('title_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('content_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('excerpt_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('title_en', 'like', "%{$searchTerm}%")
+                  ->orWhere('content_en', 'like', "%{$searchTerm}%")
+                  ->orWhere('excerpt_en', 'like', "%{$searchTerm}%");
             });
         }
         
@@ -186,9 +189,12 @@ class PublicController extends Controller
         // Search articles
         $articles = Article::where('status', 'published')
             ->where(function($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('content', 'like', "%{$query}%")
-                  ->orWhere('excerpt', 'like', "%{$query}%");
+                $q->where('title_id', 'like', "%{$query}%")
+                  ->orWhere('content_id', 'like', "%{$query}%")
+                  ->orWhere('excerpt_id', 'like', "%{$query}%")
+                  ->orWhere('title_en', 'like', "%{$query}%")
+                  ->orWhere('content_en', 'like', "%{$query}%")
+                  ->orWhere('excerpt_en', 'like', "%{$query}%");
             })
             ->with(['category', 'author'])
             ->latest('published_at')
@@ -197,8 +203,10 @@ class PublicController extends Controller
         // Search pages
         $pages = Page::where('status', 'published')
             ->where(function($q) use ($query) {
-                $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('content', 'like', "%{$query}%");
+                $q->where('title_id', 'like', "%{$query}%")
+                  ->orWhere('content_id', 'like', "%{$query}%")
+                  ->orWhere('title_en', 'like', "%{$query}%")
+                  ->orWhere('content_en', 'like', "%{$query}%");
             })
             ->latest('updated_at')
             ->paginate(10, ['*'], 'pages_page');

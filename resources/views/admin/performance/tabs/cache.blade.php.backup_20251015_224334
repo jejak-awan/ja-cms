@@ -18,7 +18,7 @@
                             {{ __('Loading...') }}
                         </span>
                     </div>
-                    <button id="cache-toggle-btn" onclick="window.toggleCacheUi()" class="w-full px-4 py-2.5 rounded-lg text-sm font-semibold border-2 border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow" disabled>
+                    <button id="cache-toggle-btn" onclick="toggleCacheUi()" class="w-full px-4 py-2.5 rounded-lg text-sm font-semibold border-2 border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow" disabled>
                         <span class="inline-flex items-center justify-center">
                             <span class="inline-block w-4 h-4 mr-2 animate-pulse">⏳</span>
                             {{ __('Loading...') }}
@@ -31,7 +31,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             {{ __('Driver') }}
                         </label>
-                        <select id="cache-driver-select" class="w-full form-select text-sm px-3 py-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" disabled onchange="window.onChangeCacheConfig()">
+                        <select id="cache-driver-select" class="w-full form-select text-sm px-3 py-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" disabled onchange="onChangeCacheConfig()">
                             <option>{{ __('Loading...') }}</option>
                         </select>
                     </div>
@@ -40,14 +40,14 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             {{ __('TTL (seconds)') }}
                         </label>
-                        <input id="cache-ttl-input" type="number" min="60" max="604800" step="60" class="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value="3600" onchange="window.onChangeCacheConfig()" disabled />
+                        <input id="cache-ttl-input" type="number" min="60" max="604800" step="60" class="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value="3600" onchange="onChangeCacheConfig()" disabled />
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Cache lifetime (60s - 604800s)') }}</p>
                     </div>
                     
                     <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3">
                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Debug Mode') }}</span>
                         <label class="inline-flex items-center cursor-pointer">
-                            <input id="cache-debug-toggle" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500" onchange="window.onChangeCacheConfig()" disabled />
+                            <input id="cache-debug-toggle" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500" onchange="onChangeCacheConfig()" disabled />
                             <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Enable') }}</span>
                         </label>
                     </div>
@@ -55,18 +55,32 @@
             </div>
 
             <div class="space-y-3">
-                <button onclick="window.warmUpCache()" class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all duration-200 text-sm font-semibold flex items-center justify-center shadow-md hover:shadow-lg">
+                <button onclick="warmUpCache()" class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all duration-200 text-sm font-semibold flex items-center justify-center shadow-md hover:shadow-lg">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
                     </svg>
                     {{ __('Warm Up Cache') }}
                 </button>
-                <button onclick="window.clearAllCache()" class="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-lg transition-all duration-200 text-sm font-semibold flex items-center justify-center shadow-md hover:shadow-lg">
+                <button onclick="clearAllCache()" class="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-lg transition-all duration-200 text-sm font-semibold flex items-center justify-center shadow-md hover:shadow-lg">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
                     {{ __('Clear All Cache') }}
                 </button>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button onclick="toggleCache('enable')" class="px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {{ __('Enable') }}
+                    </button>
+                    <button onclick="toggleCache('disable')" class="px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg transition-all duration-200 text-sm font-semibold shadow-md hover:shadow-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        {{ __('Disable') }}
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -152,12 +166,6 @@
 </div>
 
 <script>
-// Helper function to get CSRF token
-function getCsrfToken() {
-    const token = document.querySelector('meta[name="csrf-token"]');
-    return token ? token.getAttribute('content') : '';
-}
-
 // Update cache status
 window.updateCacheStatus = function(data) {
     const badge = document.getElementById('cache-enabled-badge');
@@ -285,124 +293,25 @@ function updateCacheChart(data) {
 }
 
 // Toggle enable/disable from UI
-function toggleCacheUi() {
-    console.log('toggleCacheUi called');
-    const badge = document.getElementById('cache-enabled-badge');
-    const badgeText = badge.textContent.trim().toUpperCase();
-    const badgeInnerHTML = badge.innerHTML;
-    console.log('Badge element:', badge);
-    console.log('Badge text content:', badge.textContent);
-    console.log('Badge innerHTML:', badgeInnerHTML);
-    console.log('Badge text trimmed uppercase:', badgeText);
-    console.log('Includes ENABLED?', badgeText.includes('ENABLED'));
-    console.log('Includes DISABLED?', badgeText.includes('DISABLED'));
-    
-    if (badgeText.includes('ENABLED')) {
-        console.log('Calling toggleCache(disable)');
-        window.toggleCache('disable');
-    } else {
-        console.log('Calling toggleCache(enable)');
-        window.toggleCache('enable');
-    }
-}
-window.toggleCacheUi = toggleCacheUi;
-
-// On change dropdown/input -> AJAX update
-function onChangeCacheConfig() {
-    const badgeText = document.getElementById('cache-enabled-badge').textContent.trim().toUpperCase();
-    if (!badgeText.includes('ENABLED')) return; // Ignore if disabled
-    
-    const driver = document.getElementById('cache-driver-select').value;
-    const ttl = parseInt(document.getElementById('cache-ttl-input').value) || 3600;
-    const debug = document.getElementById('cache-debug-toggle').checked;
-    
-    fetch('/admin/cache/config', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': getCsrfToken(),
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({driver, ttl, debug, enabled: true})
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            showNotification('success', '{{ __("Cache config updated!") }}');
-            // Reload data untuk update UI
-            setTimeout(() => loadCacheData(), 500);
-        } else {
-            showNotification('error', data.message || '{{ __("Failed to update cache config") }}');
-        }
-    })
-    .catch(err => {
-        console.error('Config update error:', err);
-        showNotification('error', '{{ __("Network error") }}');
-    });
-}
-window.onChangeCacheConfig = onChangeCacheConfig;
-
-// Toggle cache function
-function toggleCache(action) {
-    console.log('toggleCache called with action:', action);
+window.toggleCacheUi = function() {
     const endpoint = action === 'enable' ? '/admin/cache/enable' : '/admin/cache/disable';
-    console.log('Using endpoint:', endpoint);
     const btn = event ? event.target.closest('button') : null;
     const originalHtml = btn ? btn.innerHTML : null;
     
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>' + (action === 'enable' ? '{{ __("Enabling...") }}' : '{{ __("Disabling...") }}');
-    }
+        btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>' + (action === 'enable' ? '{{ __("Enabling...") }}' : '{{ __("Disabling...") }}');\n    }
     
-    console.log('Making fetch request to:', endpoint);
     fetch(endpoint, { 
         method: 'POST',
         headers: { 
-            'X-CSRF-TOKEN': getCsrfToken(),
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(r => {
-        console.log('Response status:', r.status);
-        return r.json();
-    })
+            'Content-Type': 'application/json'\n        }\n    })
+    .then(r => r.json())
     .then(data => {
-        console.log('Response data:', data);
         if (data.success) {
-            showNotification('success', data.message);
-            console.log('API call successful, calling loadCacheData() and loadConfig()');
-            // Reload data untuk refresh UI
-            setTimeout(() => {
-                console.log('Calling loadCacheData()');
-                if (typeof window.loadCacheData === 'function') {
-                    window.loadCacheData();
-                }
-                console.log('Calling loadConfig()');
-                if (typeof window.loadConfig === 'function') {
-                    window.loadConfig();
-                }
-            }, 500);
-        } else {
-            console.error('API call failed:', data.message);
-            showNotification('error', data.message || '{{ __("Failed to update cache") }}');
-        }
-        if (btn) {
-            btn.disabled = false;
-            if (originalHtml) btn.innerHTML = originalHtml;
-        }
-    })
-    .catch(err => {
-        console.error('Toggle cache error:', err);
-        showNotification('error', '{{ __("Network error") }}');
-        if (btn) {
-            btn.disabled = false;
-            if (originalHtml) btn.innerHTML = originalHtml;
-        }
-    });
-}
-window.toggleCache = toggleCache;
+            showNotification('success', data.message);\n            // Reload data untuk refresh UI\n            setTimeout(() => loadCacheData(), 500);\n        } else {\n            showNotification('error', data.message || '{{ __("Failed to update cache") }}');\n        }\n        if (btn) {\n            btn.disabled = false;\n            if (originalHtml) btn.innerHTML = originalHtml;\n        }\n    })\n    .catch(err => {\n        console.error('Toggle cache error:', err);\n        showNotification('error', '{{ __("Network error") }}');\n        if (btn) {\n            btn.disabled = false;\n            if (originalHtml) btn.innerHTML = originalHtml;\n        }\n    });\n}
 
 // Warm up cache
 function warmUpCache() {
@@ -412,10 +321,10 @@ function warmUpCache() {
     btn.disabled = true;
     btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>{{ __("Warming up...") }}';
     
-    fetch('/admin/cache/warm-up', {
+    fetch('/admin/cache/warm-up', { 
         method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': getCsrfToken(),
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json'
         }
     })
@@ -436,7 +345,6 @@ function warmUpCache() {
         btn.innerHTML = originalHtml;
     });
 }
-window.warmUpCache = warmUpCache;
 
 // Clear all cache
 function clearAllCache() {
@@ -450,10 +358,10 @@ function clearAllCache() {
     btn.disabled = true;
     btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>{{ __("Clearing...") }}';
     
-    fetch('/admin/cache/clear-all', {
+    fetch('/admin/cache/clear-all', { 
         method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': getCsrfToken(),
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json'
         }
     })
@@ -474,21 +382,175 @@ function clearAllCache() {
         btn.innerHTML = originalHtml;
     });
 }
-window.clearAllCache = clearAllCache;
 
-// Load config on page load
-function loadConfig() {
-    console.log('loadConfig called');
+// Toggle enable/disable from UI
+window.toggleCacheUi = function() {
+    const badgeText = document.getElementById('cache-enabled-badge').textContent.trim().toUpperCase();
+    console.log('Badge text:', badgeText); // Debug
+    
+    if (badgeText.includes('ENABLED')) {
+        // Cache is enabled, so disable it
+        toggleCache('disable');
+    } else {
+        // Cache is disabled, so enable it
+        toggleCache('enable');
+    }
+};
+
+// On change dropdown/input -> AJAX update
+window.onChangeCacheConfig = function() {
+    const badgeText = document.getElementById('cache-enabled-badge').textContent.trim().toUpperCase();
+    if (!badgeText.includes('ENABLED')) return; // Ignore if disabled
+    
+    const driver = document.getElementById('cache-driver-select').value;
+    const ttl = parseInt(document.getElementById('cache-ttl-input').value) || 3600;
+    const debug = document.getElementById('cache-debug-toggle').checked;
+    
     fetch('/admin/cache/config', {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({driver, ttl, debug, enabled: true})
     })
-    .then(r => {
-        console.log('Config response status:', r.status);
-        return r.json();
-    })
+    .then(r => r.json())
     .then(data => {
-        console.log('Config response data:', data);
+        if (data.success) {
+            showNotification('success', '{{ __("Cache config updated!") }}');
+            // Reload data untuk update UI
+            setTimeout(() => loadCacheData(), 500);
+        } else {
+            showNotification('error', data.message || '{{ __("Failed to update cache config") }}');
+        }
+    })
+    .catch(err => {
+        console.error('Config update error:', err);
+        showNotification('error', '{{ __("Network error") }}');
+    });
+};
+
+// Toggle cache function
+window.toggleCache = function(action) {
+    const endpoint = action === 'enable' ? '/admin/cache/enable' : '/admin/cache/disable';
+    const btn = event ? event.target.closest('button') : null;
+    const originalHtml = btn ? btn.innerHTML : null;
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>' + (action === 'enable' ? '{{ __("Enabling...") }}' : '{{ __("Disabling...") }}');
+    }
+    
+    fetch(endpoint, { 
+        method: 'POST',
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', data.message);
+            // Reload data untuk refresh UI
+            setTimeout(() => loadCacheData(), 500);
+        } else {
+            showNotification('error', data.message || '{{ __("Failed to update cache") }}');
+        }
+        if (btn) {
+            btn.disabled = false;
+            if (originalHtml) btn.innerHTML = originalHtml;
+        }
+    })
+    .catch(err => {
+        console.error('Toggle cache error:', err);
+        showNotification('error', '{{ __("Network error") }}');
+        if (btn) {
+            btn.disabled = false;
+            if (originalHtml) btn.innerHTML = originalHtml;
+        }
+    });
+};
+
+// Warm up cache
+window.warmUpCache = function() {
+    const btn = event.target.closest('button');
+    const originalHtml = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>{{ __("Warming up...") }}';
+    
+    fetch('/admin/cache/warm-up', { 
+        method: 'POST',
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', '{{ __("Cache warmed up successfully") }}');
+            loadCacheData();
+        } else {
+            showNotification('error', data.message || '{{ __("Failed to warm up cache") }}');
+        }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    })
+    .catch(err => {
+        showNotification('error', '{{ __("Network error") }}');
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    });
+};
+
+// Clear all cache
+window.clearAllCache = function() {
+    if (!confirm('{{ __("Are you sure you want to clear all cache?") }}')) {
+        return;
+    }
+    
+    const btn = event.target.closest('button');
+    const originalHtml = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="w-4 h-4 inline-block animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>{{ __("Clearing...") }}';
+    
+    fetch('/admin/cache/clear-all', { 
+        method: 'POST',
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', '{{ __("Cache cleared successfully") }}');
+            loadCacheData();
+        } else {
+            showNotification('error', data.message || '{{ __("Failed to clear cache") }}');
+        }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    })
+    .catch(err => {
+        showNotification('error', '{{ __("Network error") }}');
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    });
+};
+
+function loadConfig() {
+    fetch('/admin/cache/config', { 
+        method: 'GET', 
+        headers: { 'Accept': 'application/json' } 
+    })
+    .then(r => r.json())
+    .then(data => {
         if(data.success && data.data) {
             // Update metrics first (ini populate dropdown)
             window.updateCacheMetrics(data.data);
@@ -504,23 +566,15 @@ function loadConfig() {
         showNotification('error', '{{ __("Failed to load cache config") }}: ' + err);
         setDriverDropdownError();
     });
-}function setDriverDropdownError() {
+}
+function setDriverDropdownError() {
     const sel = document.getElementById('cache-driver-select');
     sel.innerHTML = '';
     sel.appendChild(Object.assign(document.createElement('option'), { value: '', textContent: 'Error loading drivers' }));
     sel.disabled = true;
 }
-
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Cache functions loaded:', {
-        toggleCacheUi: typeof window.toggleCacheUi,
-        toggleCache: typeof window.toggleCache,
-        warmUpCache: typeof window.warmUpCache,
-        clearAllCache: typeof window.clearAllCache,
-        onChangeCacheConfig: typeof window.onChangeCacheConfig
-    });
-    // loadConfig() will be called by parent when cache tab becomes active
+    loadConfig();
 });
-
-window.loadConfig = loadConfig;
 </script>
+

@@ -15,7 +15,12 @@ class PageController extends Controller
         $query = Page::with('user')->orderBy('order', 'asc');
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where(function($q) use ($request) {
+                $q->where('title_id', 'like', '%' . $request->search . '%')
+                  ->orWhere('content_id', 'like', '%' . $request->search . '%')
+                  ->orWhere('title_en', 'like', '%' . $request->search . '%')
+                  ->orWhere('content_en', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->filled('status')) {
@@ -46,9 +51,9 @@ class PageController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|max:255',
+            'title_id' => 'required|max:255',
             'slug' => 'nullable|unique:pages,slug|max:255',
-            'content' => 'required',
+            'content_id' => 'required',
             'excerpt' => 'nullable',
             'template' => 'required|in:' . implode(',', array_keys(Page::templates())),
             'featured_image' => 'nullable|image|max:2048',
@@ -91,9 +96,9 @@ class PageController extends Controller
     public function update(Request $request, Page $page)
     {
         $validated = $request->validate([
-            'title' => 'required|max:255',
+            'title_id' => 'required|max:255',
             'slug' => 'nullable|unique:pages,slug,' . $page->id . '|max:255',
-            'content' => 'required',
+            'content_id' => 'required',
             'excerpt' => 'nullable',
             'template' => 'required|in:' . implode(',', array_keys(Page::templates())),
             'featured_image' => 'nullable|image|max:2048',
@@ -104,7 +109,7 @@ class PageController extends Controller
             'meta_keywords' => 'nullable|max:255',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title_id']);
 
         if ($request->hasFile('featured_image')) {
             if ($page->featured_image) {

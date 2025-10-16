@@ -33,7 +33,7 @@
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <label class="block text-sm font-medium mb-2">Title *</label>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" required class="w-full px-4 py-2 border rounded-lg" onkeyup="generateSlug()">
+                    <input type="text" name="title_id" id="title" value="{{ old('title_id') }}" required class="w-full px-4 py-2 border rounded-lg" onkeyup="generateSlug()">
                 </div>
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
@@ -49,7 +49,7 @@
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <label class="block text-sm font-medium mb-2">Content *</label>
-                    <textarea name="content" id="content" rows="15" required class="w-full px-4 py-2 border rounded-lg">{{ old('content') }}</textarea>
+                    <textarea name="content_id" id="content" rows="15" required class="w-full px-4 py-2 border rounded-lg">{{ old('content_id') }}</textarea>
                 </div>
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
@@ -123,7 +123,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.initTinyMCE === 'function') {
-        window.initTinyMCE('#content', { height: 500 });
+        window.initTinyMCE('[name="content_id"]', { height: 500 });
     }
 });
 

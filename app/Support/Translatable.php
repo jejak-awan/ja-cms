@@ -19,16 +19,17 @@ trait Translatable
         $column = "{$key}_{$locale}";
 
         // Return translated value if exists and not empty
-        if ($this->hasAttribute($column) && !empty($this->$column)) {
+        if ($this->hasTranslatableAttribute($column) && !empty($this->$column)) {
             return $this->$column;
         }
 
-        // Fallback to default locale
-        $fallbackLocale = config('locales.fallback', 'id');
-        $fallbackColumn = "{$key}_{$fallbackLocale}";
-        
-        if ($this->hasAttribute($fallbackColumn) && !empty($this->$fallbackColumn)) {
-            return $this->$fallbackColumn;
+        // Fallback to any available translation
+        $supported = array_keys(config('locales.supported', []));
+        foreach ($supported as $fallbackLocale) {
+            $fallbackColumn = "{$key}_{$fallbackLocale}";
+            if ($this->hasTranslatableAttribute($fallbackColumn) && !empty($this->$fallbackColumn)) {
+                return $this->$fallbackColumn;
+            }
         }
 
         // Last resort: return null or empty string
@@ -48,7 +49,7 @@ trait Translatable
 
         foreach ($supported as $locale) {
             $column = "{$key}_{$locale}";
-            if ($this->hasAttribute($column)) {
+            if ($this->hasTranslatableAttribute($column)) {
                 $translations[$locale] = $this->$column;
             }
         }
@@ -69,7 +70,7 @@ trait Translatable
         $locale = $locale ?? App::getLocale();
         $column = "{$key}_{$locale}";
 
-        if ($this->hasAttribute($column)) {
+        if ($this->hasTranslatableAttribute($column)) {
             $this->$column = $value;
         }
 
@@ -82,7 +83,7 @@ trait Translatable
      * @param string $key
      * @return bool
      */
-    protected function hasAttribute(string $key): bool
+    protected function hasTranslatableAttribute(string $key): bool
     {
         return array_key_exists($key, $this->attributes) || 
                in_array($key, $this->fillable);

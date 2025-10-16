@@ -1,6 +1,6 @@
 @extends('public.layouts.app')
 
-@section('meta_title', $page->meta_title ?? $page->title . ' - ' . config('app.name'))
+@section('meta_title', $page->meta_title ?? $page->title_id . ' - ' . config('app.name'))
 @section('meta_description', $page->meta_description ?? Str::limit(strip_tags($page->content), 160))
 
 @section('content')
@@ -10,10 +10,10 @@
         <nav class="breadcrumb text-white/80 mb-4">
             <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
             <span class="mx-2">/</span>
-            <span class="text-white">{{ $page->title }}</span>
+            <span class="text-white">{{ $page->title_id }}</span>
         </nav>
         
-        <h1 class="text-5xl font-bold text-white mb-4">{{ $page->title }}</h1>
+        <h1 class="text-5xl font-bold text-white mb-4">{{ $page->title_id }}</h1>
     </div>
 </section>
 
@@ -25,7 +25,7 @@
             @if($page->featured_image ?? false)
             <div class="mb-12 rounded-xl overflow-hidden shadow-lg">
                 <img src="{{ asset('storage/' . $page->featured_image) }}" 
-                     alt="{{ $page->title }}"
+                     alt="{{ $page->title_id }}"
                      class="w-full h-auto">
             </div>
             @endif

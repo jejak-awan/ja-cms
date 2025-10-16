@@ -5,24 +5,37 @@
 @push('styles')
 <style>
     .tab-button {
-        @apply px-6 py-4 rounded-lg transition-all duration-200 flex flex-col items-center justify-center gap-2 text-gray-600 dark:text-gray-400 border-2 border-transparent;
-        min-height: 100px;
+        transition: all 0.2s;
+        background: transparent;
     }
     .tab-button.active {
-        @apply text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-400;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        color: rgb(37 99 235);
+        border-color: rgb(37 99 235);
+    }
+    .dark .tab-button.active {
+        color: rgb(96 165 250);
+        border-color: rgb(96 165 250);
     }
     .tab-button:hover:not(.active) {
-        @apply text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600;
+        color: rgb(55 65 81);
+        border-color: rgb(209 213 219);
     }
-    .tab-button svg {
-        @apply flex-shrink-0;
-    }
-    .tab-button span {
-        @apply text-center text-sm font-semibold;
+    .dark .tab-button:hover:not(.active) {
+        color: rgb(229 231 235);
+        border-color: rgb(75 85 99);
     }
     .stat-card {
-        @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all hover:shadow-md;
+        background-color: rgb(255 255 255);
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        padding: 1.5rem;
+        transition: all 0.2s;
+    }
+    .stat-card:hover {
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    .dark .stat-card {
+        background-color: rgb(31 41 55);
     }
     .chart-container {
         position: relative;
@@ -122,25 +135,25 @@
 
     <!-- Tabs -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-        <div class="border-b-2 border-gray-200 dark:border-gray-700">
-            <nav class="flex gap-2 p-2" role="tablist">
-                <button onclick="switchTab('performance')" id="tab-performance" class="tab-button active flex-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="border-b border-gray-200 dark:border-gray-700">
+            <nav class="flex -mb-px">
+                <button onclick="switchTab('performance')" id="tab-performance" class="tab-button active px-6 py-4 text-sm font-medium border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
-                    <span class="font-medium">{{ __('Performance Metrics') }}</span>
+                    {{ __('Performance Metrics') }}
                 </button>
-                <button onclick="switchTab('cache')" id="tab-cache" class="tab-button flex-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="switchTab('cache')" id="tab-cache" class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
                     </svg>
-                    <span class="font-medium">{{ __('Cache Management') }}</span>
+                    {{ __('Cache Management') }}
                 </button>
-                <button onclick="switchTab('recommendations')" id="tab-recommendations" class="tab-button flex-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="switchTab('recommendations')" id="tab-recommendations" class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
-                    <span class="font-medium">{{ __('Recommendations') }}</span>
+                    {{ __('Recommendations') }}
                 </button>
             </nav>
         </div>
@@ -171,11 +184,16 @@ let currentTab = 'performance';
 
 // Tab switching
 function switchTab(tab) {
-    // Update buttons
+    // Update buttons - remove all active states
     document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'border-blue-600', 'text-blue-600', 'dark:border-blue-400', 'dark:text-blue-400');
+        btn.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
     });
-    document.getElementById('tab-' + tab).classList.add('active');
+    
+    // Add active state to clicked button
+    const activeBtn = document.getElementById('tab-' + tab);
+    activeBtn.classList.add('active', 'border-blue-600', 'text-blue-600', 'dark:border-blue-400', 'dark:text-blue-400');
+    activeBtn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
     
     // Update content
     document.querySelectorAll('.tab-content').forEach(content => {
@@ -190,6 +208,10 @@ function switchTab(tab) {
         loadPerformanceMetrics();
     } else if (tab === 'cache') {
         loadCacheData();
+        // Also load cache config for the cache tab
+        if (typeof window.loadConfig === 'function') {
+            window.loadConfig();
+        }
     } else if (tab === 'recommendations') {
         loadRecommendations();
     }

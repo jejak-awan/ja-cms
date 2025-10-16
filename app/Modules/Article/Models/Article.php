@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use App\Support\Translatable;
 
 class Article extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
+
+    protected $translatable = ['title', 'excerpt', 'content'];
 
     protected static function newFactory()
     {

@@ -25,9 +25,12 @@ class ArticleController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%")
-                  ->orWhere('excerpt', 'like', "%{$search}%");
+                $q->where('title_id', 'like', "%{$search}%")
+                  ->orWhere('content_id', 'like', "%{$search}%")
+                  ->orWhere('excerpt_id', 'like', "%{$search}%")
+                  ->orWhere('title_en', 'like', "%{$search}%")
+                  ->orWhere('content_en', 'like', "%{$search}%")
+                  ->orWhere('excerpt_en', 'like', "%{$search}%");
             });
         }
 
@@ -96,10 +99,10 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title_id' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:articles,slug',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
+            'excerpt_id' => 'nullable|string|max:500',
+            'content_id' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
@@ -177,10 +180,10 @@ class ArticleController extends Controller
         $article = Article::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title_id' => 'required|string|max:255',
             'slug' => 'nullable|string|unique:articles,slug,' . $id,
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
+            'excerpt_id' => 'nullable|string|max:500',
+            'content_id' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
@@ -194,7 +197,7 @@ class ArticleController extends Controller
 
         // Generate slug if not provided
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+            $validated['slug'] = Str::slug($validated['title_id']);
         }
 
         // Handle featured image upload

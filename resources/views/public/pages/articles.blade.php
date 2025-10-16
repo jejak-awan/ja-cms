@@ -73,7 +73,7 @@
                     <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}" class="block image-overlay">
                         @if($article->featured_image)
                             <img src="{{ asset('storage/' . $article->featured_image) }}" 
-                                 alt="{{ $article->title }}"
+                                 alt="{{ $article->title_id }}"
                                  class="w-full h-56 object-cover"
                                  loading="lazy">
                         @else
@@ -107,7 +107,7 @@
                         </div>
                         
                         <h3 class="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition">
-                            <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title }}</a>
+                            <a href="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}">{{ $article->title_id }}</a>
                         </h3>
                         
                         <p class="text-gray-600 mb-4 line-clamp-3">

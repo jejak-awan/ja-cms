@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="{{ active_admin_theme() }}">
+<html lang="en" data-theme="default">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,8 @@
     @vite('resources/css/app.css')
     
     <!-- Theme-specific CSS (if exists) -->
-    @if(file_exists(public_path('themes/admin/' . active_admin_theme() . '/css/style.css')))
-        <link rel="stylesheet" href="{{ asset('themes/admin/' . active_admin_theme() . '/css/style.css') }}">
+    @if(file_exists(public_path('themes/admin/default/css/style.css')))
+        <link rel="stylesheet" href="{{ asset('themes/admin/default/css/style.css') }}">
     @endif
     
     @stack('styles')
@@ -88,7 +88,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans antialiased theme-{{ active_admin_theme() }}">
+<body class="bg-gray-50 font-sans antialiased theme-default">
     <!-- Mobile Menu Overlay -->
     <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
     
@@ -579,8 +579,8 @@
     @vite(['resources/js/app.js', 'resources/js/activity-feed.js'])
     
     <!-- Theme-specific JS (if exists) -->
-    @if(file_exists(public_path('themes/admin/' . active_admin_theme() . '/js/script.js')))
-        <script src="{{ asset('themes/admin/' . active_admin_theme() . '/js/script.js') }}"></script>
+    @if(file_exists(public_path('themes/admin/default/js/script.js')))
+        <script src="{{ asset('themes/admin/default/js/script.js') }}"></script>
     @endif
     
     @stack('scripts')

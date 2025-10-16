@@ -104,7 +104,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div>
-                                    <div class="font-medium text-gray-900">{{ $page->title }}</div>
+                                    <div class="font-medium text-gray-900">{{ $page->title_id }}</div>
                                     @if($page->is_homepage)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
                                             Homepage

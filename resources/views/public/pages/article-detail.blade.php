@@ -1,10 +1,10 @@
 @extends('public.layouts.app')
 
-@section('meta_title', $article->meta_title ?? $article->title . ' - ' . config('app.name'))
+@section('meta_title', $article->meta_title ?? $article->title_id . ' - ' . config('app.name'))
 @section('meta_description', $article->meta_description ?? $article->excerpt ?? Str::limit(strip_tags($article->content), 160))
 @section('meta_keywords', $article->meta_keywords ?? '')
 
-@section('og_title', $article->title)
+@section('og_title', $article->title_id)
 @section('og_description', $article->excerpt ?? Str::limit(strip_tags($article->content), 200))
 @section('og_image', $article->featured_image ? asset('storage/' . $article->featured_image) : asset('images/og-default.jpg'))
 @section('og_type', 'article')
@@ -17,7 +17,7 @@
         @if($article->featured_image)
         <div class="w-full h-96 md:h-[500px] overflow-hidden">
             <img src="{{ asset('storage/' . $article->featured_image) }}" 
-                 alt="{{ $article->title }}"
+                 alt="{{ $article->title_id }}"
                  class="w-full h-full object-cover">
         </div>
         @else
@@ -45,7 +45,7 @@
                 
                 <!-- Title -->
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 max-w-4xl">
-                    {{ $article->title }}
+                    {{ $article->title_id }}
                 </h1>
                 
                 <!-- Meta Info -->
@@ -119,7 +119,7 @@
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Share this article</h3>
                 <div class="flex flex-wrap gap-3">
                     <button data-share 
-                            data-title="{{ $article->title }}"
+                            data-title="{{ $article->title_id }}"
                             data-url="{{ route(app()->getLocale() . '.articles.show', $article->slug) }}"
                             class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@
                         Share
                     </button>
                     
-                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($article->title) }}&url={{ urlencode(route(app()->getLocale() . '.articles.show', $article->slug)) }}" 
+                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($article->title_id) }}&url={{ urlencode(route(app()->getLocale() . '.articles.show', $article->slug)) }}" 
                        target="_blank"
                        class="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

@@ -150,7 +150,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     @if($article->featured_image)
-                                        <img src="{{ Storage::url($article->featured_image) }}" alt="{{ $article->title }}" class="w-12 h-12 rounded object-cover mr-3">
+                                        <img src="{{ Storage::url($article->featured_image) }}" alt="{{ $article->title_id }}" class="w-12 h-12 rounded object-cover mr-3">
                                     @else
                                         <div class="w-12 h-12 rounded bg-gray-200 flex items-center justify-center mr-3">
                                             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +160,7 @@
                                     @endif
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">
-                                            {{ Str::limit($article->title, 50) }}
+                                            {{ Str::limit($article->title_id, 50) }}
                                         </div>
                                         <div class="text-sm text-gray-500">
                                             {{ Str::limit($article->excerpt, 60) }}
