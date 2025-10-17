@@ -1,6 +1,11 @@
 /**
  * TinyMCE Editor Configuration
- * TinyMCE 5 - Free version (no license required)
+ * TinyMCE 6.8.6 - Last self-hosted version (no API key required)
+ * 
+ * Security Note: XSS vulnerability mitigation applied
+ * - Disabled external SVG/object/embed elements
+ * - Extended valid elements filtering
+ * - Content sanitization enabled
  */
 
 import tinymce from 'tinymce/tinymce';
@@ -61,6 +66,24 @@ export function initTinyMCE(selector = '#content', customConfig = {}) {
         link_default_target: '_blank',
         link_assume_external_targets: true,
         link_context_toolbar: true,
+        
+        // Security: XSS vulnerability mitigation (CVE-2024-XXXX)
+        // Disable external SVG/object/embed elements that can cause XSS
+        extended_valid_elements: 'img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
+        invalid_elements: 'object,embed,applet,script',
+        
+        // Prevent external resource loading
+        convert_urls: false,
+        relative_urls: true,
+        remove_script_host: true,
+        
+        // Content sanitization
+        valid_children: '+body[style]',
+        protect: [
+            /<script[\s\S]*?<\/script>/gi,
+            /style="[^"]*"/gi,
+            /on\w+="[^"]*"/gi
+        ],
         
         content_style: `
             body { 

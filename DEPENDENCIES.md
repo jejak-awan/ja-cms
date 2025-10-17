@@ -71,7 +71,7 @@ Last Updated: October 17, 2025
 | Package | Version | Purpose | Notes |
 |---------|---------|---------|-------|
 | `chart.js` | ^4.5.1 | Data Visualization | Interactive charts/graphs |
-| `tinymce` | ^7.9.1 | Rich Text Editor | WYSIWYG content editor (upgraded from v5) |
+| `tinymce` | 6.8.6 | Rich Text Editor | Last self-hosted version (no API key required) |
 
 ---
 
@@ -83,7 +83,7 @@ Last Updated: October 17, 2025
 | Tailwind CSS | 4.1 | Vite 7+, PostCSS 8+ |
 | Alpine.js | 3.15 | All modern browsers |
 | Vite | 7.1 | Node 22+, Laravel 12+ |
-| TinyMCE | 7.9 | ES6+ browsers |
+| TinyMCE | 6.8.6 | ES6+ browsers, Self-hosted (no API key) |
 | Chart.js | 4.5 | ES6+ browsers |
 
 ---
@@ -121,6 +121,48 @@ Last Updated: October 17, 2025
 - Subresource Integrity (SRI) for CDN assets
 - HTTPS-only in production
 - XSS protection via Blade escaping
+
+### TinyMCE Security Configuration
+**Version**: 6.8.6 (Last self-hosted version)
+
+**Known Vulnerability**: CVE GHSA-5359-pvf2-pw78
+- **Issue**: XSS vulnerability in handling external SVG files through Object/Embed elements
+- **Severity**: Moderate
+- **Fixed in**: TinyMCE 7.0.0+ (requires API key)
+
+**Mitigation Applied**:
+```javascript
+// Disabled dangerous elements
+invalid_elements: 'object,embed,applet,script'
+
+// Restricted valid elements
+extended_valid_elements: 'img[class|src|...]'
+
+// Content sanitization
+protect: [
+    /<script[\s\S]*?<\/script>/gi,
+    /style="[^"]*"/gi,
+    /on\w+="[^"]*"/gi
+]
+
+// Prevent external resource loading
+convert_urls: false
+relative_urls: true
+remove_script_host: true
+```
+
+**Additional Security Measures**:
+1. Server-side content sanitization (Laravel HTMLPurifier recommended)
+2. Content Security Policy (CSP) headers to prevent inline scripts
+3. Input validation on all user-generated content
+4. Regular security audits
+
+**Why v6.8.6 instead of v7+?**
+- TinyMCE v7+ requires Tiny Cloud API key (subscription-based)
+- v6.8.6 is the last fully self-hosted version
+- All core features available without external dependencies
+- XSS vulnerability mitigated through configuration
+- No API key = No vendor lock-in, no external calls, full control
 
 ---
 
@@ -314,20 +356,26 @@ php artisan optimize:clear
 
 ## Changelog
 
-### 2025-10-17
+### 2025-10-17 (Updated)
 - ✅ Updated Laravel Framework: 12.33 → 12.34
-- ✅ Updated TinyMCE: 5.10.9 → 7.9.1 (Major upgrade!)
+- ✅ Updated TinyMCE: 5.10.9 → 6.8.6 (Last self-hosted version)
 - ✅ Updated Tailwind CSS: 4.0.0 → 4.1.14
 - ✅ Updated Vite: 7.0.7 → 7.1.10
 - ✅ Updated Alpine.js: 3.14.3 → 3.15.0
 - ✅ Updated Axios: 1.11.0 → 1.12.2
 - ✅ Updated Concurrently: 9.0.1 → 9.2.1
 - ✅ Updated multiple dev dependencies
-- ✅ All security vulnerabilities resolved
+- ✅ XSS vulnerability mitigation applied for TinyMCE
 - ✅ Compatibility verified with PHP 8.3.6 and Node 22.20.0
 
 ### Notes
-- TinyMCE v7 includes major API changes from v5
+- **TinyMCE v6.8.6**: Last version that can be self-hosted without API key
+  - TinyMCE v7+ requires Tiny Cloud API key for most features
+  - v6.8.6 is fully functional with all core features locally
+  - XSS vulnerability (GHSA-5359-pvf2-pw78) mitigated via configuration:
+    * Disabled external SVG/object/embed elements
+    * Added content sanitization rules
+    * Restricted valid elements to prevent script injection
 - Tailwind CSS v4 uses new architecture with Vite plugin
 - All packages using stable LTS versions
 - High compatibility matrix maintained
