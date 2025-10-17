@@ -1,20 +1,20 @@
 @extends('public.layouts.app')
 
-@section('meta_title', 'Categories - ' . config('app.name'))
-@section('meta_description', 'Browse articles by category')
+@section('meta_title', __('public.categories.index.title') . ' - ' . config('app.name'))
+@section('meta_description', __('public.categories.index.description'))
 
 @section('content')
 <!-- Page Header -->
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">@t('public.nav.home')</a>
             <span class="mx-2">/</span>
-            <span class="text-white">Categories</span>
+            <span class="text-white">@t('public.nav.categories')</span>
         </nav>
         
-        <h1 class="text-5xl font-bold text-white mb-4">All Categories</h1>
-        <p class="text-xl text-white/90">Explore content organized by topics</p>
+        <h1 class="text-5xl font-bold text-white mb-4">@t('public.categories.index.title')</h1>
+        <p class="text-xl text-white/90">@t('public.categories.index.description')</p>
     </div>
 </section>
 
@@ -47,7 +47,7 @@
                         
                         <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                             <span class="text-sm text-gray-600">
-                                {{ $category->articles_count ?? 0 }} articles
+                                {{ $category->articles_count ?? 0 }} @t('public.categories.articles_count')
                             </span>
                             <svg class="w-5 h-5 text-blue-600 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -58,16 +58,10 @@
                 @endforeach
             </div>
         @else
-            <!-- Empty State -->
-            <div class="text-center py-16">
-                <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                </svg>
-                <h3 class="text-2xl font-bold text-gray-900 mb-2">No categories found</h3>
-                <p class="text-gray-600 mb-6">There are no categories available yet</p>
-                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">
-                    Back to Home
-                </a>
+            <div class="py-16 text-center">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">@t('public.common.no_results')</h3>
+                <p class="text-gray-600 mb-6">@t('public.common.no_results_description')</p>
+                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">@t('public.common.back_to_home')</a>
             </div>
         @endif
     </div>

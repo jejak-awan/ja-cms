@@ -1,20 +1,20 @@
 @extends('public.layouts.app')
 
-@section('meta_title', 'Articles - ' . config('app.name'))
-@section('meta_description', 'Browse our collection of articles on various topics')
+@section('meta_title', __('public.articles.index.title') . ' - ' . config('app.name'))
+@section('meta_description', __('public.articles.index.description'))
 
 @section('content')
 <!-- Page Header -->
 <section class="bg-gradient-to-r from-blue-600 to-purple-700 py-16 px-4">
     <div class="container mx-auto">
         <nav class="breadcrumb text-white/80 mb-4">
-            <a href="{{ route(app()->getLocale() . '.home') }}">Home</a>
+            <a href="{{ route(app()->getLocale() . '.home') }}">@t('public.nav.home')</a>
             <span class="mx-2">/</span>
-            <span class="text-white">Articles</span>
+            <span class="text-white">@t('public.nav.articles')</span>
         </nav>
         
-        <h1 class="text-5xl font-bold text-white mb-4">All Articles</h1>
-        <p class="text-xl text-white/90">Discover stories, thinking, and expertise from writers on any topic</p>
+        <h1 class="text-5xl font-bold text-white mb-4">@t('public.articles.index.title')</h1>
+        <p class="text-xl text-white/90">@t('public.articles.index.description')</p>
     </div>
 </section>
 
@@ -29,7 +29,7 @@
                         type="text" 
                         name="q"
                         value="{{ request('q') }}"
-                        placeholder="Search articles..." 
+                        placeholder="@t('public.search.placeholder')" 
                         class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                     >
                     <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@
             <div class="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0">
                 <a href="{{ route(app()->getLocale() . '.articles.index') }}" 
                    class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition {{ !request('category') ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                    All
+                    @t('public.common.all')
                 </a>
                 @foreach($categories as $cat)
                 <a href="{{ route(app()->getLocale() . '.articles.index', ['category' => $cat->slug]) }}" 
@@ -62,7 +62,7 @@
             <!-- Results Info -->
             <div class="mb-8 flex items-center justify-between">
                 <p class="text-gray-600">
-                    Showing {{ $articles->firstItem() }} - {{ $articles->lastItem() }} of {{ $articles->total() }} articles
+                    @t('public.pagination.showing') {{ $articles->firstItem() }} - {{ $articles->lastItem() }} @t('public.pagination.of') {{ $articles->total() }} @t('public.articles.index.title')
                 </p>
             </div>
             
@@ -85,14 +85,14 @@
                         @endif
                         
                         @if($article->featured ?? false)
-                            <span class="featured-badge">Featured</span>
+                            <span class="featured-badge">@t('public.articles.featured')</span>
                         @endif
                     </a>
                     
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
                             <a href="{{ route(app()->getLocale() . '.categories.show', $article->category->slug) }}" class="category-badge hover:bg-blue-700 transition">
-                                {{ $article->category->name ?? 'Uncategorized' }}
+                                {{ $article->category->name ?? __('public.common.uncategorized') }}
                             </a>
                             
                             @if($article->views ?? 0 > 0)
@@ -141,19 +141,17 @@
                 <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                <h3 class="text-2xl font-bold text-gray-900 mb-2">No articles found</h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">@t('public.articles.empty.title')</h3>
                 <p class="text-gray-600 mb-6">
                     @if(request('q'))
-                        No articles match your search "{{ request('q') }}"
+                        @t('public.articles.empty.search', ['query' => request('q')])
                     @elseif(request('category'))
-                        No articles in this category yet
+                        @t('public.articles.empty.category')
                     @else
-                        There are no published articles yet
+                        @t('public.articles.empty.no_articles')
                     @endif
                 </p>
-                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">
-                    Back to Home
-                </a>
+                <a href="{{ route(app()->getLocale() . '.home') }}" class="btn-primary">@t('public.common.back_to_home')</a>
             </div>
         @endif
     </div>
