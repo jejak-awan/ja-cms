@@ -43,18 +43,51 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Title -->
+                <!-- Multi-language Title -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <x-admin.input-field
-                        name="title_id"
-                        :label="__('admin.articles.title_label')"
-                        type="text"
-                        :value="old('title_id', $article->title)"
-                        required
-                        :placeholder="__('admin.articles.title_label') . '...'"
-                        class="text-lg"
-                        onkeyup="generateSlug()"
-                    />
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                        {{ __('admin.articles.title_label') }}
+                    </label>
+                    
+                    <!-- Language Tabs -->
+                    <div class="mb-4">
+                        <div class="border-b border-gray-200 dark:border-gray-600">
+                            <nav class="-mb-px flex space-x-8">
+                                <button type="button" onclick="switchLanguage('id')" id="tab-id" class="py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600 dark:text-blue-400">
+                                    🇮🇩 Indonesia
+                                </button>
+                                <button type="button" onclick="switchLanguage('en')" id="tab-en" class="py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                                    🇺🇸 English
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+                    
+                    <!-- Indonesian Title -->
+                    <div id="title-id" class="language-content">
+                        <x-admin.input-field
+                            name="title_id"
+                            :label="false"
+                            type="text"
+                            :value="old('title_id', $article->title)"
+                            :placeholder="__('admin.articles.title_label') . ' (Indonesia)'"
+                            class="text-lg"
+                            onkeyup="generateSlug()"
+                        />
+                    </div>
+                    
+                    <!-- English Title -->
+                    <div id="title-en" class="language-content hidden">
+                        <x-admin.input-field
+                            name="title_en"
+                            :label="false"
+                            type="text"
+                            :value="old('title_en', $article->title)"
+                            :placeholder="__('admin.articles.title_label') . ' (English)'"
+                            class="text-lg"
+                            onkeyup="generateSlug()"
+                        />
+                    </div>
                 </div>
 
                 <!-- Slug -->
@@ -77,9 +110,9 @@
                 <!-- Excerpt -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <x-admin.textarea-field
-                        name="excerpt_id"
+                        name="excerpt_en"
                         :label="__('admin.articles.excerpt_label')"
-                        :value="old('excerpt_id', $article->excerpt)"
+                        :value="old('excerpt_en', $article->excerpt)"
                         rows="3"
                         :placeholder="__('admin.articles.excerpt_label') . ' (optional)'"
                         :help="__('admin.articles.excerpt_help')"
@@ -89,9 +122,9 @@
                 <!-- Content Editor -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <x-admin.textarea-field
-                        name="content_id"
+                        name="content_{{ app()->getLocale() }}"
                         :label="__('admin.articles.content_label')"
-                        :value="old('content_id', $article->content)"
+                        :value="old('content_' . app()->getLocale(), $article->content)"
                         rows="15"
                         required
                     />
@@ -336,6 +369,29 @@ function previewImage(input) {
     }
 }
 
+// Language Tab Switching Functions
+function switchLanguage(lang) {
+    // Hide all language content
+    document.querySelectorAll('.language-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Show selected language content
+    document.getElementById('title-' + lang).classList.remove('hidden');
+    
+    // Update tab styles
+    document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+        tab.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+        tab.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+    });
+    
+    // Activate selected tab
+    const activeTab = document.getElementById('tab-' + lang);
+    activeTab.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+    activeTab.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+}
+
+
 // Form validation before submit
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
@@ -345,8 +401,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // No manual sync needed
             
             // Validate content
-            const content = document.getElementById('content_id').value;
-            if (!content || content.trim() === '') {
+            const content = document.getElementById('content_{{ app()->getLocale() }}');
+            if (!content || content.value.trim() === '') {
                 e.preventDefault();
                 alert('Please enter article content.');
                 return false;
