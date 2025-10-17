@@ -140,23 +140,9 @@ return [
         'schedule' => 'Schedule',
         'views' => 'Views',
         'featured' => 'Featured',
-        'url_slug' => 'URL Slug',
-        'url_slug_help' => 'Leave empty to auto-generate from title',
-        'seo_settings' => 'SEO Settings',
-        'meta_title' => 'Meta Title',
-        'meta_title_help' => 'Recommended: 50-60 characters',
-        'meta_description' => 'Meta Description',
-        'meta_description_help' => 'Recommended: 150-160 characters',
-        'meta_keywords' => 'Meta Keywords',
-        'meta_keywords_help' => 'Comma-separated keywords',
         'search_placeholder' => 'Search articles...',
         'errors_found' => 'There were some errors with your submission:',
         'update' => 'Update Article',
-        'status' => [
-            'draft' => 'Draft',
-            'published' => 'Published',
-            'scheduled' => 'Scheduled',
-        ],
     ],
 
     // Categories
@@ -206,10 +192,26 @@ return [
         'publish_settings' => 'Publish Settings',
         'publish_date' => 'Publish Date',
         'publish_immediately' => 'Leave empty to publish immediately',
-        'status' => [
-            'draft' => 'Draft',
-            'published' => 'Published',
-        ],
+        'status' => 'Status',
+        'status_draft' => 'Draft',
+        'status_published' => 'Published',
+        'set_homepage' => 'Set as Homepage',
+        'set_homepage_help' => 'Make this page the homepage of your website',
+        'template' => 'Template',
+        'template_help' => 'Choose a template for this page',
+        'featured_image' => 'Featured Image',
+        'upload_image' => 'Upload an image',
+        'drag_and_drop' => 'or drag and drop',
+        'current_image' => 'Current Image',
+        'remove_image' => 'Remove Image',
+        'content_placeholder' => 'Start writing your page content...',
+        'meta_title_placeholder' => 'SEO title for search engines',
+        'meta_description_placeholder' => 'Brief description for search results',
+        'meta_keywords_placeholder' => 'keyword1, keyword2, keyword3',
+        'excerpt' => 'Excerpt',
+        'excerpt_placeholder' => 'Brief summary (optional)',
+        'back_to_pages' => 'Back to Pages',
+        'file_types' => 'PNG, JPG, GIF up to 10MB',
     ],
 
     // Media
@@ -436,10 +438,6 @@ return [
         'publish_settings' => 'Publish Settings',
         'publish_date' => 'Publish Date',
         'publish_immediately' => 'Leave empty to publish immediately',
-        'status' => [
-            'draft' => 'Draft',
-            'published' => 'Published',
-        ],
         'confirm_delete' => 'Are you sure you want to delete this page?',
         'create_static_page' => 'Create Static Page',
         'empty' => [
@@ -448,7 +446,6 @@ return [
         'fields' => [
             'all_templates' => 'All Templates',
             'created_at' => 'Created At',
-            'template' => 'Template',
             'title' => 'Title',
         ],
         'index' => [

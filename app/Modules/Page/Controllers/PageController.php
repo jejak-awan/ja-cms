@@ -15,11 +15,10 @@ class PageController extends Controller
         $query = Page::with('user')->orderBy('order', 'asc');
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('title_id', 'like', '%' . $request->search . '%')
-                  ->orWhere('content_id', 'like', '%' . $request->search . '%')
-                  ->orWhere('title_en', 'like', '%' . $request->search . '%')
-                  ->orWhere('content_en', 'like', '%' . $request->search . '%');
+            $locale = app()->getLocale();
+            $query->where(function($q) use ($request, $locale) {
+                $q->where("title_{$locale}", 'like', '%' . $request->search . '%')
+                  ->orWhere("content_{$locale}", 'like', '%' . $request->search . '%');
             });
         }
 
@@ -50,10 +49,12 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
+        $locale = app()->getLocale();
+        
         $validated = $request->validate([
-            'title_id' => 'required|max:255',
+            "title_{$locale}" => 'required|max:255',
             'slug' => 'nullable|unique:pages,slug|max:255',
-            'content_id' => 'required',
+            "content_{$locale}" => 'required',
             'excerpt' => 'nullable',
             'template' => 'required|in:' . implode(',', array_keys(Page::templates())),
             'featured_image' => 'nullable|image|max:2048',
@@ -64,7 +65,7 @@ class PageController extends Controller
             'meta_keywords' => 'nullable|max:255',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title_id']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated["title_{$locale}"]);
         $validated['user_id'] = auth()->id();
         $validated['order'] = Page::max('order') + 1;
 
@@ -105,10 +106,12 @@ class PageController extends Controller
 
     public function update(Request $request, Page $page)
     {
+        $locale = app()->getLocale();
+        
         $validated = $request->validate([
-            'title_id' => 'required|max:255',
+            "title_{$locale}" => 'required|max:255',
             'slug' => 'nullable|unique:pages,slug,' . $page->id . '|max:255',
-            'content_id' => 'required',
+            "content_{$locale}" => 'required',
             'excerpt' => 'nullable',
             'template' => 'required|in:' . implode(',', array_keys(Page::templates())),
             'featured_image' => 'nullable|image|max:2048',
@@ -119,7 +122,7 @@ class PageController extends Controller
             'meta_keywords' => 'nullable|max:255',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title_id']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated["title_{$locale}"]);
 
         if ($request->hasFile('featured_image')) {
             if ($page->featured_image) {

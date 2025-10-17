@@ -112,7 +112,7 @@
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                         <td class="px-6 py-4">
                             <a href="{{ route('admin.pages.edit', $page->id) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                                {{ $page->title_id }}
+                                {{ $page->title }}
                             </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -144,7 +144,7 @@
                                 </a>
                                 <button 
                                     type="button"
-                                    onclick="confirmDeletePage({{ $page->id }}, '{{ addslashes($page->title_id) }}')"
+                                    onclick="confirmDeletePage({{ $page->id }}, '{{ addslashes($page->title) }}')"
                                     class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition" 
                                     title="{{ __('admin.common.delete') }}"
                                 >
