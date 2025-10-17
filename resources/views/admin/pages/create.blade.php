@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             try {
                 await window.initCKEditor(textarea, {
                     placeholder: 'Start writing your page content...',
-                    uploadUrl: '{{ route("admin.media.upload.image") }}'
+                    uploadUrl: '{{ route("admin.upload.image") }}'
                 });
                 console.log('✓ CKEditor initialized');
             } catch (error) {

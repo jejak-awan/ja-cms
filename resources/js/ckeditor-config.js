@@ -87,6 +87,10 @@ import 'ckeditor5/ckeditor5.css';
  * Default configuration for CKEditor
  */
 const defaultConfig = {
+    // GPL license key for open source projects
+    // This removes the "license key missing" warning
+    licenseKey: 'GPL',
+    
     toolbar: {
         items: [
             'undo', 'redo',
