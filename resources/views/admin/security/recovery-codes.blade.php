@@ -3,61 +3,74 @@
 @section('title', 'Recovery Codes')
 
 @section('content')
-<div class="container-fluid">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 mb-0 text-gray-800">Recovery Codes</h1>
-            <p class="text-muted">Save these recovery codes in a safe place</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Recovery Codes</h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Save these recovery codes in a safe place</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Dashboard
         </a>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-warning">
-                        <i class="fas fa-exclamation-triangle"></i> Important: Save These Codes
+    <div class="flex justify-center">
+        <div class="w-full max-w-4xl">
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h6 class="text-lg font-semibold text-yellow-600 dark:text-yellow-400 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        Important: Save These Codes
                     </h6>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
+                <div class="p-6">
+                    <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-6">
                         <strong>Warning:</strong> These recovery codes can be used to access your account if you lose your authenticator device. 
                         Store them in a safe place and don't share them with anyone.
                     </div>
 
-                    <div class="row">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         @foreach($recoveryCodes as $index => $code)
-                        <div class="col-md-6 mb-3">
-                            <div class="card border-left-primary">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <div class="h5 text-primary">{{ $code }}</div>
-                                            <div class="text-muted">Recovery Code {{ $index + 1 }}</div>
-                                        </div>
-                                        <button class="btn btn-sm btn-outline-primary" onclick="copyCode('{{ $code }}')">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="text-xl font-bold text-blue-600 dark:text-blue-400">{{ $code }}</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">Recovery Code {{ $index + 1 }}</div>
                                 </div>
+                                <button class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium rounded-lg transition-colors duration-200" onclick="copyCode('{{ $code }}')">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                         @endforeach
                     </div>
 
-                    <div class="mt-4">
-                        <button class="btn btn-success" onclick="printCodes()">
-                            <i class="fas fa-print"></i> Print Codes
+                    <div class="flex flex-wrap gap-3">
+                        <button class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200" onclick="printCodes()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                            Print Codes
                         </button>
-                        <button class="btn btn-info" onclick="downloadCodes()">
-                            <i class="fas fa-download"></i> Download as Text
+                        <button class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200" onclick="downloadCodes()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Download as Text
                         </button>
-                        <button class="btn btn-warning" onclick="regenerateCodes()">
-                            <i class="fas fa-sync-alt"></i> Regenerate Codes
+                        <button class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors duration-200" onclick="regenerateCodes()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Regenerate Codes
                         </button>
                     </div>
                 </div>
@@ -74,14 +87,14 @@ function copyCode(code) {
         // Show feedback
         const button = event.target.closest('button');
         const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i>';
-        button.classList.add('btn-success');
-        button.classList.remove('btn-outline-primary');
+        button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        button.classList.add('bg-green-100', 'hover:bg-green-200', 'text-green-800');
+        button.classList.remove('bg-blue-100', 'hover:bg-blue-200', 'text-blue-800');
         
         setTimeout(() => {
             button.innerHTML = originalHTML;
-            button.classList.remove('btn-success');
-            button.classList.add('btn-outline-primary');
+            button.classList.remove('bg-green-100', 'hover:bg-green-200', 'text-green-800');
+            button.classList.add('bg-blue-100', 'hover:bg-blue-200', 'text-blue-800');
         }, 2000);
     });
 }
