@@ -13,30 +13,14 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        tailwindcss(),
-        viteStaticCopy({
-            targets: [
-                {
-                    src: 'node_modules/tinymce/skins',
-                    dest: 'tinymce'
-                },
-                {
-                    src: 'node_modules/tinymce/icons',
-                    dest: 'tinymce'
-                },
-                {
-                    src: 'node_modules/tinymce/themes',
-                    dest: 'tinymce'
-                }
-            ]
-        })
+        tailwindcss()
     ],
     build: {
         rollupOptions: {
             output: {
                 manualChunks: {
-                    // Separate TinyMCE into its own chunk
-                    'tinymce': ['tinymce'],
+                    // Separate CKEditor into its own chunk for better loading
+                    'ckeditor': ['ckeditor5'],
                     // Separate Alpine.js into its own chunk
                     'alpine': ['alpinejs'],
                 }

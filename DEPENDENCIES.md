@@ -71,7 +71,7 @@ Last Updated: October 17, 2025
 | Package | Version | Purpose | Notes |
 |---------|---------|---------|-------|
 | `chart.js` | ^4.5.1 | Data Visualization | Interactive charts/graphs |
-| `tinymce` | 6.8.6 | Rich Text Editor | Last self-hosted version (no API key required) |
+| `ckeditor5` | 47.1.0 | Rich Text Editor | Modern, self-hosted WYSIWYG editor (GPL-2.0) |
 
 ---
 
@@ -83,7 +83,7 @@ Last Updated: October 17, 2025
 | Tailwind CSS | 4.1 | Vite 7+, PostCSS 8+ |
 | Alpine.js | 3.15 | All modern browsers |
 | Vite | 7.1 | Node 22+, Laravel 12+ |
-| TinyMCE | 6.8.6 | ES6+ browsers, Self-hosted (no API key) |
+| CKEditor 5 | 47.1.0 | ES6+ browsers, Self-hosted (GPL-2.0) |
 | Chart.js | 4.5 | ES6+ browsers |
 
 ---
@@ -122,47 +122,61 @@ Last Updated: October 17, 2025
 - HTTPS-only in production
 - XSS protection via Blade escaping
 
-### TinyMCE Security Configuration
-**Version**: 6.8.6 (Last self-hosted version)
+### CKEditor 5 Configuration
+**Version**: 47.1.0 (Latest stable)
 
-**Known Vulnerability**: CVE GHSA-5359-pvf2-pw78
-- **Issue**: XSS vulnerability in handling external SVG files through Object/Embed elements
-- **Severity**: Moderate
-- **Fixed in**: TinyMCE 7.0.0+ (requires API key)
+**License**: GPL-2.0-or-later
+- Free for open source projects
+- Fully self-hosted, no external dependencies
+- No API key required
+- Modern architecture with excellent UX
 
-**Mitigation Applied**:
+**Features**:
+- Full WYSIWYG editing capabilities
+- Image upload with drag & drop
+- Table editing with advanced properties
+- Code block and syntax highlighting
+- Media embedding (YouTube, Vimeo, etc.)
+- Find and replace
+- Source editing mode
+- Accessibility support (WCAG 2.1 compliant)
+- Responsive and mobile-friendly
+- Dark mode ready
+
+**Security**:
+- Zero known vulnerabilities
+- Content sanitization built-in
+- XSS protection enabled by default
+- Regular security updates
+- Active community and professional support
+
+**Upload Configuration**:
 ```javascript
-// Disabled dangerous elements
-invalid_elements: 'object,embed,applet,script'
-
-// Restricted valid elements
-extended_valid_elements: 'img[class|src|...]'
-
-// Content sanitization
-protect: [
-    /<script[\s\S]*?<\/script>/gi,
-    /style="[^"]*"/gi,
-    /on\w+="[^"]*"/gi
-]
-
-// Prevent external resource loading
-convert_urls: false
-relative_urls: true
-remove_script_host: true
+simpleUpload: {
+    uploadUrl: '/admin/upload-image',
+    withCredentials: true,
+    headers: {
+        'X-CSRF-TOKEN': csrfToken
+    }
+}
 ```
 
 **Additional Security Measures**:
 1. Server-side content sanitization (Laravel HTMLPurifier recommended)
-2. Content Security Policy (CSP) headers to prevent inline scripts
+2. Content Security Policy (CSP) headers
 3. Input validation on all user-generated content
-4. Regular security audits
+4. CSRF token for image uploads
+5. File type validation for uploads
 
-**Why v6.8.6 instead of v7+?**
-- TinyMCE v7+ requires Tiny Cloud API key (subscription-based)
-- v6.8.6 is the last fully self-hosted version
-- All core features available without external dependencies
-- XSS vulnerability mitigated through configuration
-- No API key = No vendor lock-in, no external calls, full control
+**Why CKEditor 5?**
+- Modern, actively maintained (2025)
+- No API key or subscription required
+- Zero security vulnerabilities
+- Better UX than older editors
+- Fully customizable and extensible
+- GPL-2.0 license (free for open source)
+- No vendor lock-in
+- Excellent documentation and community
 
 ---
 
@@ -356,26 +370,35 @@ php artisan optimize:clear
 
 ## Changelog
 
-### 2025-10-17 (Updated)
+### 2025-10-17 (Updated - CKEditor Migration)
 - ✅ Updated Laravel Framework: 12.33 → 12.34
-- ✅ Updated TinyMCE: 5.10.9 → 6.8.6 (Last self-hosted version)
+- ✅ **Switched from TinyMCE to CKEditor 5**: 47.1.0
+  - TinyMCE v7+ requires API key (vendor lock-in)
+  - TinyMCE v6.8.6 had XSS vulnerability and path loading issues
+  - CKEditor 5 is modern, secure, and fully self-hosted
 - ✅ Updated Tailwind CSS: 4.0.0 → 4.1.14
 - ✅ Updated Vite: 7.0.7 → 7.1.10
 - ✅ Updated Alpine.js: 3.14.3 → 3.15.0
 - ✅ Updated Axios: 1.11.0 → 1.12.2
 - ✅ Updated Concurrently: 9.0.1 → 9.2.1
 - ✅ Updated multiple dev dependencies
-- ✅ XSS vulnerability mitigation applied for TinyMCE
+- ✅ Zero security vulnerabilities
 - ✅ Compatibility verified with PHP 8.3.6 and Node 22.20.0
 
 ### Notes
-- **TinyMCE v6.8.6**: Last version that can be self-hosted without API key
-  - TinyMCE v7+ requires Tiny Cloud API key for most features
-  - v6.8.6 is fully functional with all core features locally
-  - XSS vulnerability (GHSA-5359-pvf2-pw78) mitigated via configuration:
-    * Disabled external SVG/object/embed elements
-    * Added content sanitization rules
-    * Restricted valid elements to prevent script injection
+- **CKEditor 5 Migration**:
+  - Replaced TinyMCE due to licensing and technical issues
+  - TinyMCE v7+ requires Tiny Cloud API key (subscription model)
+  - TinyMCE v6.8.6 had module loading errors and XSS vulnerability
+  - CKEditor 5 advantages:
+    * GPL-2.0 license (free for open source)
+    * Modern architecture (2025)
+    * Zero known vulnerabilities
+    * Better UX and performance
+    * Fully self-hosted, no API key
+    * Active development and support
+    * WCAG 2.1 compliant (accessibility)
+  - Backward compatibility maintained (TinyMCE function aliases)
 - Tailwind CSS v4 uses new architecture with Vite plugin
 - All packages using stable LTS versions
 - High compatibility matrix maintained

@@ -15,27 +15,33 @@ window.initDashboardCharts = async function(chartData) {
     return module.initDashboardCharts(chartData);
 };
 
-// Make TinyMCE functions available globally (lazy loaded)
-// TinyMCE will be loaded on-demand when initTinyMCE is called
-window.initTinyMCE = async function(selector = '#content', customConfig = {}) {
-    const { initTinyMCE } = await import('./tinymce-config');
-    return initTinyMCE(selector, customConfig);
+// Make CKEditor functions available globally (lazy loaded)
+// CKEditor will be loaded on-demand when initCKEditor is called
+window.initCKEditor = async function(element = '#content', customConfig = {}) {
+    const { initCKEditor } = await import('./ckeditor-config');
+    return initCKEditor(element, customConfig);
 };
 
-window.removeTinyMCE = async function(selector = '#content') {
-    const { removeTinyMCE } = await import('./tinymce-config');
-    return removeTinyMCE(selector);
+window.destroyCKEditor = async function(element = '#content') {
+    const { destroyCKEditor } = await import('./ckeditor-config');
+    return destroyCKEditor(element);
 };
 
-window.getTinyMCEContent = async function(selector = '#content') {
-    const { getTinyMCEContent } = await import('./tinymce-config');
-    return getTinyMCEContent(selector);
+window.getCKEditorContent = async function(element = '#content') {
+    const { getCKEditorContent } = await import('./ckeditor-config');
+    return getCKEditorContent(element);
 };
 
-window.setTinyMCEContent = async function(selector = '#content', content = '') {
-    const { setTinyMCEContent } = await import('./tinymce-config');
-    return setTinyMCEContent(selector, content);
+window.setCKEditorContent = async function(element = '#content', content = '') {
+    const { setCKEditorContent } = await import('./ckeditor-config');
+    return setCKEditorContent(element, content);
 };
+
+// Backward compatibility aliases (TinyMCE → CKEditor)
+window.initTinyMCE = window.initCKEditor;
+window.removeTinyMCE = window.destroyCKEditor;
+window.getTinyMCEContent = window.getCKEditorContent;
+window.setTinyMCEContent = window.setCKEditorContent;
 
 // Vue components removed - using Alpine.js only for admin panel
 // Vue is only used for public frontend if needed

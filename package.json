@@ -20,6 +20,6 @@
     },
     "dependencies": {
         "chart.js": "^4.5.1",
-        "tinymce": "6.8.6"
+        "ckeditor5": "47.1.0"
     }
 }
