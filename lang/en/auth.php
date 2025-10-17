@@ -80,5 +80,6 @@ return [
     
     // Logout Messages
     'logout_success' => 'You have been logged out successfully.',
+    'confirm_logout' => 'Are you sure you want to logout?',
 
 ];

@@ -80,5 +80,6 @@ return [
     
     // Logout Messages
     'logout_success' => 'Anda telah berhasil keluar.',
+    'confirm_logout' => 'Apakah Anda yakin ingin keluar?',
 
 ];
