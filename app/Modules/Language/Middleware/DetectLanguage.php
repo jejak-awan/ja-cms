@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Modules\Language\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use App\Modules\Language\Models\Language;
-use App\Services\LocaleService;
+use App\Modules\Language\Services\LocaleService;
 
 class DetectLanguage
 {

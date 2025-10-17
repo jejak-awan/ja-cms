@@ -1,0 +1,1 @@
+@include('admin.translations.form')

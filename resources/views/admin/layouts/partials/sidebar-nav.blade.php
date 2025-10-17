@@ -147,6 +147,44 @@
         </div>
     </div>
 
+    {{-- Translations --}}
+    <div class="mt-6 mb-3">
+        <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Translations</h3>
+    </div>
+    <div class="mb-2">
+        <button onclick="toggleDropdown('translations-dropdown')" class="w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all hover:bg-gray-700 group">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                </svg>
+                <span class="font-medium">Translations</span>
+            </div>
+            <svg id="translations-dropdown-arrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+        <div id="translations-dropdown" class="hidden ml-4 mt-1 space-y-1">
+            <a href="{{ route('admin.translations.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/translations') || request()->is('admin/translations/create') || request()->is('admin/translations/*/edit') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                <span>Translation Overrides</span>
+            </a>
+            <a href="{{ route('admin.translations.statistics') }}" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/translations/statistics*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>Statistics</span>
+            </a>
+            <a href="{{ route('admin.translations.missing') }}" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all {{ request()->is('admin/translations/missing*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-700' }}">
+                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <span>Missing Translations</span>
+            </a>
+        </div>
+    </div>
+
     {{-- System & Tools --}}
     <div class="mt-6 mb-3">
         <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">System & Tools</h3>

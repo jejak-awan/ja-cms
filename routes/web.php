@@ -52,12 +52,22 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 |--------------------------------------------------------------------------
 */
 
-Route::post('/locale/{locale}', [\App\Http\Controllers\LocaleController::class, 'switch'])
+Route::post('/locale/{locale}', [\App\Modules\Language\Controllers\LocaleController::class, 'switch'])
     ->name('locale.switch')
     ->where('locale', '[a-z]{2}');
 
-Route::get('/api/locale/current', [\App\Http\Controllers\LocaleController::class, 'current'])
+Route::get('/api/locale/current', [\App\Modules\Language\Controllers\LocaleController::class, 'current'])
     ->name('locale.current');
+
+// Translation Export API for JavaScript
+Route::get('/api/translations/{domain?}', function ($domain = 'default') {
+    $locale = request()->get('locale', app()->getLocale());
+    $json = \App\Modules\Language\Services\TranslationService::exportToJson($domain, $locale);
+    
+    return response($json, 200)
+        ->header('Content-Type', 'application/json')
+        ->header('Cache-Control', 'public, max-age=3600');
+})->name('translations.export');
 
 /*
 |--------------------------------------------------------------------------

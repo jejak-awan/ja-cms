@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Language\Controllers;
 
-use App\Services\LocaleService;
+use App\Http\Controllers\Controller;
+
+use App\Modules\Language\Services\LocaleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;

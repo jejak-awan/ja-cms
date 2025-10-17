@@ -30,20 +30,14 @@ export function languageSwitcher() {
             // Submit form to switch language
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/locale/switch';
+            form.action = `/locale/${locale}`;
             
             const csrf = document.createElement('input');
             csrf.type = 'hidden';
             csrf.name = '_token';
             csrf.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             
-            const localeInput = document.createElement('input');
-            localeInput.type = 'hidden';
-            localeInput.name = 'locale';
-            localeInput.value = locale;
-            
             form.appendChild(csrf);
-            form.appendChild(localeInput);
             document.body.appendChild(form);
             form.submit();
         }

@@ -75,7 +75,6 @@
                         :label="__('admin.pages.content_label')"
                         :value="old('content_' . app()->getLocale())"
                         rows="15"
-                        required
                         :placeholder="__('admin.pages.content_placeholder')"
                     />
                 </div>

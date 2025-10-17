@@ -20,8 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Add language detection to web middleware group globally
         $middleware->web(append: [
-            \App\Http\Middleware\DetectLanguage::class,
-            \App\Http\Middleware\SetLocale::class,
+            \App\Modules\Language\Middleware\DetectLanguage::class,
+            \App\Modules\Language\Middleware\SetLocale::class,
         ]);
         
         $middleware->alias([
@@ -29,8 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'admin' => \App\Modules\Admin\Middleware\AdminMiddleware::class,
             'cache.debug' => \App\Http\Middleware\CacheDebugMiddleware::class,
-            'locale' => \App\Http\Middleware\SetLocale::class,
-            'localize.routes' => \App\Http\Middleware\LocalizeRoutes::class,
+            'locale' => \App\Modules\Language\Middleware\SetLocale::class,
+            'localize.routes' => \App\Modules\Language\Middleware\LocalizeRoutes::class,
             'api' => \App\Http\Middleware\ApiMiddleware::class,
             'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
             'rate.limit' => \App\Http\Middleware\CustomRateLimiter::class,

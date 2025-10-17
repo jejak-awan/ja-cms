@@ -197,4 +197,49 @@ class PageController extends Controller
             'status' => $page->status
         ]);
     }
+
+    /**
+     * Bulk actions for pages
+     */
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete,publish,draft',
+            'pages' => 'required|array',
+            'pages.*' => 'exists:pages,id',
+        ]);
+
+        $pages = Page::whereIn('id', $request->pages)->get();
+
+        switch ($request->action) {
+            case 'delete':
+                foreach ($pages as $page) {
+                    // Delete featured image if exists
+                    if ($page->featured_image) {
+                        Storage::disk('public')->delete($page->featured_image);
+                    }
+                    $page->delete();
+                }
+                $message = count($pages) . ' page(s) deleted successfully!';
+                break;
+
+            case 'publish':
+                foreach ($pages as $page) {
+                    $page->update(['status' => 'published']);
+                }
+                $message = count($pages) . ' page(s) published successfully!';
+                break;
+
+            case 'draft':
+                foreach ($pages as $page) {
+                    $page->update(['status' => 'draft']);
+                }
+                $message = count($pages) . ' page(s) moved to draft successfully!';
+                break;
+        }
+
+        return redirect()
+            ->route('admin.pages.index')
+            ->with('success', $message);
+    }
 }

@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         require_once app_path('Http/Helpers/theme_helpers.php');
         
         // Register localized route macros
-        \App\Support\LocalizedRouteMacros::register();
+    \App\Modules\Language\Support\LocalizedRouteMacros::register();
         
         // Register model observers
         Article::observe(ArticleObserver::class);

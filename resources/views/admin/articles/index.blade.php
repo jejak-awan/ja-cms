@@ -61,7 +61,7 @@
                         <option value="">{{ __('admin.common.all_status') }}</option>
                         @foreach($statuses as $status)
                             <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>
-                                {{ ucfirst($status) }}
+                                {{ __('admin.articles.status.' . $status) }}
                             </option>
                         @endforeach
                     </select>
@@ -94,13 +94,13 @@
                 <!-- Bulk Actions -->
                 <div class="flex items-center space-x-2">
                     <select id="bulkAction" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">Bulk Actions</option>
-                        <option value="publish">Publish Selected</option>
-                        <option value="draft">Move to Draft</option>
-                        <option value="delete">Delete Selected</option>
+                        <option value="">{{ __('admin.common.bulk_actions') }}</option>
+                        <option value="publish">{{ __('admin.common.publish_selected') }}</option>
+                        <option value="draft">{{ __('admin.common.move_to_draft') }}</option>
+                        <option value="delete">{{ __('admin.common.delete_selected') }}</option>
                     </select>
                     <button type="button" onclick="applyBulkAction()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition">
-                        Apply
+                        {{ __('admin.common.apply') }}
                     </button>
                 </div>
             </div>
@@ -118,7 +118,10 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600" onclick="sortBy('title_{{ app()->getLocale() }}')"
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600" onclick="sortBy('title_{{ app()->getLocale() }}')">
                                 {{ __('admin.articles.title_label') }}
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -141,6 +144,9 @@
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($articles as $article)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" name="articles[]" value="{{ $article->id }}" class="article-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     @if($article->featured_image)
@@ -266,39 +272,138 @@ function applyBulkAction() {
 }
 
 function confirmDelete(id, title) {
-    document.getElementById('deleteArticleMessage').textContent = 
-        `{{ __('admin.articles.confirm_delete') }}: "${title}"?`;
-    document.getElementById('deleteArticleForm').action = `/admin/articles/${id}`;
-    openModal('deleteArticleModal');
+    console.log('confirmDelete called with id:', id, 'title:', title);
+    const messageEl = document.getElementById('deleteArticleMessage');
+    const formEl = document.getElementById('deleteArticleForm');
+    
+    if (messageEl) {
+        messageEl.textContent = `{{ __('admin.articles.confirm_delete') }}: "${title}"?`;
+    }
+    
+    if (formEl) {
+        // Set form action with proper base URL
+        const baseUrl = '{{ url("/admin/articles") }}';
+        formEl.action = `${baseUrl}/${id}`;
+        console.log('Form action set to:', formEl.action);
+        console.log('Form method:', formEl.method);
+        
+        // Verify DELETE method input exists
+        const methodInput = formEl.querySelector('input[name="_method"]');
+        if (methodInput) {
+            console.log('DELETE method input exists, value:', methodInput.value);
+        } else {
+            console.error('DELETE method input NOT found!');
+        }
+    }
+    
+    console.log('Calling openModal...');
+    
+    // Check if Alpine.js is loaded
+    if (typeof window.Alpine !== 'undefined') {
+        console.log('Alpine.js is loaded');
+    } else {
+        console.error('Alpine.js not loaded!');
+    }
+    
+    // Skip Alpine.js modal, use fallback directly
+    console.log('Using fallback modal directly...');
+    const modal = document.getElementById('deleteArticleModal');
+    if (modal) {
+        console.log('Modal element found, showing...');
+        modal.style.display = 'flex';
+    } else {
+        console.error('Modal element not found!');
+    }
 }
+
+// Select all functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const articleCheckboxes = document.querySelectorAll('.article-checkbox');
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            articleCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Update select all when individual checkboxes change
+    articleCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(articleCheckboxes).every(cb => cb.checked);
+            const someChecked = Array.from(articleCheckboxes).some(cb => cb.checked);
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            }
+        });
+    });
+});
+
+// Fallback modal functions (if Alpine.js modal not working)
+window.openModal = function(id) {
+    console.log('Fallback openModal called for:', id);
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+};
+
+window.closeModal = function(id) {
+    console.log('Fallback closeModal called for:', id);
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
 </script>
 @endpush
 
-{{-- Delete Confirmation Modal --}}
-<x-admin.modal id="deleteArticleModal" title="{{ __('admin.common.confirm') }} {{ __('admin.common.delete') }}?">
-    <p class="text-gray-600 dark:text-gray-400" id="deleteArticleMessage">
-        {{ __('admin.articles.confirm_delete') }}
-    </p>
-    
-    <x-slot name="footer">
-        <button 
-            type="button"
-            onclick="closeModal('deleteArticleModal')"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition"
-        >
-            {{ __('admin.common.cancel') }}
-        </button>
-        <form id="deleteArticleForm" method="POST" class="inline">
-            @csrf
-            @method('DELETE')
+{{-- Delete Confirmation Modal (Fallback without Alpine.js) --}}
+<div id="deleteArticleModal" class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
+    <div class="absolute inset-0 bg-black/50 dark:bg-black/70" onclick="closeModal('deleteArticleModal')"></div>
+    <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-md w-full mx-4">
+        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                {{ __('admin.common.confirm') }} {{ __('admin.common.delete') }}?
+            </h3>
             <button 
-                type="submit"
-                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+                onclick="closeModal('deleteArticleModal')"
+                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
             >
-                {{ __('admin.common.delete') }}
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
-        </form>
-    </x-slot>
-</x-admin.modal>
+        </div>
+        <div class="p-6 text-gray-600 dark:text-gray-400">
+            <p id="deleteArticleMessage">
+                {{ __('admin.articles.confirm_delete') }}
+            </p>
+        </div>
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <button 
+                type="button"
+                onclick="closeModal('deleteArticleModal')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+            >
+                {{ __('admin.common.cancel') }}
+            </button>
+            <form id="deleteArticleForm" method="POST" class="inline">
+                @csrf
+                @method('DELETE')
+                <button 
+                    type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
+                >
+                    {{ __('admin.common.delete') }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection

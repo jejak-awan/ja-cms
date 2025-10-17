@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\LocaleService;
+use App\Modules\Language\Services\LocaleService;
 use Illuminate\Support\Facades\App;
 
 if (!function_exists('current_locale')) {
@@ -239,5 +239,203 @@ if (!function_exists('trans_choice_locale')) {
     function trans_choice_locale(string $key, int $count, array $replace = []): string
     {
         return trans_choice($key, $count, array_merge(['count' => $count], $replace));
+    }
+}
+
+// ============================================================================
+// WordPress-Style Translation Functions
+// ============================================================================
+
+if (!function_exists('_t')) {
+    /**
+     * Translate string with text domain (WordPress-style __)
+     *
+     * @param string $key Translation key
+     * @param string $domain Text domain (e.g., 'admin', 'frontend')
+     * @param array $replace Replacement parameters
+     * @return string
+     */
+    function _t(string $key, string $domain = 'default', array $replace = []): string
+    {
+    return App\Modules\Language\Services\TranslationService::trans($key, $domain, $replace);
+    }
+}
+
+if (!function_exists('_e')) {
+    /**
+     * Echo translated string with text domain (WordPress-style _e)
+     *
+     * @param string $key Translation key
+     * @param string $domain Text domain
+     * @param array $replace Replacement parameters
+     * @return void
+     */
+    function _e(string $key, string $domain = 'default', array $replace = []): void
+    {
+        echo _t($key, $domain, $replace);
+    }
+}
+
+if (!function_exists('_n')) {
+    /**
+     * Translate plural forms (WordPress-style _n)
+     *
+     * @param string $single Singular form
+     * @param string $plural Plural form
+     * @param int $count Count
+     * @param string $domain Text domain
+     * @return string
+     */
+    function _n(string $single, string $plural, int $count, string $domain = 'default'): string
+    {
+        $key = $count === 1 ? $single : $plural;
+        return _t($key, $domain, ['count' => $count]);
+    }
+}
+
+if (!function_exists('_x')) {
+    /**
+     * Translate with context (WordPress-style _x)
+     *
+     * @param string $key Translation key
+     * @param string $context Translation context
+     * @param string $domain Text domain
+     * @return string
+     */
+    function _x(string $key, string $context, string $domain = 'default'): string
+    {
+        // Try context-specific key first
+        $contextKey = "{$key}_{$context}";
+        $translation = _t($contextKey, $domain);
+        
+        // Fallback to regular key if context-specific not found
+        if ($translation === $contextKey) {
+            return _t($key, $domain);
+        }
+        
+        return $translation;
+    }
+}
+
+if (!function_exists('esc_html__')) {
+    /**
+     * Translate and escape HTML (WordPress-style)
+     *
+     * @param string $key Translation key
+     * @param string $domain Text domain
+     * @return string
+     */
+    function esc_html__(string $key, string $domain = 'default'): string
+    {
+        return htmlspecialchars(_t($key, $domain), ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (!function_exists('esc_attr__')) {
+    /**
+     * Translate and escape for attribute (WordPress-style)
+     *
+     * @param string $key Translation key
+     * @param string $domain Text domain
+     * @return string
+     */
+    function esc_attr__(string $key, string $domain = 'default'): string
+    {
+        return htmlspecialchars(_t($key, $domain), ENT_QUOTES, 'UTF-8');
+    }
+}
+
+// ============================================================================
+// Joomla-Style Translation Functions
+// ============================================================================
+
+if (!function_exists('JText')) {
+    /**
+     * Joomla-style translation helper
+     *
+     * @param string $key Translation key (usually ALL_CAPS)
+     * @param array $replace Replacement parameters
+     * @return string
+     */
+    function JText(string $key, array $replace = []): string
+    {
+        return __($key, $replace);
+    }
+}
+
+// ============================================================================
+// Translation Management Functions
+// ============================================================================
+
+if (!function_exists('trans_domain')) {
+    /**
+     * Load specific text domain
+     *
+     * @param string $domain
+     * @param string|null $locale
+     * @return void
+     */
+    function trans_domain(string $domain, ?string $locale = null): void
+    {
+    App\Modules\Language\Services\TranslationService::preload([$domain], $locale);
+    }
+}
+
+if (!function_exists('trans_missing')) {
+    /**
+     * Get missing translations report
+     *
+     * @return array
+     */
+    function trans_missing(): array
+    {
+    return App\Modules\Language\Services\TranslationService::getMissingTranslations();
+    }
+}
+
+if (!function_exists('trans_stats')) {
+    /**
+     * Get translation statistics
+     *
+     * @return array
+     */
+    function trans_stats(): array
+    {
+    return App\Modules\Language\Services\TranslationService::getStatistics();
+    }
+}
+
+if (!function_exists('trans_export_js')) {
+    /**
+     * Export translations to JavaScript object
+     *
+     * @param string|array $domains
+     * @param string|null $locale
+     * @return string JSON string
+     */
+    function trans_export_js($domains, ?string $locale = null): string
+    {
+        $domains = is_array($domains) ? $domains : [$domains];
+        $exported = [];
+
+        foreach ($domains as $domain) {
+            $exported[$domain] = App\Modules\Language\Services\TranslationService::exportToJson($domain, $locale);
+        }
+
+        return json_encode($exported, JSON_UNESCAPED_UNICODE);
+    }
+}
+
+if (!function_exists('trans_clear_cache')) {
+    /**
+     * Clear translation cache
+     *
+     * @param string|null $domain
+     * @param string|null $locale
+     * @return void
+     */
+    function trans_clear_cache(?string $domain = null, ?string $locale = null): void
+    {
+    App\Modules\Language\Services\TranslationService::clearCache($domain, $locale);
     }
 }

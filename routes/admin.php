@@ -75,6 +75,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->names('categories');
         
         // Pages - special routes must come before resource routes
+        Route::post('/pages/bulk-action', [\App\Modules\Page\Controllers\PageController::class, 'bulkAction'])
+            ->name('pages.bulk-action');
         Route::post('/pages/update-order', [\App\Modules\Page\Controllers\PageController::class, 'updateOrder'])
             ->name('pages.update-order');
         Route::post('/pages/{id}/toggle-status', [\App\Modules\Page\Controllers\PageController::class, 'toggleStatus'])
@@ -182,6 +184,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings/languages/statistics', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'statistics'])->name('settings.languages.statistics');
         Route::post('/settings/languages/clear-cache', [\App\Modules\Admin\Controllers\LanguageSettingsController::class, 'clearCache'])->name('settings.languages.clear-cache');
 
+        // Language Overrides (Joomla-style Translation Management)
+        Route::prefix('translations')->name('translations.')->group(function () {
+            Route::get('/', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'create'])->name('create');
+            Route::post('/', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'store'])->name('store');
+            Route::get('/{override}/edit', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'edit'])->name('edit');
+            Route::put('/{override}', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'update'])->name('update');
+            Route::delete('/{override}', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'destroy'])->name('destroy');
+            Route::post('/{override}/toggle', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'toggle'])->name('toggle');
+            Route::post('/clear-cache', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'clearCache'])->name('clear-cache');
+            Route::get('/statistics', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'statistics'])->name('statistics');
+            Route::get('/missing', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'missing'])->name('missing');
+            Route::get('/export', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'export'])->name('export');
+            Route::post('/import', [\App\Modules\Language\Controllers\LanguageOverrideController::class, 'import'])->name('import');
+        });
+
         
         // Menus
         Route::resource('menus', \App\Modules\Menu\Controllers\MenuController::class)
@@ -256,7 +274,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'two.factor'])->group(function () {
         Route::get('/two-factor/verify', function () {
             return view('admin.security.verify-two-factor');
-        })->name('admin.two-factor.verify');
+        })->name('admin.two-factor.verify.form');
         Route::post('/two-factor/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify'])->name('admin.two-factor.verify');
     });
     

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Modules\Language\Services;
 
 use App\Modules\Language\Models\Language;
 use Illuminate\Support\Facades\App;
