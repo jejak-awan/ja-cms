@@ -1,3 +1,5 @@
+> DEPRECATED: This document contains references to legacy paths (e.g., app/Support/Translatable.php, app/Services/LocaleService.php). Refer to RESUME_STATUS.md for updated module paths and current implementation.
+
 # 🌐 JA-CMS Internationalization (i18n) - Implementation Guide
 
 **Date**: October 14, 2025  

@@ -240,6 +240,8 @@ TranslationService::clearCache();
 
 ---
 
+> DEPRECATED: Some examples in this document reference legacy paths/helpers (e.g., app('locales')). See RESUME_STATUS.md for current module structure. The snippet below is updated.
+
 ## 🧩 Alpine.js Language Switcher
 
 ### Implementation
@@ -253,7 +255,8 @@ TranslationService::clearCache();
     
     {{-- Dropdown menu --}}
     <div x-show="open" @click.away="close" class="dropdown-menu">
-        @foreach(app('locales')->available() as $locale)
+        @php($locales = App\\Modules\\Language\\Models\\Language::active())
+        @foreach($locales as $locale)
             <a href="#" @click.prevent="switchLanguage('{{ $locale->code }}')">
                 {{ $locale->native_name }}
             </a>

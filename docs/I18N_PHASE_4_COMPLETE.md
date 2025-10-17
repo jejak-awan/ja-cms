@@ -1,3 +1,5 @@
+> DEPRECATED: Contains outdated references (e.g., app/Support/LocalizedRouteMacros.php). Consult RESUME_STATUS.md for the current implementation.
+
 # ✅ Phase 4: Frontend i18n - COMPLETE!
 
 **Date:** October 14, 2025  

@@ -1,3 +1,5 @@
+> DEPRECATED: This document references legacy i18n files (e.g., Http/Controllers/LocaleController.php, Middleware/SetLocale). See RESUME_STATUS.md for the current Language module structure.
+
 # ✅ Phase 3: Admin Panel i18n - COMPLETE!
 
 **Date:** October 14, 2025  
