@@ -1,0 +1,49 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              🔧 TRANSLATION FIXES - DASHBOARD ADMIN ✅                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+ISSUES FOUND & FIXED:
+
+❌ Issue 1: Dashboard welcome message showing key name
+   View: resources/views/admin/dashboard.blade.php:10
+   Problem: {{ __('admin.dashboard.welcome', ['name' => ...]) }}
+   Key didn't exist + using wrong parameter syntax
+   
+   Fix: Changed to {{ __('admin.dashboard.welcome_back') }}, {{ auth()->user()->name }}
+   Status: ✅ FIXED
+
+❌ Issue 2: "admin.common.images" key missing
+   View: Line 58 - Media stats card
+   Problem: __('admin.common.images') -> showing key instead of value
+   
+   Fix: Added 'images' => 'images' to en/admin.php common section
+        Added 'images' => 'gambar' to id/admin.php common section
+   Status: ✅ FIXED
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CHANGES MADE:
+
+✅ resources/views/admin/dashboard.blade.php
+   Line 10: welcome message corrected
+
+✅ lang/en/admin.php
+   Added: 'images' => 'images' in common section
+
+✅ lang/id/admin.php
+   Added: 'images' => 'gambar' in common section
+
+═══════════════════════════════════════════════════════════════════════════════
+
+RESULT:
+
+Dashboard will now show:
+✅ "Welcome back, Admin 👋" (translated correctly)
+✅ "Here's what's happening with your content today" (translated)
+✅ Media stats: "0 images, 0.00 MB" (images label translated)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎉 ALL DASHBOARD TRANSLATIONS NOW COMPLETE!
+
+═══════════════════════════════════════════════════════════════════════════════

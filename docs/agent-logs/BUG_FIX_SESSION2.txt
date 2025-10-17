@@ -1,0 +1,79 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              🔧 BUG FIX - Permission Error & Blade Syntax ✅                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+ISSUE: ErrorException - Permission Denied on file_put_contents
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Error:
+file_put_contents(/storage/framework/views/...php): Failed to open stream: 
+Permission denied
+
+Root Cause:
+1. View cache issue (resolved with php artisan view:clear)
+2. Blade syntax error in articles/index.blade.php
+
+Problem:
+Line 43 in articles/index.blade.php had complex closure in Blade attribute:
+```
+:options="array_combine($statuses, array_map(fn($s) => 
+__('admin.articles.status.' . $s), $statuses))"
+```
+
+This caused Blade compilation to fail, leading to permission denied when 
+trying to write compiled view file.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SOLUTION APPLIED:
+
+✅ 1. Clear View Cache
+   Command: php artisan view:clear
+   Result: Cleared all compiled views
+
+✅ 2. Fix Blade Syntax
+   File: resources/views/admin/articles/index.blade.php
+   Change: Moved array_map logic from view to controller
+   
+   BEFORE (in view):
+   :options="array_combine($statuses, array_map(fn($s) => 
+   __('admin.articles.status.' . $s), $statuses))"
+   
+   AFTER (in view):
+   :options="$statusOptions"
+
+✅ 3. Update Controller
+   File: app/Modules/Article/Controllers/ArticleController.php
+   Added in index() method:
+   
+   $statusOptions = [];
+   foreach ($statuses as $status) {
+       $statusOptions[$status] = __('admin.articles.status.' . $status);
+   }
+
+✅ 4. Pass to View
+   Added $statusOptions to compact() function
+
+═══════════════════════════════════════════════════════════════════════════════
+
+RESULT:
+
+✅ Views compile successfully
+✅ Articles page loads without errors
+✅ Status filter displays translated options
+✅ Permission errors resolved
+
+═══════════════════════════════════════════════════════════════════════════════
+
+KEY LEARNING:
+
+❌ DON'T: Use complex logic/closures in Blade component attributes
+✅ DO: Move logic to controller and pass processed data to view
+
+This prevents Blade compilation issues and keeps views clean & maintainable.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NEXT: Ready to continue with Pages, Users, Sidebar, and Frontend views! 🚀
+
+═══════════════════════════════════════════════════════════════════════════════
