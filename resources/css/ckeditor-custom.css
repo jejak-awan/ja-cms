@@ -1,0 +1,225 @@
+/**
+ * CKEditor 5 Custom Styling
+ * - Better proportions
+ * - Resizable editor
+ * - Improved UX
+ */
+
+/* CKEditor Container - Make it more proportional */
+.ck-editor {
+    width: 100%;
+    margin: 0;
+}
+
+/* Editor Content Area - Proportional Height */
+.ck-editor__editable {
+    min-height: 400px !important;
+    max-height: 800px !important;
+    overflow-y: auto !important;
+    resize: vertical !important; /* Enable vertical resize */
+    transition: min-height 0.2s ease;
+}
+
+/* Resize Handle Styling */
+.ck-editor__editable::-webkit-resizer {
+    background-image: none;
+    background-color: #f0f0f0;
+    border: 1px solid #d1d5db;
+    border-radius: 0 0 4px 0;
+}
+
+/* Content padding for better readability */
+.ck-editor__editable .ck-content {
+    padding: 1.5rem !important;
+    line-height: 1.8 !important;
+    font-size: 16px !important;
+}
+
+/* Improved Toolbar Styling */
+.ck-toolbar {
+    border-radius: 6px 6px 0 0 !important;
+    border-color: #d1d5db !important;
+    background: #f9fafb !important;
+    padding: 8px 12px !important;
+}
+
+/* Editor Border */
+.ck-editor__main {
+    border: 1px solid #d1d5db !important;
+    border-radius: 0 0 6px 6px !important;
+    background: white !important;
+}
+
+/* Focus State - Better visual feedback */
+.ck-editor__editable:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .ck-toolbar {
+        background: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+    
+    .ck-editor__editable {
+        background: #111827 !important;
+        color: #f9fafb !important;
+    }
+    
+    .ck-editor__editable .ck-content {
+        color: #f9fafb !important;
+    }
+    
+    .ck-editor__main {
+        background: #111827 !important;
+        border-color: #374151 !important;
+    }
+    
+    .ck-editor__editable:focus {
+        border-color: #60a5fa !important;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+    }
+}
+
+/* Fullscreen Button Helper */
+.ck-editor-fullscreen-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.ck-editor-fullscreen-toggle:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+/* Fullscreen Mode */
+.ck-editor-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    background: white !important;
+    padding: 1rem !important;
+}
+
+.ck-editor-fullscreen .ck-editor__editable {
+    min-height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .ck-editor__editable {
+        min-height: 300px !important;
+    }
+    
+    .ck-editor__editable .ck-content {
+        padding: 1rem !important;
+        font-size: 14px !important;
+    }
+    
+    .ck-toolbar {
+        padding: 6px 8px !important;
+    }
+}
+
+/* Smooth Scrolling in Editor */
+.ck-editor__editable {
+    scroll-behavior: smooth;
+}
+
+/* Better Image Handling */
+.ck-editor__editable img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+/* Table Styling */
+.ck-editor__editable table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 1rem 0 !important;
+}
+
+.ck-editor__editable table td,
+.ck-editor__editable table th {
+    border: 1px solid #d1d5db !important;
+    padding: 0.5rem !important;
+}
+
+/* Code Block Styling */
+.ck-editor__editable pre {
+    background: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    padding: 1rem !important;
+    overflow-x: auto !important;
+    margin: 1rem 0 !important;
+}
+
+/* Blockquote Styling */
+.ck-editor__editable blockquote {
+    border-left: 4px solid #3b82f6 !important;
+    padding-left: 1rem !important;
+    margin: 1rem 0 !important;
+    color: #6b7280 !important;
+    font-style: italic !important;
+}
+
+/* Link Styling */
+.ck-editor__editable a {
+    color: #3b82f6 !important;
+    text-decoration: underline !important;
+}
+
+.ck-editor__editable a:hover {
+    color: #2563eb !important;
+}
+
+/* Loading State */
+.ck-editor-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.ck-editor-loading::after {
+    content: 'Loading editor...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+/* Character Count (if enabled) */
+.ck-character-count {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 12px;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    font-size: 12px;
+    color: #6b7280;
+}
+

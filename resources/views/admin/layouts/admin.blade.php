@@ -12,6 +12,113 @@
     {{-- Page Transitions CSS --}}
     <link rel="stylesheet" href="{{ asset('css/page-transitions.css') }}">
     
+    {{-- CKEditor Custom Styles --}}
+    <style>
+        /* CKEditor 5 Custom Styling - Better proportions & Resizable */
+        .ck-editor { width: 100%; margin: 0; }
+        
+        .ck-editor__editable {
+            min-height: 400px !important;
+            max-height: 800px !important;
+            overflow-y: auto !important;
+            resize: vertical !important;
+            transition: min-height 0.2s ease;
+        }
+        
+        .ck-editor__editable .ck-content {
+            padding: 1.5rem !important;
+            line-height: 1.8 !important;
+            font-size: 16px !important;
+        }
+        
+        .ck-toolbar {
+            border-radius: 6px 6px 0 0 !important;
+            border-color: #d1d5db !important;
+            background: #f9fafb !important;
+            padding: 8px 12px !important;
+        }
+        
+        .ck-editor__main {
+            border: 1px solid #d1d5db !important;
+            border-radius: 0 0 6px 6px !important;
+            background: white !important;
+        }
+        
+        .ck-editor__editable:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        .ck-editor__editable { scroll-behavior: smooth; }
+        
+        .ck-editor__editable img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        
+        .ck-editor__editable table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin: 1rem 0 !important;
+        }
+        
+        .ck-editor__editable table td,
+        .ck-editor__editable table th {
+            border: 1px solid #d1d5db !important;
+            padding: 0.5rem !important;
+        }
+        
+        .ck-editor__editable pre {
+            background: #f3f4f6 !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 4px !important;
+            padding: 1rem !important;
+            overflow-x: auto !important;
+            margin: 1rem 0 !important;
+        }
+        
+        .ck-editor__editable blockquote {
+            border-left: 4px solid #3b82f6 !important;
+            padding-left: 1rem !important;
+            margin: 1rem 0 !important;
+            color: #6b7280 !important;
+            font-style: italic !important;
+        }
+        
+        .ck-editor__editable a {
+            color: #3b82f6 !important;
+            text-decoration: underline !important;
+        }
+        
+        .ck-editor__editable a:hover { color: #2563eb !important; }
+        
+        @media (max-width: 768px) {
+            .ck-editor__editable { min-height: 300px !important; }
+            .ck-editor__editable .ck-content {
+                padding: 1rem !important;
+                font-size: 14px !important;
+            }
+            .ck-toolbar { padding: 6px 8px !important; }
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .ck-toolbar {
+                background: #1f2937 !important;
+                border-color: #374151 !important;
+            }
+            .ck-editor__editable {
+                background: #111827 !important;
+                color: #f9fafb !important;
+            }
+            .ck-editor__main {
+                background: #111827 !important;
+                border-color: #374151 !important;
+            }
+        }
+    </style>
+    
     {{-- Theme-specific CSS (if exists) --}}
     @if(file_exists(public_path('themes/admin/default/css/style.css')))
         <link rel="stylesheet" href="{{ asset('themes/admin/default/css/style.css') }}">

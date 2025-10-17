@@ -91,6 +91,11 @@ const defaultConfig = {
     // This removes the "license key missing" warning
     licenseKey: 'GPL',
     
+    // Editor height (can be overridden per instance)
+    // Using min-height for responsive editing
+    minHeight: '400px',
+    maxHeight: '800px',
+    
     toolbar: {
         items: [
             'undo', 'redo',
@@ -111,7 +116,7 @@ const defaultConfig = {
             '|',
             'sourceEditing', 'showBlocks', 'findAndReplace'
         ],
-        shouldNotGroupWhenFull: false
+        shouldNotGroupWhenFull: true
     },
     plugins: [
         AccessibilityHelp,
