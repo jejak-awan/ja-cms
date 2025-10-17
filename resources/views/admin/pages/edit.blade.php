@@ -4,27 +4,32 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900">Edit Page</h2>
-            <p class="text-sm text-gray-600 mt-1">Update page information</p>
-        </div>
-        <a href="{{ route('admin.pages.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Pages
-        </a>
-    </div>
+    <x-admin.page-header
+        title="Edit Page"
+        subtitle="Update page information"
+    >
+        <x-slot name="actions">
+            <x-admin.button 
+                type="link" 
+                :href="route('admin.pages.index')" 
+                variant="secondary"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Pages
+            </x-admin.button>
+        </x-slot>
+    </x-admin.page-header>
 
     @if($errors->any())
-    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-        <ul class="list-disc list-inside text-sm">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <x-admin.alert type="error">
+            <ul class="list-disc list-inside text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </x-admin.alert>
     @endif
 
     <form action="{{ route('admin.pages.update', $page->id) }}" method="POST" enctype="multipart/form-data">
@@ -32,78 +37,121 @@
         @method('PUT')
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium mb-2">Title *</label>
-                    <input type="text" name="title_id" id="title" value="{{ old('title_id', $page->title) }}" required class="w-full px-4 py-2 border rounded-lg" onkeyup="generateSlug()">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.input-field
+                        name="title_id"
+                        label="Title"
+                        type="text"
+                        :value="old('title_id', $page->title)"
+                        required
+                        placeholder="Enter page title..."
+                        class="text-lg"
+                        onkeyup="generateSlug()"
+                    />
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium mb-2">Slug</label>
-                    <input type="text" name="slug" id="slug" value="{{ old('slug', $page->slug) }}" class="w-full px-4 py-2 border rounded-lg">
-                    <p class="text-xs text-gray-500 mt-1">Leave empty to auto-generate from title</p>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.input-field
+                        name="slug"
+                        label="Slug"
+                        :value="old('slug', $page->slug)"
+                        placeholder="auto-generated-from-title"
+                        help="Leave empty to auto-generate from title"
+                    />
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium mb-2">Excerpt</label>
-                    <textarea name="excerpt" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ old('excerpt', $page->excerpt) }}</textarea>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.textarea-field
+                        name="excerpt"
+                        label="Excerpt"
+                        :value="old('excerpt', $page->excerpt)"
+                        rows="3"
+                        placeholder="Brief summary (optional)"
+                    />
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium mb-2">Content *</label>
-                    <textarea name="content_id" id="content" rows="15" required class="w-full px-4 py-2 border rounded-lg">{{ old('content_id', $page->content) }}</textarea>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.textarea-field
+                        name="content_id"
+                        label="Content"
+                        :value="old('content_id', $page->content)"
+                        rows="15"
+                        required
+                    />
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">SEO Settings</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">SEO Settings</h3>
                     <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Meta Title</label>
-                            <input type="text" name="meta_title" value="{{ old('meta_title', $page->meta_title) }}" class="w-full px-4 py-2 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Meta Description</label>
-                            <textarea name="meta_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ old('meta_description', $page->meta_description) }}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Meta Keywords</label>
-                            <input type="text" name="meta_keywords" value="{{ old('meta_keywords', $page->meta_keywords) }}" class="w-full px-4 py-2 border rounded-lg">
-                        </div>
+                        <x-admin.input-field
+                            name="meta_title"
+                            label="Meta Title"
+                            :value="old('meta_title', $page->meta_title)"
+                            placeholder="SEO title for search engines"
+                        />
+                        
+                        <x-admin.textarea-field
+                            name="meta_description"
+                            label="Meta Description"
+                            :value="old('meta_description', $page->meta_description)"
+                            rows="3"
+                            placeholder="Brief description for search results"
+                        />
+                        
+                        <x-admin.input-field
+                            name="meta_keywords"
+                            label="Meta Keywords"
+                            :value="old('meta_keywords', $page->meta_keywords)"
+                            placeholder="keyword1, keyword2, keyword3"
+                        />
                     </div>
                 </div>
             </div>
 
             <div class="space-y-6">
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">Publish</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Publish</h3>
                     <div class="space-y-4">
+                        <x-admin.select-field
+                            name="status"
+                            label="Status"
+                            required
+                            :options="['draft' => 'Draft', 'published' => 'Published']"
+                            :selected="old('status', $page->status)"
+                        />
+                        
                         <div>
-                            <label class="block text-sm font-medium mb-2">Status *</label>
-                            <select name="status" class="w-full px-4 py-2 border rounded-lg">
-                                <option value="draft" {{ old('status', $page->status) == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ old('status', $page->status) == 'published' ? 'selected' : '' }}>Published</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="is_homepage" value="1" {{ old('is_homepage', $page->is_homepage) ? 'checked' : '' }} class="rounded">
-                                <span class="ml-2 text-sm">Set as Homepage</span>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="is_homepage" value="1" {{ old('is_homepage', $page->is_homepage) ? 'checked' : '' }} class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Set as Homepage</span>
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Update Page</button>
+                    
+                    <div class="mt-4 pt-4 border-t dark:border-gray-700">
+                        <div class="flex gap-3">
+                            <x-admin.button type="submit" variant="primary" class="flex-1">
+                                @t('admin.actions.update')
+                            </x-admin.button>
+                            <x-admin.button type="link" :href="route('admin.pages.index')" variant="secondary" class="flex-1">
+                                @t('admin.actions.cancel')
+                            </x-admin.button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">Template</h3>
-                    <select name="template" class="w-full px-4 py-2 border rounded-lg">
-                        @foreach($templates as $key => $name)
-                            <option value="{{ $key }}" {{ old('template', $page->template) == $key ? 'selected' : '' }}>{{ $name }}</option>
-                        @endforeach
-                    </select>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Template</h3>
+                    <x-admin.select-field
+                        name="template"
+                        :label="false"
+                        :options="$templates"
+                        :selected="old('template', $page->template)"
+                    />
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4">Featured Image</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Featured Image</h3>
                     @if($page->featured_image)
                     <div class="mb-3">
                         <img src="{{ Storage::url($page->featured_image) }}" class="max-h-48 rounded mx-auto">
@@ -135,9 +183,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function generateSlug() {
-    const title = document.getElementById('title').value;
+    const title = document.getElementById('title_id').value;
+    const excerpt = document.getElementById('excerpt') ? document.getElementById('excerpt').value : '';
+    
+    // Generate slug
     const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
     document.getElementById('slug').value = slug;
+    
+    // Auto-generate meta title (max 60 chars)
+    const metaTitleField = document.getElementById('meta_title');
+    if (metaTitleField && !metaTitleField.value) {
+        metaTitleField.value = title.substring(0, 60);
+    }
+    
+    // Auto-generate meta description from excerpt or title (max 160 chars)
+    const metaDescField = document.getElementById('meta_description');
+    if (metaDescField && !metaDescField.value) {
+        const description = excerpt || title;
+        metaDescField.value = description.substring(0, 160);
+    }
 }
 
 function previewImage(input) {
@@ -151,6 +215,27 @@ function previewImage(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+// Form validation before submit
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Sync TinyMCE content to textarea
+            if (typeof tinymce !== 'undefined') {
+                tinymce.triggerSave();
+            }
+            
+            // Validate content
+            const content = document.getElementById('content_id').value;
+            if (!content || content.trim() === '') {
+                e.preventDefault();
+                alert('Please enter page content.');
+                return false;
+            }
+        });
+    }
+});
 </script>
 @endpush
 @endsection

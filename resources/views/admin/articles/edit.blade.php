@@ -1,40 +1,38 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Edit Article')
+@section('title', __('admin.articles.edit_article'))
 
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900">Edit Article</h2>
-            <p class="text-sm text-gray-600 mt-1">Update your blog post</p>
-        </div>
-        <a href="{{ route('admin.articles.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Articles
-        </a>
-    </div>
+    <x-admin.page-header
+        :title="__('admin.articles.edit_article')"
+        :subtitle="__('admin.articles.edit_subtitle')"
+    >
+        <x-slot name="actions">
+            <x-admin.button 
+                type="link" 
+                :href="route('admin.articles.index')" 
+                variant="secondary"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                {{ __('admin.common.back_to') }} {{ __('admin.articles.title') }}
+            </x-admin.button>
+        </x-slot>
+    </x-admin.page-header>
 
     <!-- Errors -->
     @if($errors->any())
-    <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-        <div class="flex items-start">
-            <svg class="w-5 h-5 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-            </svg>
-            <div>
-                <p class="font-medium">There were some errors with your submission:</p>
-                <ul class="mt-1 list-disc list-inside text-sm">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    </div>
+        <x-admin.alert type="error">
+            <p class="font-medium">{{ __('admin.articles.errors_found') }}</p>
+            <ul class="mt-1 list-disc list-inside text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </x-admin.alert>
     @endif
 
     <!-- Form -->
@@ -46,140 +44,98 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Title -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                        Title <span class="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        name="title_id" 
-                        id="title" 
-                        value="{{ old('title_id', $article->title) }}" 
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.input-field
+                        name="title_id"
+                        :label="__('admin.articles.title_label')"
+                        type="text"
+                        :value="old('title_id', $article->title)"
                         required
-                        class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('title_id') border-red-500 @enderror"
-                        placeholder="Enter article title..."
+                        :placeholder="__('admin.articles.title_label') . '...'"
+                        class="text-lg"
                         onkeyup="generateSlug()"
-                    >
-                    @error('title_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    />
                 </div>
 
                 <!-- Slug -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">
-                        URL Slug
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ __('admin.articles.url_slug') }}
                     </label>
                     <div class="flex items-center">
-                        <span class="text-gray-500 text-sm mr-2">{{ url('/') }}/</span>
-                        <input 
-                            type="text" 
-                            name="slug" 
-                            id="slug" 
-                            value="{{ old('slug', $article->slug) }}" 
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('slug') border-red-500 @enderror"
+                        <span class="text-gray-500 dark:text-gray-400 text-sm mr-2">{{ url('/') }}/</span>
+                        <x-admin.input-field
+                            name="slug"
+                            :value="old('slug', $article->slug)"
                             placeholder="auto-generated-from-title"
-                        >
+                            :label="false"
+                        />
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">Leave empty to auto-generate from title</p>
-                    @error('slug')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('admin.articles.url_slug_help') }}</p>
                 </div>
 
                 <!-- Excerpt -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">
-                        Excerpt
-                    </label>
-                    <textarea 
-                        name="excerpt_id" 
-                        id="excerpt" 
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.textarea-field
+                        name="excerpt_id"
+                        :label="__('admin.articles.excerpt_label')"
+                        :value="old('excerpt_id', $article->excerpt)"
                         rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('excerpt_id') border-red-500 @enderror"
-                        placeholder="Brief summary of the article (optional)"
-                    >{{ old('excerpt_id', $article->excerpt) }}</textarea>
-                    <p class="mt-1 text-xs text-gray-500">A short description that appears in article listings</p>
-                    @error('excerpt_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                        :placeholder="__('admin.articles.excerpt_label') . ' (optional)'"
+                        :help="__('admin.articles.excerpt_help')"
+                    />
                 </div>
 
                 <!-- Content Editor -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <label for="content" class="block text-sm font-medium text-gray-700 mb-2">
-                        Content <span class="text-red-500">*</span>
-                    </label>
-                    <textarea 
-                        name="content_id" 
-                        id="content" 
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <x-admin.textarea-field
+                        name="content_id"
+                        :label="__('admin.articles.content_label')"
+                        :value="old('content_id', $article->content)"
                         rows="15"
                         required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('content_id') border-red-500 @enderror"
-                    >{{ old('content_id', $article->content) }}</textarea>
-                    @error('content_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    />
                 </div>
 
                 <!-- SEO Section -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        SEO Settings
+                        {{ __('admin.articles.seo_settings') }}
                     </h3>
                     
                     <div class="space-y-4">
                         <!-- Meta Title -->
-                        <div>
-                            <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-2">
-                                Meta Title
-                            </label>
-                            <input 
-                                type="text" 
-                                name="meta_title" 
-                                id="meta_title" 
-                                value="{{ old('meta_title', $article->meta_title) }}" 
-                                maxlength="60"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="SEO title for search engines"
-                            >
-                            <p class="mt-1 text-xs text-gray-500">Recommended: 50-60 characters</p>
-                        </div>
+                        <x-admin.input-field
+                            name="meta_title"
+                            :label="__('admin.articles.meta_title')"
+                            :value="old('meta_title', $article->meta_title)"
+                            maxlength="60"
+                            :placeholder="__('admin.articles.meta_title')"
+                            :help="__('admin.articles.meta_title_help')"
+                        />
 
                         <!-- Meta Description -->
-                        <div>
-                            <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-2">
-                                Meta Description
-                            </label>
-                            <textarea 
-                                name="meta_description" 
-                                id="meta_description" 
-                                rows="3"
-                                maxlength="160"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Brief description for search results"
-                            >{{ old('meta_description', $article->meta_description) }}</textarea>
-                            <p class="mt-1 text-xs text-gray-500">Recommended: 150-160 characters</p>
-                        </div>
+                        <x-admin.textarea-field
+                            name="meta_description"
+                            :label="__('admin.articles.meta_description')"
+                            :value="old('meta_description', $article->meta_description)"
+                            rows="3"
+                            maxlength="160"
+                            :placeholder="__('admin.articles.meta_description')"
+                            :help="__('admin.articles.meta_description_help')"
+                        />
 
                         <!-- Meta Keywords -->
-                        <div>
-                            <label for="meta_keywords" class="block text-sm font-medium text-gray-700 mb-2">
-                                Meta Keywords
-                            </label>
-                            <input 
-                                type="text" 
-                                name="meta_keywords" 
-                                id="meta_keywords" 
-                                value="{{ old('meta_keywords', $article->meta_keywords) }}" 
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="keyword1, keyword2, keyword3"
-                            >
-                            <p class="mt-1 text-xs text-gray-500">Comma-separated keywords</p>
-                        </div>
+                        <x-admin.input-field
+                            name="meta_keywords"
+                            :label="__('admin.articles.meta_keywords')"
+                            :value="old('meta_keywords', $article->meta_keywords)"
+                            :placeholder="__('admin.articles.meta_keywords')"
+                            :help="__('admin.articles.meta_keywords_help')"
+                        />
                     </div>
                 </div>
             </div>
@@ -187,98 +143,88 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Publish Settings -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Publish</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.publish_settings') }}</h3>
                     
                     <!-- Status -->
                     <div class="mb-4">
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
-                            Status <span class="text-red-500">*</span>
-                        </label>
-                        <select 
-                            name="status" 
-                            id="status" 
+                        <x-admin.select-field
+                            name="status"
+                            :label="__('admin.common.status')"
                             required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                            <option value="draft" {{ old('status', $article->status) == 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="published" {{ old('status', $article->status) == 'published' ? 'selected' : '' }}>Published</option>
-                            <option value="scheduled" {{ old('status', $article->status) == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                        </select>
+                            :options="[
+                                'draft' => __('admin.common.draft'),
+                                'published' => __('admin.common.published'),
+                                'scheduled' => __('admin.articles.schedule')
+                            ]"
+                            :selected="old('status', $article->status)"
+                        />
                     </div>
 
                     <!-- Publish Date -->
                     <div class="mb-4">
-                        <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">
-                            Publish Date
-                        </label>
-                        <input 
-                            type="datetime-local" 
-                            name="published_at" 
-                            id="published_at" 
-                            value="{{ old('published_at', $article->published_at ? $article->published_at->format('Y-m-d\TH:i') : '') }}" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                        <p class="mt-1 text-xs text-gray-500">Leave empty to publish immediately</p>
+                        <x-admin.input-field
+                            name="published_at"
+                            :label="__('admin.articles.publish_date')"
+                            type="datetime-local"
+                            :value="old('published_at', $article->published_at ? $article->published_at->format('Y-m-d\TH:i') : '')"
+                            :help="__('admin.articles.publish_immediately')"
+                        />
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex flex-col space-y-2 pt-4 border-t">
-                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
-                            Update Article
-                        </button>
-                        <a href="{{ route('admin.articles.index') }}" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition text-center">
-                            Cancel
-                        </a>
+                    <div class="flex flex-col space-y-2 pt-4 border-t dark:border-gray-700">
+                        <x-admin.button type="submit" variant="primary" class="w-full">
+                            {{ __('admin.articles.update') }}
+                        </x-admin.button>
+                        <x-admin.button 
+                            type="link" 
+                            :href="route('admin.articles.index')" 
+                            variant="secondary" 
+                            class="w-full text-center"
+                        >
+                            {{ __('admin.common.cancel') }}
+                        </x-admin.button>
                     </div>
                 </div>
 
                 <!-- Category -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Category</h3>
-                    <select 
-                        name="category_id" 
-                        id="category_id" 
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.category_label') }}</h3>
+                    <x-admin.select-field
+                        name="category_id"
+                        :label="false"
                         required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('category_id') border-red-500 @enderror"
-                    >
-                        <option value="">Select Category</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id', $article->category_id) == $category->id ? 'selected' : '' }}>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('category_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                        :options="['' => __('admin.articles.select_category')] + $categories->pluck('name', 'id')->toArray()"
+                        :selected="old('category_id', $article->category_id)"
+                    />
                 </div>
 
                 <!-- Tags -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.tags_label') }}</h3>
                     <div class="space-y-2">
                         @foreach($tags as $tag)
-                            <label class="flex items-center">
+                            <label class="flex items-center cursor-pointer">
                                 <input 
                                     type="checkbox" 
                                     name="tags[]" 
                                     value="{{ $tag->id }}" 
                                     {{ in_array($tag->id, old('tags', $article->tags->pluck('id')->toArray())) ? 'checked' : '' }}
-                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700"
                                 >
-                                <span class="ml-2 text-sm text-gray-700">{{ $tag->name }}</span>
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ $tag->name }}</span>
                             </label>
                         @endforeach
                     </div>
                     @if($tags->isEmpty())
-                        <p class="text-sm text-gray-500">No tags available</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('admin.articles.no_tags') }}</p>
                     @endif
                 </div>
 
                 <!-- Featured Image -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Featured Image</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.featured_image') }}</h3>
                     
                     <div class="space-y-3">
                         @if($article->featured_image)
@@ -304,9 +250,9 @@
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <p class="mt-2 text-sm text-gray-600">
-                                    <span class="font-medium text-blue-600 hover:text-blue-500">{{ $article->featured_image ? 'Change image' : 'Upload an image' }}</span>
-                                    or drag and drop
+                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <span class="font-medium text-blue-600 hover:text-blue-500">{{ __('admin.articles.upload_image') }}</span>
+                                    {{ __('admin.articles.drag_and_drop') }}
                                 </p>
                                 <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 2MB</p>
                             </label>
@@ -339,16 +285,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Slug generator
+// Auto-generate Slug, Meta Title, and Meta Description
 function generateSlug() {
-    const title = document.getElementById('title').value;
+    const title = document.getElementById('title_id').value;
+    const excerpt = document.getElementById('excerpt_id') ? document.getElementById('excerpt_id').value : '';
+    
+    // Generate slug
     const slug = title
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .trim();
-    document.getElementById('slug').value = slug;
+    
+    const slugField = document.getElementById('slug');
+    if (slugField) {
+        slugField.value = slug;
+    }
+    
+    // Auto-generate meta title (max 60 chars)
+    const metaTitleField = document.getElementById('meta_title');
+    if (metaTitleField && !metaTitleField.value) {
+        metaTitleField.value = title.substring(0, 60);
+    }
+    
+    // Auto-generate meta description from excerpt or title (max 160 chars)
+    const metaDescField = document.getElementById('meta_description');
+    if (metaDescField && !metaDescField.value) {
+        const description = excerpt || title;
+        metaDescField.value = description.substring(0, 160);
+    }
 }
 
 // Image preview
@@ -362,6 +328,27 @@ function previewImage(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+// Form validation before submit
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Sync TinyMCE content to textarea
+            if (typeof tinymce !== 'undefined') {
+                tinymce.triggerSave();
+            }
+            
+            // Validate content
+            const content = document.getElementById('content_id').value;
+            if (!content || content.trim() === '') {
+                e.preventDefault();
+                alert('Please enter article content.');
+                return false;
+            }
+        });
+    }
+});
 </script>
 @endpush
 @endsection
