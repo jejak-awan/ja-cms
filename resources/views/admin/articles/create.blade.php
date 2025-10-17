@@ -306,23 +306,29 @@
 
 @push('scripts')
 <script>
-// Initialize TinyMCE (loaded from local via Vite)
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initializing TinyMCE...');
-    console.log('initTinyMCE function available:', typeof window.initTinyMCE);
+// Initialize CKEditor (loaded from local via Vite)
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Initializing CKEditor...');
     
-    if (typeof window.initTinyMCE === 'function') {
+    if (typeof window.initCKEditor === 'function') {
         // Initialize content editor dynamically based on locale
         const locale = '{{ app()->getLocale() }}';
         const contentField = `content_${locale}`;
+        const textarea = document.querySelector(`[name="${contentField}"]`);
         
-        window.initTinyMCE(`[name="${contentField}"]`, {
-            height: 500,
-            placeholder: 'Start writing your article content...'
-        });
-        console.log(`TinyMCE initialized for ${locale}`);
+        if (textarea) {
+            try {
+                await window.initCKEditor(textarea, {
+                    placeholder: 'Start writing your article content...',
+                    uploadUrl: '{{ route("admin.media.upload.image") }}'
+                });
+                console.log(`✓ CKEditor initialized for ${locale}`);
+            } catch (error) {
+                console.error('✗ CKEditor initialization failed:', error);
+            }
+        }
     } else {
-        console.error('initTinyMCE function not found. Check if app.js is loaded.');
+        console.error('initCKEditor function not found. Check if app.js is loaded.');
     }
 });
 

@@ -269,7 +269,7 @@ export async function initCKEditor(element, customConfig = {}) {
             ...defaultConfig,
             ...customConfig,
             simpleUpload: {
-                uploadUrl: customConfig.uploadUrl || '/admin/upload-image',
+                uploadUrl: customConfig.uploadUrl || '/admin/media/upload-image',
                 withCredentials: true,
                 headers: {
                     'X-CSRF-TOKEN': csrfToken

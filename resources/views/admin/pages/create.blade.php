@@ -169,9 +169,20 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof window.initTinyMCE === 'function') {
-        window.initTinyMCE('[name="content_id"]', { height: 500 });
+document.addEventListener('DOMContentLoaded', async function() {
+    if (typeof window.initCKEditor === 'function') {
+        const textarea = document.querySelector('[name="content_id"]');
+        if (textarea) {
+            try {
+                await window.initCKEditor(textarea, {
+                    placeholder: 'Start writing your page content...',
+                    uploadUrl: '{{ route("admin.media.upload.image") }}'
+                });
+                console.log('✓ CKEditor initialized');
+            } catch (error) {
+                console.error('✗ CKEditor initialization failed:', error);
+            }
+        }
     }
 });
 
@@ -214,10 +225,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            // Sync TinyMCE content to textarea
-            if (typeof tinymce !== 'undefined') {
-                tinymce.triggerSave();
-            }
+            // CKEditor automatically syncs content to textarea
+            // No manual sync needed
             
             // Validate content
             const content = document.getElementById('content_id').value;

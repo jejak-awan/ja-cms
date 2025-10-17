@@ -269,19 +269,26 @@
 
 @push('scripts')
 <script>
-// Initialize TinyMCE (loaded from local via Vite)
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initializing TinyMCE...');
-    console.log('initTinyMCE function available:', typeof window.initTinyMCE);
+// Initialize CKEditor (loaded from local via Vite)
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Initializing CKEditor...');
     
-    if (typeof window.initTinyMCE === 'function') {
-        window.initTinyMCE('[name="content_id"]', {
-            height: 500,
-            placeholder: 'Start writing your article content here...'
-        });
-        console.log('TinyMCE initialized');
+    if (typeof window.initCKEditor === 'function') {
+        const textarea = document.querySelector('[name="content_id"]');
+        
+        if (textarea) {
+            try {
+                await window.initCKEditor(textarea, {
+                    placeholder: 'Start writing your article content here...',
+                    uploadUrl: '{{ route("admin.media.upload.image") }}'
+                });
+                console.log('✓ CKEditor initialized');
+            } catch (error) {
+                console.error('✗ CKEditor initialization failed:', error);
+            }
+        }
     } else {
-        console.error('initTinyMCE function not found. Check if app.js is loaded.');
+        console.error('initCKEditor function not found. Check if app.js is loaded.');
     }
 });
 
@@ -334,10 +341,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            // Sync TinyMCE content to textarea
-            if (typeof tinymce !== 'undefined') {
-                tinymce.triggerSave();
-            }
+            // CKEditor automatically syncs content to textarea
+            // No manual sync needed
             
             // Validate content
             const content = document.getElementById('content_id').value;
