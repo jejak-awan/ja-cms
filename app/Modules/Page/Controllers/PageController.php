@@ -64,7 +64,7 @@ class PageController extends Controller
             'meta_keywords' => 'nullable|max:255',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title_id']);
         $validated['user_id'] = auth()->id();
         $validated['order'] = Page::max('order') + 1;
 
@@ -81,10 +81,20 @@ class PageController extends Controller
             Page::where('is_homepage', true)->update(['is_homepage' => false]);
         }
 
-        Page::create($validated);
+        try {
+            $page = Page::create($validated);
 
-        return redirect()->route('admin.pages.index')
-            ->with('success', 'Page created successfully!');
+            // Clear cache
+            cache()->forget("public_page_{$page->slug}");
+
+            return redirect()->route('admin.pages.index')
+                ->with('success', 'Page created successfully!');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['slug' => 'This slug is already in use. Please use a different title or modify the slug.']);
+        }
     }
 
     public function edit(Page $page)
@@ -129,14 +139,21 @@ class PageController extends Controller
                 ->update(['is_homepage' => false]);
         }
 
-                $page->update($validated);
+        try {
+            $page->update($validated);
 
-        // Clear cached page content
-        cache()->forget("public_page_{$page->slug}");
+            // Clear cached page content
+            cache()->forget("public_page_{$page->slug}");
 
-        return redirect()
-            ->route('admin.pages.index')
-            ->with('success', 'Page updated successfully!');
+            return redirect()
+                ->route('admin.pages.index')
+                ->with('success', 'Page updated successfully!');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['slug' => 'This slug is already in use. Please use a different slug.']);
+        }
     }
 
     public function destroy(Page $page)

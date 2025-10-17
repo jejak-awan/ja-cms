@@ -98,11 +98,13 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $locale = app()->getLocale();
+        
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
+            "title_{$locale}" => 'required|string|max:255',
             'slug' => 'nullable|string|unique:articles,slug',
-            'excerpt_id' => 'nullable|string|max:500',
-            'content_id' => 'required|string',
+            "excerpt_{$locale}" => 'nullable|string|max:500',
+            "content_{$locale}" => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
@@ -116,7 +118,7 @@ class ArticleController extends Controller
 
         // Generate slug if not provided
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+            $validated['slug'] = Str::slug($validated["title_{$locale}"]);
         }
 
         // Handle featured image upload
@@ -133,17 +135,29 @@ class ArticleController extends Controller
             $validated['published_at'] = now();
         }
 
-        // Create article
-        $article = Article::create($validated);
+        try {
+            // Create article
+            $article = Article::create($validated);
 
-        // Attach tags
-        if ($request->filled('tags')) {
-            $article->tags()->attach($request->tags);
+            // Attach tags
+            if ($request->filled('tags')) {
+                $article->tags()->attach($request->tags);
+            }
+
+            // Clear cache
+            cache()->forget('admin_articles_index_page1');
+            cache()->forget('public_featured_articles');
+            cache()->forget('public_latest_articles');
+
+            return redirect()
+                ->route('admin.articles.index')
+                ->with('success', 'Article created successfully!');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['slug' => 'This slug is already in use. Please use a different title or modify the slug.']);
         }
-
-        return redirect()
-            ->route('admin.articles.index')
-            ->with('success', 'Article created successfully!');
     }
 
     /**
@@ -178,12 +192,13 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $article = Article::findOrFail($id);
+        $locale = app()->getLocale();
 
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
+            "title_{$locale}" => 'required|string|max:255',
             'slug' => 'nullable|string|unique:articles,slug,' . $id,
-            'excerpt_id' => 'nullable|string|max:500',
-            'content_id' => 'required|string',
+            "excerpt_{$locale}" => 'nullable|string|max:500',
+            "content_{$locale}" => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
@@ -197,7 +212,7 @@ class ArticleController extends Controller
 
         // Generate slug if not provided
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title_id']);
+            $validated['slug'] = Str::slug($validated["title_{$locale}"]);
         }
 
         // Handle featured image upload
@@ -216,24 +231,31 @@ class ArticleController extends Controller
             $validated['published_at'] = now();
         }
 
-        // Update article
-        $article->update($validated);
+        try {
+            // Update article
+            $article->update($validated);
 
-        // Sync tags
-        if ($request->has('tags')) {
-            $article->tags()->sync($request->tags ?? []);
+            // Sync tags
+            if ($request->has('tags')) {
+                $article->tags()->sync($request->tags ?? []);
+            }
+
+            // Clear cached article content
+            cache()->forget("public_article_{$article->slug}");
+            cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
+            cache()->forget('public_featured_articles');
+            cache()->forget('public_latest_articles');
+            cache()->forget('admin_articles_index_page1');
+
+            return redirect()
+                ->route('admin.articles.index')
+                ->with('success', 'Article updated successfully!');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['slug' => 'This slug is already in use. Please use a different slug.']);
         }
-
-        // Clear cached article content
-        cache()->forget("public_article_{$article->slug}");
-        cache()->forget("public_related_articles_{$article->category_id}_{$article->id}");
-        cache()->forget('public_featured_articles');
-        cache()->forget('public_latest_articles');
-        cache()->forget('admin_articles_index_page1');
-
-        return redirect()
-            ->route('admin.articles.index')
-            ->with('success', 'Article updated successfully!');
     }
 
     /**

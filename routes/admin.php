@@ -205,6 +205,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/themes/{theme}/settings', [\App\Modules\Theme\Controllers\ThemeController::class, 'updateSettings'])
             ->name('themes.settings.update');
         
+        // Theme Customization
+        Route::get('/themes/customize', [\App\Modules\Theme\Controllers\CustomizationController::class, 'index'])
+            ->name('themes.customize');
+        Route::post('/themes/customize', [\App\Modules\Theme\Controllers\CustomizationController::class, 'update'])
+            ->name('themes.customize.update');
+        Route::get('/themes/customize/reset', [\App\Modules\Theme\Controllers\CustomizationController::class, 'reset'])
+            ->name('themes.customize.reset');
+        Route::get('/themes/css/{type?}', [\App\Modules\Theme\Controllers\CustomizationController::class, 'css'])
+            ->name('themes.css')
+            ->where('type', 'admin|public');
+        
         // Plugins
         Route::get('/plugins', [\App\Modules\Plugin\Controllers\PluginController::class, 'index'])
             ->name('plugins.index');
@@ -260,7 +271,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/clear-all', [\App\Http\Controllers\CacheController::class, 'clearAll'])->name('clear-all');
         Route::post('/clear-pattern', [\App\Http\Controllers\CacheController::class, 'clearByPattern'])->name('clear-pattern');
         Route::post('/warm-up', [\App\Http\Controllers\CacheController::class, 'warmUp'])->name('warm-up');
+        Route::get('/test-datatable', function() {
+            return view('test-datatable');
+        })->name('admin.test-datatable');
         Route::post('/enable', [\App\Http\Controllers\CacheController::class, 'enable'])->name('enable');
         Route::post('/disable', [\App\Http\Controllers\CacheController::class, 'disable'])->name('disable');
     });
 });
+
+// Debug test route
