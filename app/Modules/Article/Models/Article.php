@@ -51,6 +51,7 @@ class Article extends Model
         'views' => 0,
     ];
 
+
     // Boot method to register observer
     protected static function boot()
     {

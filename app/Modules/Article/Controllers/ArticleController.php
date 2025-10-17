@@ -109,8 +109,12 @@ class ArticleController extends Controller
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
             'published_at' => 'nullable|date',
+            'featured' => 'nullable|boolean',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
+            'new_tags' => 'nullable|array',
+            'new_tags.*' => 'string|max:50',
+            'auto_tags' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string',
@@ -136,12 +140,63 @@ class ArticleController extends Controller
         }
 
         try {
+            // Prepare article data with flexible translation
+            $articleData = [
+                'category_id' => $validated['category_id'],
+                'user_id' => $validated['user_id'],
+                'slug' => $validated['slug'],
+                'status' => $validated['status'],
+                'featured' => $validated['featured'] ?? false,
+                'views' => 0,
+                'published_at' => $validated['published_at'] ?? null,
+                'meta_title' => $validated['meta_title'] ?? null,
+                'meta_description' => $validated['meta_description'] ?? null,
+                'meta_keywords' => $validated['meta_keywords'] ?? null,
+                'featured_image' => $validated['featured_image'] ?? null,
+            ];
+            
+            // Add locale-specific fields
+            $articleData["title_{$locale}"] = $validated["title_{$locale}"];
+            $articleData["excerpt_{$locale}"] = $validated["excerpt_{$locale}"] ?? null;
+            $articleData["content_{$locale}"] = $validated["content_{$locale}"];
+            
             // Create article
-            $article = Article::create($validated);
+            $article = Article::create($articleData);
 
-            // Attach tags
-            if ($request->filled('tags')) {
-                $article->tags()->attach($request->tags);
+            // Handle tags
+            $tagIds = $request->tags ?? [];
+            
+            // Create new tags if provided
+            if ($request->has('new_tags') && !empty($request->new_tags)) {
+                $newTagIds = [];
+                foreach ($request->new_tags as $tagName) {
+                    $tag = \App\Modules\Tag\Models\Tag::firstOrCreate(
+                        ['name' => $tagName],
+                        [
+                            'slug' => \Illuminate\Support\Str::slug($tagName),
+                            'description' => "Auto-created tag: {$tagName}",
+                            'color' => '#3B82F6'
+                        ]
+                    );
+                    $newTagIds[] = $tag->id;
+                }
+                $tagIds = array_merge($tagIds, $newTagIds);
+            }
+            
+            // Generate auto tags if requested
+            if ($request->has('auto_tags') && $request->auto_tags) {
+                $autoTagService = new \App\Services\AutoTagService();
+                $autoTagIds = $autoTagService->generateAutoTags(
+                    $validated["title_{$locale}"],
+                    $validated["content_{$locale}"],
+                    $validated["excerpt_{$locale}"] ?? ''
+                );
+                $tagIds = array_merge($tagIds, $autoTagIds);
+            }
+            
+            // Attach all tags
+            if (!empty($tagIds)) {
+                $article->tags()->attach(array_unique($tagIds));
             }
 
             // Clear cache
@@ -203,8 +258,12 @@ class ArticleController extends Controller
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:draft,published,scheduled',
             'published_at' => 'nullable|date',
+            'featured' => 'nullable|boolean',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
+            'new_tags' => 'nullable|array',
+            'new_tags.*' => 'string|max:50',
+            'auto_tags' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string',
@@ -232,13 +291,64 @@ class ArticleController extends Controller
         }
 
         try {
-            // Update article
-            $article->update($validated);
-
-            // Sync tags
-            if ($request->has('tags')) {
-                $article->tags()->sync($request->tags ?? []);
+            // Prepare article data with flexible translation
+            $articleData = [
+                'category_id' => $validated['category_id'],
+                'slug' => $validated['slug'],
+                'status' => $validated['status'],
+                'featured' => $validated['featured'] ?? false,
+                'published_at' => $validated['published_at'] ?? null,
+                'meta_title' => $validated['meta_title'] ?? null,
+                'meta_description' => $validated['meta_description'] ?? null,
+                'meta_keywords' => $validated['meta_keywords'] ?? null,
+            ];
+            
+            // Add featured image if provided
+            if (isset($validated['featured_image'])) {
+                $articleData['featured_image'] = $validated['featured_image'];
             }
+            
+            // Add locale-specific fields
+            $articleData["title_{$locale}"] = $validated["title_{$locale}"];
+            $articleData["excerpt_{$locale}"] = $validated["excerpt_{$locale}"] ?? null;
+            $articleData["content_{$locale}"] = $validated["content_{$locale}"];
+            
+            // Update article
+            $article->update($articleData);
+
+            // Handle tags
+            $tagIds = $request->tags ?? [];
+            
+            // Create new tags if provided
+            if ($request->has('new_tags') && !empty($request->new_tags)) {
+                $newTagIds = [];
+                foreach ($request->new_tags as $tagName) {
+                    $tag = \App\Modules\Tag\Models\Tag::firstOrCreate(
+                        ['name' => $tagName],
+                        [
+                            'slug' => \Illuminate\Support\Str::slug($tagName),
+                            'description' => "Auto-created tag: {$tagName}",
+                            'color' => '#3B82F6'
+                        ]
+                    );
+                    $newTagIds[] = $tag->id;
+                }
+                $tagIds = array_merge($tagIds, $newTagIds);
+            }
+            
+            // Generate auto tags if requested
+            if ($request->has('auto_tags') && $request->auto_tags) {
+                $autoTagService = new \App\Services\AutoTagService();
+                $autoTagIds = $autoTagService->generateAutoTags(
+                    $validated["title_{$locale}"],
+                    $validated["content_{$locale}"],
+                    $validated["excerpt_{$locale}"] ?? ''
+                );
+                $tagIds = array_merge($tagIds, $autoTagIds);
+            }
+            
+            // Sync all tags
+            $article->tags()->sync(array_unique($tagIds));
 
             // Clear cached article content
             cache()->forget("public_article_{$article->slug}");

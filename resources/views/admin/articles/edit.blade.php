@@ -43,51 +43,18 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Multi-language Title -->
+                <!-- Title -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-                        {{ __('admin.articles.title_label') }}
-                    </label>
-                    
-                    <!-- Language Tabs -->
-                    <div class="mb-4">
-                        <div class="border-b border-gray-200 dark:border-gray-600">
-                            <nav class="-mb-px flex space-x-8">
-                                <button type="button" onclick="switchLanguage('id')" id="tab-id" class="py-2 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600 dark:text-blue-400">
-                                    🇮🇩 Indonesia
-                                </button>
-                                <button type="button" onclick="switchLanguage('en')" id="tab-en" class="py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
-                                    🇺🇸 English
-                                </button>
-                            </nav>
-                        </div>
-                    </div>
-                    
-                    <!-- Indonesian Title -->
-                    <div id="title-id" class="language-content">
-                        <x-admin.input-field
-                            name="title_id"
-                            :label="false"
-                            type="text"
-                            :value="old('title_id', $article->title)"
-                            :placeholder="__('admin.articles.title_label') . ' (Indonesia)'"
-                            class="text-lg"
-                            onkeyup="generateSlug()"
-                        />
-                    </div>
-                    
-                    <!-- English Title -->
-                    <div id="title-en" class="language-content hidden">
-                        <x-admin.input-field
-                            name="title_en"
-                            :label="false"
-                            type="text"
-                            :value="old('title_en', $article->title)"
-                            :placeholder="__('admin.articles.title_label') . ' (English)'"
-                            class="text-lg"
-                            onkeyup="generateSlug()"
-                        />
-                    </div>
+                    <x-admin.input-field
+                        name="title_{{ app()->getLocale() }}"
+                        :label="__('admin.articles.title_label')"
+                        type="text"
+                        :value="old('title_' . app()->getLocale(), $article->{'title_' . app()->getLocale()})"
+                        required
+                        :placeholder="__('admin.articles.title_label') . '...'"
+                        class="text-lg"
+                        onkeyup="generateSlug()"
+                    />
                 </div>
 
                 <!-- Slug -->
@@ -102,6 +69,7 @@
                             :value="old('slug', $article->slug)"
                             placeholder="auto-generated-from-title"
                             :label="false"
+                            data-original-slug="{{ $article->slug }}"
                         />
                     </div>
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('admin.articles.url_slug_help') }}</p>
@@ -110,9 +78,9 @@
                 <!-- Excerpt -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <x-admin.textarea-field
-                        name="excerpt_en"
+                        name="excerpt_{{ app()->getLocale() }}"
                         :label="__('admin.articles.excerpt_label')"
-                        :value="old('excerpt_en', $article->excerpt)"
+                        :value="old('excerpt_' . app()->getLocale(), $article->{'excerpt_' . app()->getLocale()})"
                         rows="3"
                         :placeholder="__('admin.articles.excerpt_label') . ' (optional)'"
                         :help="__('admin.articles.excerpt_help')"
@@ -124,292 +92,40 @@
                     <x-admin.textarea-field
                         name="content_{{ app()->getLocale() }}"
                         :label="__('admin.articles.content_label')"
-                        :value="old('content_' . app()->getLocale(), $article->content)"
+                        :value="old('content_' . app()->getLocale(), $article->{'content_' . app()->getLocale()})"
                         rows="15"
                         required
                     />
                 </div>
 
                 <!-- SEO Section -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        {{ __('admin.articles.seo_settings') }}
-                    </h3>
-                    
-                    <div class="space-y-4">
-                        <!-- Meta Title -->
-                        <x-admin.input-field
-                            name="meta_title"
-                            :label="__('admin.articles.meta_title')"
-                            :value="old('meta_title', $article->meta_title)"
-                            maxlength="60"
-                            :placeholder="__('admin.articles.meta_title')"
-                            :help="__('admin.articles.meta_title_help')"
-                        />
-
-                        <!-- Meta Description -->
-                        <x-admin.textarea-field
-                            name="meta_description"
-                            :label="__('admin.articles.meta_description')"
-                            :value="old('meta_description', $article->meta_description)"
-                            rows="3"
-                            maxlength="160"
-                            :placeholder="__('admin.articles.meta_description')"
-                            :help="__('admin.articles.meta_description_help')"
-                        />
-
-                        <!-- Meta Keywords -->
-                        <x-admin.input-field
-                            name="meta_keywords"
-                            :label="__('admin.articles.meta_keywords')"
-                            :value="old('meta_keywords', $article->meta_keywords)"
-                            :placeholder="__('admin.articles.meta_keywords')"
-                            :help="__('admin.articles.meta_keywords_help')"
-                        />
-                    </div>
-                </div>
+                @include('admin.articles.includes.seo-section')
             </div>
 
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Publish Settings -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.publish_settings') }}</h3>
-                    
-                    <!-- Status -->
-                    <div class="mb-4">
-                        <x-admin.select-field
-                            name="status"
-                            :label="__('admin.common.status')"
-                            required
-                            :options="[
-                                'draft' => __('admin.common.draft'),
-                                'published' => __('admin.common.published'),
-                                'scheduled' => __('admin.articles.schedule')
-                            ]"
-                            :selected="old('status', $article->status)"
-                        />
-                    </div>
-
-                    <!-- Publish Date -->
-                    <div class="mb-4">
-                        <x-admin.input-field
-                            name="published_at"
-                            :label="__('admin.articles.publish_date')"
-                            type="datetime-local"
-                            :value="old('published_at', $article->published_at ? $article->published_at->format('Y-m-d\TH:i') : '')"
-                            :help="__('admin.articles.publish_immediately')"
-                        />
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="flex flex-col space-y-2 pt-4 border-t dark:border-gray-700">
-                        <x-admin.button type="submit" variant="primary" class="w-full">
-                            {{ __('admin.articles.update') }}
-                        </x-admin.button>
-                        <x-admin.button 
-                            type="link" 
-                            :href="route('admin.articles.index')" 
-                            variant="secondary" 
-                            class="w-full text-center"
-                        >
-                            {{ __('admin.common.cancel') }}
-                        </x-admin.button>
-                    </div>
-                </div>
+                @include('admin.articles.includes.publish-settings')
 
                 <!-- Category -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.category_label') }}</h3>
-                    <x-admin.select-field
-                        name="category_id"
-                        :label="false"
-                        required
-                        :options="['' => __('admin.articles.select_category')] + $categories->pluck('name', 'id')->toArray()"
-                        :selected="old('category_id', $article->category_id)"
-                    />
-                </div>
+                @include('admin.articles.includes.category-selection', ['categories' => $categories])
 
-                <!-- Tags -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.tags_label') }}</h3>
-                    <div class="space-y-2">
-                        @foreach($tags as $tag)
-                            <label class="flex items-center cursor-pointer">
-                                <input 
-                                    type="checkbox" 
-                                    name="tags[]" 
-                                    value="{{ $tag->id }}" 
-                                    {{ in_array($tag->id, old('tags', $article->tags->pluck('id')->toArray())) ? 'checked' : '' }}
-                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700"
-                                >
-                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ $tag->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                    @if($tags->isEmpty())
-                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('admin.articles.no_tags') }}</p>
-                    @endif
-                </div>
+                <!-- Enhanced Tags Section -->
+                @include('admin.articles.includes.enhanced-tags', ['tags' => $tags])
 
                 <!-- Featured Image -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('admin.articles.featured_image') }}</h3>
-                    
-                    <div class="space-y-3">
-                        @if($article->featured_image)
-                        <div class="mb-3">
-                            <img src="{{ Storage::url($article->featured_image) }}" alt="Current image" class="w-full h-auto rounded">
-                            <p class="text-xs text-gray-500 mt-2">Current image</p>
-                        </div>
-                        @endif
-
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                            <input 
-                                type="file" 
-                                name="featured_image" 
-                                id="featured_image" 
-                                accept="image/*"
-                                class="hidden"
-                                onchange="previewImage(this)"
-                            >
-                            <label for="featured_image" class="cursor-pointer">
-                                <div id="imagePreview" class="hidden mb-3">
-                                    <img id="preview" src="" alt="Preview" class="max-w-full h-auto rounded">
-                                </div>
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <span class="font-medium text-blue-600 hover:text-blue-500">{{ __('admin.articles.upload_image') }}</span>
-                                    {{ __('admin.articles.drag_and_drop') }}
-                                </p>
-                                <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 2MB</p>
-                            </label>
-                        </div>
-                    </div>
-                    @error('featured_image')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+                @include('admin.articles.includes.featured-image')
             </div>
         </div>
     </form>
 </div>
 
 @push('scripts')
-<script>
-// Initialize CKEditor (loaded from local via Vite)
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('Initializing CKEditor...');
-    
-    if (typeof window.initCKEditor === 'function') {
-        const textarea = document.querySelector('[name="content_id"]');
-        
-        if (textarea) {
-            try {
-                await window.initCKEditor(textarea, {
-                    placeholder: 'Start writing your article content here...',
-                    uploadUrl: '{{ route("admin.upload.image") }}'
-                });
-                console.log('✓ CKEditor initialized');
-            } catch (error) {
-                console.error('✗ CKEditor initialization failed:', error);
-            }
-        }
-    } else {
-        console.error('initCKEditor function not found. Check if app.js is loaded.');
-    }
-});
+    @include('admin.articles.includes.ckeditor-init')
+    @include('admin.articles.includes.slug-generator')
+    @include('admin.articles.includes.auto-update-seo')
+    @include('admin.articles.includes.enhanced-tags-script')
+    @include('admin.articles.includes.image-preview')
 
-// Auto-generate Slug, Meta Title, and Meta Description
-function generateSlug() {
-    const title = document.getElementById('title_id').value;
-    const excerpt = document.getElementById('excerpt_id') ? document.getElementById('excerpt_id').value : '';
-    
-    // Generate slug
-    const slug = title
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-    
-    const slugField = document.getElementById('slug');
-    if (slugField) {
-        slugField.value = slug;
-    }
-    
-    // Auto-generate meta title (max 60 chars)
-    const metaTitleField = document.getElementById('meta_title');
-    if (metaTitleField && !metaTitleField.value) {
-        metaTitleField.value = title.substring(0, 60);
-    }
-    
-    // Auto-generate meta description from excerpt or title (max 160 chars)
-    const metaDescField = document.getElementById('meta_description');
-    if (metaDescField && !metaDescField.value) {
-        const description = excerpt || title;
-        metaDescField.value = description.substring(0, 160);
-    }
-}
-
-// Image preview
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview').src = e.target.result;
-            document.getElementById('imagePreview').classList.remove('hidden');
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Language Tab Switching Functions
-function switchLanguage(lang) {
-    // Hide all language content
-    document.querySelectorAll('.language-content').forEach(content => {
-        content.classList.add('hidden');
-    });
-    
-    // Show selected language content
-    document.getElementById('title-' + lang).classList.remove('hidden');
-    
-    // Update tab styles
-    document.querySelectorAll('[id^="tab-"]').forEach(tab => {
-        tab.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
-        tab.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-    });
-    
-    // Activate selected tab
-    const activeTab = document.getElementById('tab-' + lang);
-    activeTab.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-    activeTab.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
-}
-
-
-// Form validation before submit
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            // CKEditor automatically syncs content to textarea
-            // No manual sync needed
-            
-            // Validate content
-            const content = document.getElementById('content_{{ app()->getLocale() }}');
-            if (!content || content.value.trim() === '') {
-                e.preventDefault();
-                alert('Please enter article content.');
-                return false;
-            }
-        });
-    }
-});
-</script>
 @endpush
 @endsection

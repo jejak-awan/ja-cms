@@ -118,7 +118,7 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600" onclick="sortBy('title_id')">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600" onclick="sortBy('title_{{ app()->getLocale() }}')"
                                 {{ __('admin.articles.title_label') }}
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -144,7 +144,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
                                     @if($article->featured_image)
-                                        <img src="{{ Storage::url($article->featured_image) }}" alt="{{ $article->title_id }}" class="w-10 h-10 rounded object-cover mr-3">
+                                        <img src="{{ Storage::url($article->featured_image) }}" alt="{{ $article->title }}" class="w-10 h-10 rounded object-cover mr-3">
                                     @else
                                         <div class="w-10 h-10 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
                                             <svg class="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,9 +154,9 @@
                                     @endif
                                     <div>
                                         <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                                            {{ Str::limit($article->title_id, 50) }}
+                                            {{ Str::limit($article->title, 50) }}
                                         </a>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ Str::limit($article->excerpt_id ?? '', 60) }}</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ Str::limit($article->excerpt ?? '', 60) }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -192,7 +192,7 @@
                                     </a>
                                         <button 
                                             type="button"
-                                            onclick="confirmDelete({{ $article->id }}, '{{ addslashes($article->title_id) }}')"
+                                            onclick="confirmDelete({{ $article->id }}, '{{ addslashes($article->title) }}')"
                                             class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition" 
                                             title="{{ __('admin.common.delete') }}"
                                         >
