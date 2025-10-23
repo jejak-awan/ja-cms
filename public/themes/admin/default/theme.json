@@ -1,9 +1,0 @@
-{
-    "name": "Default Admin",
-    "slug": "default",
-    "version": "1.0.0",
-    "description": "Default admin panel theme with modern dark design",
-    "author": "CMS Team",
-    "author_url": "",
-    "type": "admin"
-}

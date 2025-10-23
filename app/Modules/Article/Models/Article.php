@@ -122,9 +122,12 @@ class Article extends Model
     public function scopeSearch(Builder $query, string $term): Builder
     {
         return $query->where(function ($q) use ($term) {
-            $q->where('title', 'LIKE', "%{$term}%")
-              ->orWhere('excerpt', 'LIKE', "%{$term}%")
-              ->orWhere('content', 'LIKE', "%{$term}%")
+            $q->where('title_id', 'LIKE', "%{$term}%")
+              ->orWhere('title_en', 'LIKE', "%{$term}%")
+              ->orWhere('excerpt_id', 'LIKE', "%{$term}%")
+              ->orWhere('excerpt_en', 'LIKE', "%{$term}%")
+              ->orWhere('content_id', 'LIKE', "%{$term}%")
+              ->orWhere('content_en', 'LIKE', "%{$term}%")
               ->orWhere('meta_keywords', 'LIKE', "%{$term}%");
         });
     }

@@ -9,15 +9,15 @@ test('StorePageRequest → validates required fields', function () {
     $validator = Validator::make([], $request->rules());
 
     expect($validator->fails())->toBeTrue()
-        ->and($validator->errors()->has('title'))->toBeTrue()
-        ->and($validator->errors()->has('content'))->toBeTrue()
+        ->and($validator->errors()->has('title_id'))->toBeTrue()
+        ->and($validator->errors()->has('content_id'))->toBeTrue()
         ->and($validator->errors()->has('status'))->toBeTrue();
 });
 
 test('StorePageRequest → passes with valid data', function () {
     $data = [
-        'title' => 'Test Page',
-        'content' => 'Test page content',
+        'title_id' => 'Test Page',
+        'content_id' => 'Test page content',
         'status' => 'draft',
     ];
 
@@ -29,9 +29,9 @@ test('StorePageRequest → passes with valid data', function () {
 
 test('StorePageRequest → validates slug format', function () {
     $data = [
-        'title' => 'Test Page',
+        'title_id' => 'Test Page',
         'slug' => 'Invalid Slug!',
-        'content' => 'Test content',
+        'content_id' => 'Test content',
         'status' => 'draft',
     ];
 
@@ -46,9 +46,9 @@ test('StorePageRequest → validates unique slug', function () {
     $existing = Page::factory()->create(['slug' => 'existing-page']);
     
     $data = [
-        'title' => 'Test Page',
+        'title_id' => 'Test Page',
         'slug' => 'existing-page',
-        'content' => 'Test content',
+        'content_id' => 'Test content',
         'status' => 'draft',
     ];
 
@@ -61,8 +61,8 @@ test('StorePageRequest → validates unique slug', function () {
 
 test('StorePageRequest → validates status enum', function () {
     $data = [
-        'title' => 'Test Page',
-        'content' => 'Test content',
+        'title_id' => 'Test Page',
+        'content_id' => 'Test content',
         'status' => 'invalid-status',
     ];
 
@@ -75,8 +75,8 @@ test('StorePageRequest → validates status enum', function () {
 
 test('StorePageRequest → validates parent exists', function () {
     $data = [
-        'title' => 'Test Page',
-        'content' => 'Test content',
+        'title_id' => 'Test Page',
+        'content_id' => 'Test content',
         'status' => 'draft',
         'parent_id' => 99999,
     ];

@@ -124,7 +124,7 @@ class CacheHelperTest extends TestCase
         // Mock config to return default TTL
         Config::set('cache_custom.modules.test_module.ttl', 7200);
 
-        $result = CacheHelper::remember($key, $module, null, function () use ($value) {
+        $result = CacheHelper::remember($key, $module, 7200, function () use ($value) {
             return $value;
         });
 

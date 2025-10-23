@@ -9,12 +9,13 @@ test('Integration → Article creation flow with category and author', function 
     $category = Category::factory()->create();
 
     $article = Article::factory()->create([
-        'title' => 'Integration Test Article',
+        'title_id' => 'Integration Test Article',
+        'title_en' => 'Integration Test Article EN',
         'category_id' => $category->id,
         'user_id' => $user->id,
     ]);
 
-    expect($article->title)->toBe('Integration Test Article')
+    expect($article->title_id)->toBe('Integration Test Article')
         ->and($article->category)->not->toBeNull()
         ->and($article->category->id)->toBe($category->id)
         ->and($article->user)->not->toBeNull()
@@ -32,9 +33,10 @@ test('Integration → Article with tags relationship', function () {
 });
 
 test('Integration → Category hierarchy with parent-child', function () {
-    $parent = Category::factory()->create(['name' => 'Parent Category']);
+    $parent = Category::factory()->create(['name_id' => 'Parent Category', 'name_en' => 'Parent Category EN']);
     $child = Category::factory()->create([
-        'name' => 'Child Category',
+        'name_id' => 'Child Category',
+        'name_en' => 'Child Category EN',
         'parent_id' => $parent->id,
     ]);
 
@@ -44,9 +46,10 @@ test('Integration → Category hierarchy with parent-child', function () {
 });
 
 test('Integration → Page hierarchy with nested pages', function () {
-    $parent = \App\Modules\Page\Models\Page::factory()->create(['title' => 'Parent Page']);
+    $parent = \App\Modules\Page\Models\Page::factory()->create(['title_id' => 'Parent Page', 'title_en' => 'Parent Page EN']);
     $child = \App\Modules\Page\Models\Page::factory()->create([
-        'title' => 'Child Page',
+        'title_id' => 'Child Page',
+        'title_en' => 'Child Page EN',
         'parent_id' => $parent->id,
     ]);
 
@@ -115,7 +118,7 @@ test('Integration → User with role and permissions', function () {
 });
 
 test('Integration → Article observer creates slug on save', function () {
-    $article = Article::factory()->create(['title' => 'Test Article', 'slug' => null]);
+    $article = Article::factory()->create(['title_id' => 'Test Article', 'title_en' => 'Test Article EN', 'slug' => null]);
 
     expect($article->slug)->not->toBeNull()
         ->and($article->slug)->toBe('test-article');
@@ -129,7 +132,8 @@ test('Integration → Full content publishing workflow', function () {
     
     // Create article
     $article = Article::factory()->create([
-        'title' => 'Published Article',
+        'title_id' => 'Published Article',
+        'title_en' => 'Published Article EN',
         'status' => 'published',
         'user_id' => $user->id,
         'category_id' => $category->id,

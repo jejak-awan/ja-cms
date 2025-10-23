@@ -23,7 +23,8 @@ class StoreArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'title_id' => ['required', 'string', 'max:255'],
+            'title_en' => ['nullable', 'string', 'max:255'],
             'slug' => [
                 'nullable',
                 'string',
@@ -31,8 +32,10 @@ class StoreArticleRequest extends FormRequest
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
                 Rule::unique('articles', 'slug')
             ],
-            'excerpt' => ['nullable', 'string', 'max:500'],
-            'content' => ['required', 'string'],
+            'excerpt_id' => ['nullable', 'string', 'max:500'],
+            'excerpt_en' => ['nullable', 'string', 'max:500'],
+            'content_id' => ['required', 'string'],
+            'content_en' => ['nullable', 'string'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'featured_image' => ['nullable', 'string', 'max:500'],
             'status' => ['required', Rule::in(['draft', 'published'])],
@@ -52,11 +55,12 @@ class StoreArticleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.required' => 'Article title is required.',
-            'title.max' => 'Article title cannot exceed 255 characters.',
+            'title_id.required' => 'Article title (Indonesian) is required.',
+            'title_id.max' => 'Article title (Indonesian) cannot exceed 255 characters.',
+            'title_en.max' => 'Article title (English) cannot exceed 255 characters.',
             'slug.regex' => 'Slug must contain only lowercase letters, numbers, and hyphens.',
             'slug.unique' => 'This slug is already in use. Please choose another.',
-            'content.required' => 'Article content is required.',
+            'content_id.required' => 'Article content (Indonesian) is required.',
             'category_id.required' => 'Please select a category.',
             'category_id.exists' => 'Selected category does not exist.',
             'status.required' => 'Please select article status.',

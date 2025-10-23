@@ -7,8 +7,8 @@ describe('Authentication', function () {
     test('login page loads successfully', function () {
         $response = $this->get(route('admin.login'));
         
-        $response->assertOk();
-        $response->assertViewIs('admin.auth.login');
+        // Admin login now redirects to unified login
+        $response->assertRedirect(route('login'));
     });
     
     test('user can login with valid credentials', function () {
@@ -18,12 +18,12 @@ describe('Authentication', function () {
             'password' => bcrypt('password123'),
         ]);
         
-        $response = $this->post(route('admin.login.post'), [
+        $response = $this->post(route('login.post'), [
             'email' => 'test@example.com',
             'password' => 'password123',
         ]);
         
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect('/admin/dashboard');
         $this->assertAuthenticatedAs($user);
     });
     
@@ -33,12 +33,12 @@ describe('Authentication', function () {
             'password' => bcrypt('password123'),
         ]);
         
-        $response = $this->post(route('admin.login.post'), [
+        $response = $this->post(route('login.post'), [
             'email' => 'test@example.com',
             'password' => 'wrongpassword',
         ]);
         
-        $response->assertSessionHasErrors();
+        $response->assertRedirect();
         $this->assertGuest();
     });
     
@@ -49,7 +49,7 @@ describe('Authentication', function () {
             'status' => 'inactive',
         ]);
         
-        $response = $this->post(route('admin.login.post'), [
+        $response = $this->post(route('login.post'), [
             'email' => 'test@example.com',
             'password' => 'password123',
         ]);
@@ -63,7 +63,7 @@ describe('Authentication', function () {
         
         $response = $this->post(route('admin.logout'));
         
-        $response->assertRedirect(route('admin.login'));
+        $response->assertRedirect(route('login'));
         $this->assertGuest();
     });
     

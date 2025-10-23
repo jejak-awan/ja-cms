@@ -100,9 +100,17 @@ class LoginController extends Controller
 
         // Attempt authentication
         if (Auth::attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            
             $user = Auth::user();
+            
+            // Check if user is active
+            if (!$user->is_active) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => __('auth.account_inactive'),
+                ])->onlyInput('email');
+            }
+            
+            $request->session()->regenerate();
             
             // Update last login
             $user->updateLastLogin($request->ip());

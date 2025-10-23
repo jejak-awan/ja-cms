@@ -23,7 +23,8 @@ class UpdateCategoryRequest extends FormRequest
         $categoryId = $this->route('category');
         
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name_id' => ['required', 'string', 'max:255'],
+            'name_en' => ['nullable', 'string', 'max:255'],
             'slug' => [
                 'nullable',
                 'string',
@@ -31,7 +32,8 @@ class UpdateCategoryRequest extends FormRequest
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
                 Rule::unique('categories', 'slug')->ignore($categoryId)
             ],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'description_id' => ['nullable', 'string', 'max:1000'],
+            'description_en' => ['nullable', 'string', 'max:1000'],
             'parent_id' => [
                 'nullable',
                 'integer',
@@ -54,8 +56,9 @@ class UpdateCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Category name is required.',
-            'name.max' => 'Category name cannot exceed 255 characters.',
+            'name_id.required' => 'Category name (Indonesian) is required.',
+            'name_id.max' => 'Category name (Indonesian) cannot exceed 255 characters.',
+            'name_en.max' => 'Category name (English) cannot exceed 255 characters.',
             'slug.regex' => 'Slug must contain only lowercase letters, numbers, and hyphens.',
             'slug.unique' => 'This slug is already in use.',
             'parent_id.exists' => 'Selected parent category does not exist.',

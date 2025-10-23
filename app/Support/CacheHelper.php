@@ -171,6 +171,11 @@ class CacheHelper
      */
     public static function isEnabled(): bool
     {
+        // Check if cache is explicitly disabled
+        if (config('cache_custom.enabled', true) === false) {
+            return false;
+        }
+        
         $driver = config('cache.default', 'file');
         return $driver !== 'null' && $driver !== null;
     }

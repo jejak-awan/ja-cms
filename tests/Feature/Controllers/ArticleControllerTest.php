@@ -38,8 +38,8 @@ describe('ArticleController', function () {
         $category = Category::factory()->create();
         
         $data = [
-            'title' => 'Test Article',
-            'content' => 'Test content for the article',
+            'title_en' => 'Test Article',
+            'content_en' => 'Test content for the article',
             'status' => 'draft',
             'category_id' => $category->id,
         ];
@@ -48,14 +48,14 @@ describe('ArticleController', function () {
         
         $response->assertRedirect();
         $this->assertDatabaseHas('articles', [
-            'title' => 'Test Article',
+            'title_en' => 'Test Article',
         ]);
     });
     
     test('store validates required fields', function () {
         $response = $this->post(route('admin.articles.store'), []);
         
-        $response->assertSessionHasErrors(['title', 'content']);
+        $response->assertSessionHasErrors(['title_en', 'content_en']);
     });
     
     test('edit page loads successfully', function () {
@@ -69,11 +69,11 @@ describe('ArticleController', function () {
     });
     
     test('update modifies existing article', function () {
-        $article = Article::factory()->create(['title' => 'Old Title']);
+        $article = Article::factory()->create(['title_en' => 'Old Title EN']);
         
         $data = [
-            'title' => 'New Title',
-            'content' => $article->content,
+            'title_en' => 'New Title EN',
+            'content_en' => $article->content_en,
             'status' => $article->status,
             'category_id' => $article->category_id,
         ];
@@ -83,7 +83,7 @@ describe('ArticleController', function () {
         $response->assertRedirect();
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
-            'title' => 'New Title',
+            'title_en' => 'New Title EN',
         ]);
     });
     

@@ -17,10 +17,13 @@ class UpdatePageRequest extends FormRequest
         $pageId = $this->route('page') ?? $this->route('id');
         
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'title_id' => ['required', 'string', 'max:255'],
+            'title_en' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('pages', 'slug')->ignore($pageId), 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
-            'excerpt' => ['nullable', 'string', 'max:500'],
-            'content' => ['required', 'string'],
+            'excerpt_id' => ['nullable', 'string', 'max:500'],
+            'excerpt_en' => ['nullable', 'string', 'max:500'],
+            'content_id' => ['required', 'string'],
+            'content_en' => ['nullable', 'string'],
             'parent_id' => ['nullable', 'integer', 'exists:pages,id', Rule::notIn([$pageId])],
             'template' => ['nullable', 'string', 'max:50'],
             'status' => ['required', 'string', Rule::in(['draft', 'published', 'archived'])],
@@ -36,11 +39,12 @@ class UpdatePageRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.required' => 'Judul halaman harus diisi.',
-            'title.max' => 'Judul halaman maksimal 255 karakter.',
+            'title_id.required' => 'Judul halaman (Indonesia) harus diisi.',
+            'title_id.max' => 'Judul halaman (Indonesia) maksimal 255 karakter.',
+            'title_en.max' => 'Judul halaman (English) maksimal 255 karakter.',
             'slug.unique' => 'Slug sudah digunakan.',
             'slug.regex' => 'Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.',
-            'content.required' => 'Konten halaman harus diisi.',
+            'content_id.required' => 'Konten halaman (Indonesia) harus diisi.',
             'parent_id.exists' => 'Halaman parent tidak ditemukan.',
             'parent_id.not_in' => 'Halaman tidak boleh menjadi parent dari dirinya sendiri.',
             'status.required' => 'Status harus dipilih.',
@@ -52,10 +56,13 @@ class UpdatePageRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => 'Judul',
+            'title_id' => 'Judul (Indonesia)',
+            'title_en' => 'Judul (English)',
             'slug' => 'Slug',
-            'excerpt' => 'Ringkasan',
-            'content' => 'Konten',
+            'excerpt_id' => 'Ringkasan (Indonesia)',
+            'excerpt_en' => 'Ringkasan (English)',
+            'content_id' => 'Konten (Indonesia)',
+            'content_en' => 'Konten (English)',
             'parent_id' => 'Parent',
             'template' => 'Template',
             'status' => 'Status',

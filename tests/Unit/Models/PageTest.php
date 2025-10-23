@@ -10,7 +10,7 @@ describe('Page Model', function () {
         
         $fillable = $page->getFillable();
         
-        expect($fillable)->toContain('title', 'slug', 'content', 'template', 'status');
+        expect($fillable)->toContain('title_id', 'title_en', 'slug', 'content_id', 'content_en', 'template', 'status');
     });
     
     test('belongs to user', function () {
@@ -107,9 +107,9 @@ describe('Page Model', function () {
     })->skip('Route not registered in test environment');
     
     test('search scope finds pages by title', function () {
-        Page::factory()->create(['title' => 'About Us']);
-        Page::factory()->create(['title' => 'Contact Us']);
-        Page::factory()->create(['title' => 'Privacy Policy']);
+        Page::factory()->create(['title_id' => 'About Us', 'title_en' => 'About Us EN']);
+        Page::factory()->create(['title_id' => 'Contact Us', 'title_en' => 'Contact Us EN']);
+        Page::factory()->create(['title_id' => 'Privacy Policy', 'title_en' => 'Privacy Policy EN']);
         
         $results = Page::search('about')->get();
         

@@ -33,8 +33,8 @@ class StoreArticleRequestTest extends TestCase
         $validator = Validator::make([], $rules);
 
         $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('title', $validator->errors()->toArray());
-        $this->assertArrayHasKey('content', $validator->errors()->toArray());
+        $this->assertArrayHasKey('title_id', $validator->errors()->toArray());
+        $this->assertArrayHasKey('content_id', $validator->errors()->toArray());
         $this->assertArrayHasKey('category_id', $validator->errors()->toArray());
         $this->assertArrayHasKey('status', $validator->errors()->toArray());
     }
@@ -46,8 +46,8 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => str_repeat('a', 256), // Exceeds 255 character limit
-            'content' => 'Valid content',
+            'title_id' => str_repeat('a', 256), // Exceeds 255 character limit
+            'content_id' => 'Valid content',
             'category_id' => $this->category->id,
             'status' => 'draft'
         ];
@@ -55,7 +55,7 @@ class StoreArticleRequestTest extends TestCase
         $validator = Validator::make($data, $rules);
 
         $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('title', $validator->errors()->toArray());
+        $this->assertArrayHasKey('title_id', $validator->errors()->toArray());
     }
 
     /** @test */
@@ -65,9 +65,9 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => 'Valid Title',
+            'title_id' => 'Valid Title',
             'slug' => 'Invalid Slug!', // Invalid format
-            'content' => 'Valid content',
+            'content_id' => 'Valid content',
             'category_id' => $this->category->id,
             'status' => 'draft'
         ];
@@ -94,9 +94,9 @@ class StoreArticleRequestTest extends TestCase
         ]);
 
         $data = [
-            'title' => 'New Article',
+            'title_id' => 'New Article',
             'slug' => 'existing-slug', // Duplicate slug
-            'content' => 'Valid content',
+            'content_id' => 'Valid content',
             'category_id' => $this->category->id,
             'status' => 'draft'
         ];
@@ -114,8 +114,8 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => 'Valid Title',
-            'content' => 'Valid content',
+            'title_id' => 'Valid Title',
+            'content_id' => 'Valid content',
             'category_id' => 999, // Non-existent category
             'status' => 'draft'
         ];
@@ -133,8 +133,8 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => 'Valid Title',
-            'content' => 'Valid content',
+            'title_id' => 'Valid Title',
+            'content_id' => 'Valid content',
             'category_id' => $this->category->id,
             'status' => 'invalid_status' // Invalid status
         ];
@@ -152,9 +152,9 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => 'Valid Title',
-            'content' => 'Valid content',
-            'excerpt' => str_repeat('a', 501), // Exceeds 500 character limit
+            'title_id' => 'Valid Title',
+            'content_id' => 'Valid content',
+            'excerpt_id' => str_repeat('a', 501), // Exceeds 500 character limit
             'category_id' => $this->category->id,
             'status' => 'draft'
         ];
@@ -162,7 +162,7 @@ class StoreArticleRequestTest extends TestCase
         $validator = Validator::make($data, $rules);
 
         $this->assertTrue($validator->fails());
-        $this->assertArrayHasKey('excerpt', $validator->errors()->toArray());
+        $this->assertArrayHasKey('excerpt_id', $validator->errors()->toArray());
     }
 
     /** @test */
@@ -172,9 +172,9 @@ class StoreArticleRequestTest extends TestCase
         $rules = $request->rules();
 
         $data = [
-            'title' => 'Valid Article Title',
+            'title_id' => 'Valid Article Title',
             'slug' => 'valid-slug',
-            'content' => 'Valid article content',
+            'content_id' => 'Valid article content',
             'category_id' => $this->category->id,
             'status' => 'draft',
             'featured' => true,
@@ -194,11 +194,11 @@ class StoreArticleRequestTest extends TestCase
         $request = new StoreArticleRequest();
         $messages = $request->messages();
 
-        $this->assertArrayHasKey('title.required', $messages);
-        $this->assertArrayHasKey('title.max', $messages);
+        $this->assertArrayHasKey('title_id.required', $messages);
+        $this->assertArrayHasKey('title_id.max', $messages);
         $this->assertArrayHasKey('slug.regex', $messages);
         $this->assertArrayHasKey('slug.unique', $messages);
-        $this->assertArrayHasKey('content.required', $messages);
+        $this->assertArrayHasKey('content_id.required', $messages);
         $this->assertArrayHasKey('category_id.required', $messages);
         $this->assertArrayHasKey('status.required', $messages);
     }
